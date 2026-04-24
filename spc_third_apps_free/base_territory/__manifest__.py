@@ -9,7 +9,7 @@
     "category": "Hidden",
     "author": "Open Source Integrators, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/field-service",
-    "depends": ["base","branch", "country"],
+    "depends": ["base"],
     "data": [
         "security/ir.model.access.csv",
         "views/res_territory.xml",
