@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="account_billing_view_form_component" model="ir.ui.view">
+        <field name="name">account.billing.component.view.form</field>
+        <field name="model">account.billing</field>
+        <field name="inherit_id" ref="account_billing.view_account_billing_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="before">
+                <field name="company_id"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>
