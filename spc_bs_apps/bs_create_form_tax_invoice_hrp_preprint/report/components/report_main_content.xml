@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_main_content">
+        <div style="font-family: 'THSarabunNew'; font-size: 14px;" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id">
+            <table class="table table-borderless">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;" />
+                        <th style="width: 50%;" />
+                        <th style="width: 15%;" />
+                        <th style="width: 15%;" />
+                        <th style="width: 15%;" />
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-set="line_number" t-value="0" />
+                    <tr t-foreach="o.invoice_line_ids" t-as="line">
+                        <td>
+                            <t t-set="line_number" t-value="line_number + 1" />
+                            <span t-esc="line_number" />
+                        </td>
+                        <td style="text-align: left;">
+                            <span t-field="line.name" />
+                        </td>
+                        <td style="text-align: left;">
+                            <span t-field="line.quantity"/>
+                        </td>
+                        <td style="text-align: left;">
+                            <span t-field="line.product_uom_id"/>
+                        </td>
+                        <td style="text-align: right; padding-right: 60px;">
+                            <t t-if="any(tax.price_include for tax in line.tax_ids)">
+                                <span t-field="line.price_total"/>
+                            </t>
+                            <t t-else="">
+                                <span t-field="line.price_subtotal"/>
+                            </t>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </template>
+</odoo>

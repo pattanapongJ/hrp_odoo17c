@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="paper_format_bs_create_tax_invoice_preprint_report" model="report.paperformat">
+            <field name="name">Tax Invoice Preprint</field>
+            <field name="default" eval="False"/>
+            <field name="format">Letter</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">70</field>
+            <field name="margin_bottom">105</field>
+            <field name="margin_left">10</field>
+            <field name="margin_right">10</field>
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="action_report_bs_create_tax_invoice_preprint_report" model="ir.actions.report">
+            <field name="name">Invoice 1</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">bs_create_form_tax_invoice_hrp_preprint.bs_form_preprint_report_template</field>
+            <field name="report_file">bs_create_form_tax_invoice_hrp_preprint.bs_form_preprint_report_template</field>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="print_report_name">'Tax Invoice preprint'</field>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="paper_format_bs_create_tax_invoice_preprint_report"/>
+        </record>
+    </data>
+</odoo>
