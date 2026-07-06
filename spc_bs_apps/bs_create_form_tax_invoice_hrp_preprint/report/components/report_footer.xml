@@ -1,50 +1,50 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <template id="report_footer">
-        <div style="font-family: 'THSarabunNew'; font-size: 14px;">
-            <div class="row">
+        <div style="font-family: 'THSarabunNew'; font-size: 18px;">
+            <div class="row" style="">
                 <div class="col-7">
                 </div>
-                <div class="col-1"></div>
-                <div class="col-4">
-                    <div class="row" style="margin-right: 40px;">
+                <div class="col-1"/>
+                <div class="col-4" style="margin-right: 50px; margin-top: 75px;">
+                    <div class="row">
                         <div class="text-right">
                             <t t-if="any(tax.price_include for tax in o.invoice_line_ids[:1].tax_ids)">
-                                <span t-esc="'%.2f' % sum(l.price_total for l in o.invoice_line_ids if l.display_type == 'product' and not l.apply_global_discount)" />
+                                <span t-esc="('{:,.2f}').format(sum(l.price_total for l in o.invoice_line_ids if l.display_type == 'product' and not l.apply_global_discount))"/>
                             </t>
                             <t t-else="">
-                                <span t-esc="'%.2f' % sum(l.price_subtotal for l in o.invoice_line_ids if l.display_type == 'product' and not l.apply_global_discount)" />
+                                <span t-esc="('{:,.2f}').format(sum(l.price_subtotal for l in o.invoice_line_ids if l.display_type == 'product' and not l.apply_global_discount))"/>
                             </t>
                         </div>
                     </div>
-                    <div class="row" style="margin-top: 10px; margin-right: 40px;">
+                    <div class="row" style="margin-top: 1.5px;">
                         <div class="text-right">
-                            <span t-esc="'%.2f' % sum(l.global_discount_amount for l in o.invoice_line_ids if l.display_type == 'product' and l.apply_global_discount)" />
+                            <span t-esc="('{:,.2f}').format(sum(l.global_discount_amount for l in o.invoice_line_ids if l.display_type == 'product' and l.apply_global_discount))"/>
                         </div>
                     </div>
-                    <div class="row" style="margin-top: 10px; margin-right: 40px;">
+                    <div class="row" style="margin-top: 1.5px;">
                         <div class="text-right">
-                            <span t-esc="'%.2f' % 0.00" />
+                            <span t-esc="('{:,.2f}').format(0.00)"/>
                         </div>
                     </div>
-                    <div class="row" style="margin-top: 10px; margin-right: 40px;">
+                    <div class="row" style="margin-top: 1.5px;">
                         <div class="text-right">
-                            <span t-esc="'%.2f' % 0.00" />
+                            <span t-esc="('{:,.2f}').format(0.00)"/>
                         </div>
                     </div>
-                    <div class="row" style="margin-top: 10px; margin-right: 40px;">
+                    <div class="row" style="margin-top: 1.5px;">
                         <div class="text-right">
-                            <span t-esc="'%.2f' % o.amount_untaxed" />
+                            <span t-esc="('{:,.2f}').format(o.amount_total)"/>
                         </div>
                     </div>
-                    <div class="row" style="margin-top: 10px; margin-right: 40px;">
+                    <div class="row" style="margin-top: 1.5px;">
                         <div class="text-right">
-                            <span style="text-align: right;" t-esc="'%.2f' % o.amount_tax" />
+                            <span style="text-align: right;" t-esc="('{:,.2f}').format(o.amount_tax)"/>
                         </div>
                     </div>
-                    <div class="row" style="margin-top: 10px; margin-right: 40px;">
+                    <div class="row" style="margin-top: 1.5px;">
                         <div class="text-right">
-                            <span style="text-align: right;" t-esc="'%.2f' % o.amount_total" />
+                            <span style="text-align: right;" t-esc="('{:,.2f}').format(o.amount_total)"/>
                         </div>
                     </div>
                 </div>
