@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_footer_gee_plus">
+        <div style="font-family: 'THSarabunNew'; font-size: 18px;">
+            <div class="row">
+                <div class="col-7">
+                </div>
+                <div class="col-3"></div>
+                <div class="col-2">
+                    <div class="row" style="text-align: right;">
+                        <span t-esc="'%.2f' % o.amount_untaxed" />
+                    </div>
+                    <div class="row" style="margin-top: 20px; text-align: right;">
+                        <span t-esc="'%.2f' % o.amount_tax" />
+                    </div>
+                    <div class="row" style="margin-top: 20px; text-align: right;">
+                        <span t-esc="'%.2f' % o.amount_total" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>
