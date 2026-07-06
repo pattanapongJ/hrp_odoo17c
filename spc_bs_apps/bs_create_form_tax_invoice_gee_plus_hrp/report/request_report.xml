@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="paper_format_bs_create_tax_invoice_gee_plus_report" model="report.paperformat">
+            <field name="name">Tax Invoice Gee Plus</field>
+            <field name="default" eval="False"/>
+            <field name="format">Letter</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">80</field>
+            <field name="margin_bottom">105</field>
+            <field name="margin_left">20</field>
+            <field name="margin_right">10</field>
+            <field name="header_spacing">60</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="action_report_bs_create_tax_invoice_gee_plus_report" model="ir.actions.report">
+            <field name="name">Tax Invoice Gee Plus</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">bs_create_form_tax_invoice_gee_plus_hrp.bs_form_gee_plus_report_template</field>
+            <field name="report_file">bs_create_form_tax_invoice_gee_plus_hrp.bs_form_gee_plus_report_template</field>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="print_report_name">'Tax Invoice Gee Plus'</field>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="paper_format_bs_create_tax_invoice_gee_plus_report"/>
+        </record>
+    </data>
+</odoo>
