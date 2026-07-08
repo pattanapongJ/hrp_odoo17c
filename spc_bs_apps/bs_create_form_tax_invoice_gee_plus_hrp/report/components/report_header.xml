@@ -1,60 +1,75 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <template id="report_header_info_gee_plus">
-        <div style="font-family: 'THSarabunNew'; font-size: 18px;">
+         <div style="font-family: 'THSarabunNew'; font-size: 18px;">
             <div class="row">
-                <div class="col-11">
+                <div class="col-10">
                 </div>
-                <div class="col-1">
-                    <div class="row">
-                        <span style="text-align: left;" t-field="o.name" />
+                <div class="col-2" style="padding-left: 15px; padding-top:10px;">
+                    <div class="row" style="text-align: left; padding-top:5px;">
+                        <span t-field="o.name"/>
                     </div>
-                    <div class="row" style="margin-top: 15px">
-                        <span style="text-align: left;" t-field="o.date" t-options='{"widget":"date"}'/>
+                    <div class="row" style="margin-top: 15px; text-align: left;">
+                        <span t-field="o.date" t-options="{&quot;widget&quot;:&quot;date&quot;}"/>
                     </div>
                 </div>
             </div>
-            <div class="row">
+            
+            <div class="row" style="">
                 <div class="col-12">
-                    <span style="margin-left: 10px;" t-field="o.partner_id.ref" />
+                    <span style="padding-left: 120px; margin-top: 10px;" t-field="o.partner_id.partner_code"/>
                 </div>
             </div>
-            <div class="row" style="margin-top: 20px; margin-left: 20px;">
+            <div class="row" style="padding-top: 30px; padding-left: 90px;">
                 <div class="col-6">
-                    <div class="row" style="margin-left: 12px;">
+                    <div class="row" style="padding-left: 30px;">
                         <div style="line-height: 1.5;">
-                            <span t-field="o.partner_id.name" />
+                            <span t-field="o.partner_id"/>
                         </div>
                     </div>
-                    <div class="row" style="margin-top: 15px; margin-left: 12px;">
+                    <div class="row" style="padding-top: 15px;">
                         <div style="line-height: 1.5;">
-                            <span t-field="o.partner_id.street" />
-                            <span t-field="o.partner_id.street2" />
-                            <span t-field="o.partner_id.city" />
-                            <span t-field="o.partner_id.state_id" />
-                            <span t-field="o.partner_id.zip" />
-                            <span t-field="o.partner_id.country_id" />
+                            <span t-field="o.partner_id.street"/>
+                            <span t-field="o.partner_id.street2"/>
+                            <span t-field="o.partner_id.city"/>
+                            <span t-field="o.partner_id.state_id"/>
+                            <span t-field="o.partner_id.zip"/>
+                            <span t-field="o.partner_id.country_id"/>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-top: 60px;">
+                        <div class="col-1" style="">
+                             <span>สาขา</span>
+                        </div>
+                        <div class="col-4" style="">
+                             <span t-field="o.partner_id.branch"/>
+                        </div>
+                        <div class="col-4" style="">
+                             <span>เลขประจำตัวผู้เสียภาษี</span>
+                        </div>
+                        <div class="col-3" style="">
+                             <span t-field="o.partner_id.vat"/>
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
-                    <div class="row" style="margin-top: 30px; padding-left: 20px; ">
-                        <span t-field="o.payment_reference" />
+                <div class="col-3" style="padding-top: 5px;">
+                    <div class="row" style="margin-top: 20px; padding-left: 80px; ">
+                        <span t-field="o.payment_reference"/>
                     </div>
-                    <div class="row" style="margin-top: 30px; padding-left: 20px; ">
-                        <span style="white-space: nowrap;" t-field="o.invoice_payment_term_id.name" />
+                    <div class="row" style="margin-top: 80px; padding-left: 100px; ">
+                        <span style="white-space: nowrap;" t-field="o.invoice_payment_term_id.name"/>
                     </div>
                 </div>
-                <div class="col-3">
-
-                    <div class="row" style="margin-top: 30px; margin-left: 20px;">
-                        <span t-field="o.invoice_date_due" t-options='{"widget":"date"}' />
+                <div class="col-3" style="padding-top: 5px;">
+                    <div class="row" style="margin-top: 20px; margin-left: 70px;">
+                        <span t-field="o.invoice_date_due" t-options="{&quot;widget&quot;:&quot;date&quot;}"/>
                     </div>
-                    <div class="row" style="margin-top: 25px;">
-                        <span t-field="o.invoice_user_id.name" />
+                    <div class="row" style="margin-top: 80px; padding-left: 60px;">
+                        <span t-field="o.invoice_user_id.name"/>
                     </div>
                 </div>
             </div>
         </div>
+    
     </template>
 </odoo>

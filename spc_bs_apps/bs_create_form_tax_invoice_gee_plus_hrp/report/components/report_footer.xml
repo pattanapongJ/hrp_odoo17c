@@ -5,19 +5,24 @@
             <div class="row">
                 <div class="col-7">
                 </div>
-                <div class="col-3"></div>
-                <div class="col-2">
-                    <div class="row" style="text-align: right;">
-                        <span t-esc="'%.2f' % o.amount_untaxed" />
+                <div class="col-3"/>
+                <div class="col-2 text-end" style="padding-top: 130px;">
+                    <div class="row">
+                        <div class="col-12">
+                            <span t-esc="('{:,.2f}').format(o.amount_untaxed)"/>
+                        </div>
                     </div>
-                    <div class="row" style="margin-top: 20px; text-align: right;">
-                        <span t-esc="'%.2f' % o.amount_tax" />
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="col-12">
+                            <span t-esc="('{:,.2f}').format(o.amount_tax)"/>
+                        </div>
                     </div>
-                    <div class="row" style="margin-top: 20px; text-align: right;">
-                        <span t-esc="'%.2f' % o.amount_total" />
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="col-12">
+                            <span t-esc="('{:,.2f}').format(o.amount_total)"/>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </template>
-</odoo>
+        </template>
+    </odoo>
