@@ -1,6 +1,6 @@
 {
     "name": "BS Create Form Tax Invoice Gee Plus HRP",
-    "version": "17.0.0.1",
+    "version": "17.0.0.2",
     "author": "Basic-Solution Co., Ltd.",
     "maintainer": "varit",
     "website": "https://www.basic-solution.com/",
