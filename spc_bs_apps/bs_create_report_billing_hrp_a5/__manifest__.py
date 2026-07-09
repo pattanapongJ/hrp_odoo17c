@@ -1,0 +1,20 @@
+{
+    'name': 'BS Create Report Billing HRP A5',
+    'version': '17.0.0.1',
+    'author': 'Basic-Solution Co., Ltd.',
+    'website': 'https://www.basic-solution.com/',
+    "category": "Accounting",
+    "depends": ["account", "account_billing", "bs_show_signature", "bs_company_address_ext"],
+    'data': [
+        'report/components/report_template_company_info.xml',
+        'report/components/report_header_partner_info.xml',
+        'report/components/report_main_content.xml',
+        'report/components/report_footer.xml',
+        'report/bs_create_report_billing_hrp_a5_template.xml',
+        'report/report_bs_create_report_billing_hrp_a5_page.xml',
+        'report/request_report.xml',
+    ],
+    'installable': True,
+    'application': True,
+    'license': 'LGPL-3',
+}

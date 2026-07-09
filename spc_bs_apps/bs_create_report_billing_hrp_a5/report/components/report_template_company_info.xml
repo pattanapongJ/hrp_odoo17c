@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_compay_info">
+        <div class="col-8 text-left set_center_header_details" style="font-family: 'Kanit-Light'; font-size: 13.64px;">
+            <div class="row pd-3">
+                <span style="font-size: 16.67px" t-field="o.company_id.name" />
+            </div>
+            <div class="row">
+                <span style="font-size: 12.5px" t-field="o.company_id.street" />
+            </div>
+            <div class="row">
+                <span style="font-size: 12.5px" t-field="o.company_id.street2" />
+                <span style="font-size: 12.5px" t-field="o.company_id.city" />
+                <span style="font-size: 12.5px" t-field="o.company_id.state_id" />
+                <span style="font-size: 12.5px" t-field="o.company_id.zip" />
+                <span style="font-size: 12.5px" t-field="o.company_id.country_id" />
+            </div>
+            <div class="row" style="font-size: 12.5px">
+                <span>Tel : </span>
+                <t t-if="o.company_id.phone">
+                    <span t-esc="o.company_id.phone" />
+                </t>
+                <t t-if="not o.company_id.phone">
+                    <span> - </span>
+                </t>
+                <span>Fax : </span>
+                <t t-if="o.company_id.fax">
+                    <span t-esc="o.company_id.fax" />
+                </t>
+                <t t-if="not o.company_id.fax">
+                    <span> - </span>
+                </t>
+            </div>
+        </div>
+    </template>
+</odoo>

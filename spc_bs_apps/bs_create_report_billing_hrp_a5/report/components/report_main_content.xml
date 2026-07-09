@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_main_content">
+        <div class="row mx-0 pt-1" style="font-family: 'Kanit-Light'; font-size: 12px;">
+            <div class="col-12 p-0 m-0">
+                <t t-foreach="o.get_billing_report_pages_a5()" t-as="page">
+                    <table class="table" style="margin: 0; border-collapse: collapse; table-layout: fixed; width: 100%; border-top: 1px solid #000;">
+                        <thead>
+                            <tr>
+                                <th class="text-center" scope="col" style="display: table-cell;
+                                    text-align: center;
+                                    vertical-align: middle; width: 5%; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                    <span class="p-0 m-0">NO.</span>
+                                </th>
+                                <th class="text-center" scope="col" style="display: table-cell;
+                                    text-align: center;
+                                    vertical-align: middle;  width: 20%; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                    <span class="p-0 m-0">เลขที่ใบกำกับ</span>
+                                </th>
+                                <th class="text-center" scope="col" style="display: table-cell;
+                                    text-align: center;
+                                    vertical-align: middle;  width: 15%; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                    <span class="p-0 m-0">วันที่</span>
+                                </th>
+                                <th class="text-center" scope="col" style="display: table-cell;
+                                    text-align: center;
+                                    vertical-align: middle;  width: 15%; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                    <span class="p-0 m-0">วันครบกำหนด</span>
+                                </th>
+                                <th class="text-center" scope="col" style="display: table-cell;
+                                    text-align: center;
+                                    vertical-align: middle;  width: 15%; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                    <span class="p-0 m-0">จำนวนเงิน</span>
+                                </th>
+                                <th class="text-center" scope="col" style="display: table-cell;
+                                    text-align: center;
+                                    vertical-align: middle;  width: 15%; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                    <span class="p-0 m-0">ชำระแล้ว</span>
+                                </th>
+                                <th class="text-center" scope="col" style="display: table-cell;
+                                    text-align: center;
+                                    vertical-align: middle;  width: 15%; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                    <span class="p-0 m-0">เงินคงค้าง</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="page" t-as="line">
+                                <tr>
+                                    <td class="text-center" scope="row" style="border-top: none; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                        <span t-esc="page_index * 3 + line_index + 1" />
+                                    </td>
+                                    <t t-if="line">
+                                        <t t-set="paid_amount" t-value="line.invoice_id.amount_total - line.total" />
+                                        <td class="text-center" style="border-top: none; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                            <span t-field="line.invoice_id"/>
+                                        </td>
+                                        <td class="text-center" style="border-top: none; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                            <span t-field="line.invoice_date"/>
+                                        </td>
+                                        <td class="text-center" style="border-top: none; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                            <span t-field="line.threshold_date"/>
+                                        </td>
+                                        <td class="text-right" style="border-top: none; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                            <span t-field="line.invoice_id.amount_total" t-options='{"widget": "float", "precision": 2}'/>
+                                        </td>
+                                        <td class="text-right" style="border-top: none; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                            <span t-esc="paid_amount" t-options='{"widget": "float", "precision": 2}'/>
+                                        </td>
+                                        <td class="text-right" style="border-top: none; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                            <span t-field="line.total" t-options='{"widget": "float", "precision": 2}'/>
+                                        </td>
+                                    </t>
+                                    <t t-if="not line">
+                                        <td style="border-top: none; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">&#160;</td>
+                                        <td style="border-top: none; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">&#160;</td>
+                                        <td style="border-top: none; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">&#160;</td>
+                                        <td style="border-top: none; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">&#160;</td>
+                                        <td style="border-top: none; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">&#160;</td>
+                                        <td style="border-top: none; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">&#160;</td>
+                                    </t>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                    <div t-if="not page_last" style="page-break-after: always;"></div>
+                </t>
+
+                <table class="table" style="margin: 0; border-collapse: collapse; table-layout: fixed; width: 100%;">
+                    <t t-set="currency" t-value="o.currency_id"/>
+                    <t t-set="amount_total" t-value="sum(l.total for l in o.billing_line_ids)"/>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" class="text-left" style="width: 70%; border-top: none; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                <span>(</span>
+                                <span t-esc="currency.with_context({'lang': 'th_TH'}).amount_to_text(amount_total)"/>
+                                <span>)</span>
+                            </td>
+                            <td colspan="1" class="text-right" style="width: 15%; border-top: none; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                <b>รวมเงินทั้งสิ้น</b>
+                            </td>
+                            <td colspan="1" class="text-right" style="width: 15%; border-top: none; border-bottom: 1px solid #000; border-left: 1px dashed #000; border-right: 1px dashed #000;">
+                                <span t-esc="amount_total" t-options='{"widget": "float", "precision": 2}'/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" style="border-top: none; border-left: 1px dashed #000; border-right: 1px dashed #000; padding: 4px; font-size: 11px; height: 53px;">
+                                <div style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; max-height: 45px; line-height: 15px;">
+                                    <span>หมายเหตุ : </span>
+                                    <span t-field="o.narration" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="7" style="border-left: 1px dashed #000; border-right: 1px dashed #000; border-bottom: 1px solid #000; padding: 0;">
+                                <div class="row mx-0 pt-1 pb-1">
+                                    <div class="col-6 text-left" style="padding: 0 20px;">
+                                        <div>
+                                            <span>ชื่อผู้รับวางบิล.....................................................</span>
+                                        </div>
+                                        <div style="padding-top:6px">
+                                            <span>วันที่รับวางบิล................/................/................</span>
+                                        </div>
+                                        <div style="padding-top:6px">
+                                            <span>วันที่นัดรับเช็ค................/................/................</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 text-center" style="padding: 0 20px;">
+                                        <div>
+                                            <span>ในนาม</span>
+                                            <span t-field="o.company_id.name" />
+                                        </div>
+                                        <div style="padding-top:6px">
+                                            <span>ชื่อผู้วางบิล.....................................................</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+</odoo>
