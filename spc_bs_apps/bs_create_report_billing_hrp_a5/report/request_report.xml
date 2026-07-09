@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="paper_format_bs_create_report_billing_hrp_a5_report" model="report.paperformat">
+            <field name="name">Billing HRP A5 Landscape</field>
+            <field name="default" eval="False"/>
+            <field name="format">A5</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">50</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_spacing">45</field>
+            <field name="dpi">90</field>
+        </record>
+
+
+        <record id="action_report_bs_create_report_billing_hrp_a5_report" model="ir.actions.report">
+            <field name="name">Billing (A5)</field>
+            <field name="model">account.billing</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">bs_create_report_billing_hrp_a5.report_bs_create_report_billing_hrp_a5</field>
+            <field name="report_file">bs_create_report_billing_hrp_a5.report_bs_create_report_billing_hrp_a5</field>
+            <field name="binding_model_id" ref="account_billing.model_account_billing"/>
+            <field name="print_report_name">'Billing A5'</field>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="paper_format_bs_create_report_billing_hrp_a5_report"/>
+        </record>
+    </data>
+</odoo>
