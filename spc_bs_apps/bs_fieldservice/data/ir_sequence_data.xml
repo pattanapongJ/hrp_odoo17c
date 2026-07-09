@@ -1,0 +1,16 @@
+<odoo noupdate="1">
+    <record id="seq_bs_fsm_order_check_sheet" model="ir.sequence">
+        <field name="name">FSM Order Check Sheet</field>
+        <field name="code">bs.fsm.order.check_sheet</field>
+        <field name="prefix">CS-%(year)s-</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False" />
+    </record>
+    <record id="seq_bs_fsm_order_service_report" model="ir.sequence">
+        <field name="name">FSM Order Service Report</field>
+        <field name="code">bs.fsm.order.service_report</field>
+        <field name="prefix">SR-%(year)s-</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False" />
+    </record>
+</odoo>
