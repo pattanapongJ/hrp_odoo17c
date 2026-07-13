@@ -32,9 +32,16 @@
                                     t-on-change="(ev) => this.onTextChange(record, 'brand', ev)"/>
                             </td>
                             <td>
-                                <input type="text" class="form-control form-control-sm"
-                                    t-att-value="record.data.model" t-att-disabled="props.readonly"
-                                    t-on-change="(ev) => this.onTextChange(record, 'model', ev)"/>
+                                <select class="form-select form-select-sm" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onModelChange(record, ev)">
+                                    <option value="">-</option>
+                                    <t t-foreach="state.modelOptions" t-as="opt" t-key="opt.id">
+                                        <option t-att-value="opt.id"
+                                            t-att-selected="record.data.model_id and record.data.model_id[0] === opt.id">
+                                            <t t-esc="opt.code"/>
+                                        </option>
+                                    </t>
+                                </select>
                             </td>
                             <td>
                                 <input type="number" class="form-control form-control-sm"

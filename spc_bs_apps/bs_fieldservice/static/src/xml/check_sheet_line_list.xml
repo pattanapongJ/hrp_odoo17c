@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bs_fieldservice.CheckSheetListRenderer" t-inherit="web.ListRenderer" t-inherit-mode="primary" owl="1">
+        <xpath expr="//table/thead/tr" position="after">
+            <tr class="o_cs_search_row" t-ref="csSearchRow">
+                <th t-if="hasSelectors" class="pb-2"></th>
+                <t t-foreach="state.columns" t-as="column" t-key="column_index">
+                    <th t-if="column.type === 'field' and column.name === 'report_no'" class="pb-2">
+                        <input
+                            type="text"
+                            class="form-control form-control-sm"
+                            placeholder="Search Report No."
+                            t-model="csSearch.reportNo"
+                        />
+                    </th>
+                    <th t-elif="column.type === 'field' and column.name === 'tag_no'" class="pb-2">
+                        <input
+                            type="text"
+                            class="form-control form-control-sm"
+                            placeholder="Search Tag No."
+                            t-model="csSearch.tagNo"
+                        />
+                    </th>
+                    <th t-elif="column.type === 'field' and column.name === 'model_id'" class="pb-2">
+                        <input
+                            type="text"
+                            class="form-control form-control-sm"
+                            placeholder="Search Model"
+                            t-model="csSearch.modelCode"
+                        />
+                    </th>
+                    <th t-elif="column.type === 'field' and column.name === 'state'" class="pb-2">
+                        <select class="form-select form-select-sm" t-model="csSearch.state">
+                            <option value="">Status: All</option>
+                            <option value="draft">Draft</option>
+                            <option value="confirmed">Confirmed</option>
+                        </select>
+                    </th>
+                    <th t-else="" class="pb-2"></th>
+                </t>
+            </tr>
+        </xpath>
+    </t>
+
+</templates>

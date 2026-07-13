@@ -12,7 +12,7 @@ class FSMOrderPumpLine(models.Model):
     sequence = fields.Integer(default=10)
     tag_no = fields.Char(string="Tag No.")
     brand = fields.Char(string="Brand")
-    model = fields.Char(string="Model")
+    model_id = fields.Many2one("bs.equipment.model", string="Model")
     flow = fields.Float(string="Flow (m3/h)")
     head = fields.Float(string="Head (m)")
     power = fields.Float(string="Power (kW)")

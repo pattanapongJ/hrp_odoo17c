@@ -3,8 +3,6 @@ from datetime import datetime, time, timedelta
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 
-CONDITION_SELECTION = [("good", "Good"), ("fair", "Fair"), ("damage", "Damage")]
-
 
 class FSMOrder(models.Model):
     _inherit = "fsm.order"
@@ -132,97 +130,29 @@ class FSMOrder(models.Model):
         string="Equipment Overdue", compute="_compute_equipment_counts"
     )
 
-    # Check Sheet tab (PHE only) - single check sheet embedded directly on
-    # the order (no separate list/model - in practice there's only ever
-    # one piece of equipment being checked per order).
-    cs_report_no = fields.Char(string="Report No.", copy=False)
-    cs_report_type = fields.Selection(
-        [("h", "H"), ("hs", "HS"), ("e", "E")], string="Type", default="h"
+    # Check Sheet tab - one check sheet per equipment/worker line (PHE or
+    # Pump), kept 1:1 in sync with phe_line_ids/pump_line_ids by
+    # _sync_check_sheet_lines(). Each line is edited in its own popup form.
+    check_sheet_line_ids = fields.One2many(
+        "bs.fsm.order.check_sheet.line", "order_id", string="Check Sheets"
     )
-    cs_customer = fields.Many2one("res.partner", string="Customer")
-    cs_place = fields.Char(string="Place")
-    cs_work_start = fields.Datetime(string="Work start")
-    cs_work_finish = fields.Datetime(string="Work finish")
-    cs_job_mech_clean = fields.Boolean(string="Mech clean")
-    cs_job_replace_gasket = fields.Boolean(string="Replace new gasket")
-    cs_job_pt_test = fields.Boolean(string="PT test")
-    cs_item_no = fields.Integer(string="Item no.", default=1)
-    cs_maker = fields.Char(string="Maker")
-    cs_model = fields.Char(string="Model")
-    cs_serial_no = fields.Char(string="Serial no.")
-
-    # Check Sheet - Condition check
-    cs_a_measurement = fields.Float(string="A-measurement")
-    cs_pass_of_plate = fields.Integer(string="Pass of plate")
-    cs_no_of_plate = fields.Integer(string="No. of plate")
-    cs_wrench = fields.Char(string="Wrench")
-    cs_connection = fields.Char(string="Connection")
-    cs_tightening = fields.Char(string="Tightening")
-    cs_leakage_check = fields.Selection(
-        [("pass", "Pass"), ("fail", "Fail")], string="Leakage check"
-    )
-
-    # Check Sheet - Physical Condition
-    cs_pc_frame = fields.Selection(CONDITION_SELECTION, string="Frame")
-    cs_pc_connection = fields.Selection(CONDITION_SELECTION, string="Connection")
-    cs_pc_lining = fields.Selection(CONDITION_SELECTION, string="Lining")
-    cs_pc_tightening = fields.Selection(CONDITION_SELECTION, string="Tightening")
-
-    # Check Sheet - Plate inspection
-    cs_plate_material = fields.Char(string="Plate material")
-    cs_plate = fields.Selection(CONDITION_SELECTION, string="Plate")
-    cs_thick_plate = fields.Float(string="Thick plate")
-    cs_angle = fields.Char(string="Angle")
-    cs_immerse_plate = fields.Boolean(string="Immerse plate")
-    cs_photo_before_side1 = fields.Boolean(string="Side 1")
-    cs_photo_before_side2 = fields.Boolean(string="Side 2")
-    cs_photo_after_side1 = fields.Boolean(string="Side 1")
-    cs_photo_after_side2 = fields.Boolean(string="Side 2")
-
-    # Check Sheet - Gasket inspection
-    cs_gasket_material_nbr = fields.Boolean(string="NBR")
-    cs_gasket_material_epdm = fields.Boolean(string="EPDM")
-    cs_gasket_fair = fields.Boolean(string="Fair")
-    cs_gasket_damage = fields.Boolean(string="Damage")
-    cs_gasket_new_qty = fields.Integer(string="New")
-    cs_gasket_type_glue = fields.Boolean(string="Glue")
-    cs_gasket_type_clip_on = fields.Boolean(string="Clip on")
-    cs_gasket_photo_taken = fields.Boolean(string="ถ่ายภาพแล้ว")
-
-    # Check Sheet - PT test
-    cs_pt_test_yes = fields.Boolean(string="Yes")
-    cs_pt_test_no = fields.Boolean(string="No")
-    cs_pt_test_count = fields.Integer(string="No. of PT test")
-    cs_pt_new_replaced = fields.Integer(string="New replaced")
-    cs_pt_pinhole_crack_found = fields.Integer(string="Pin hole / crack found")
-    cs_pt_photo_red_side = fields.Boolean(string="Red side")
-    cs_pt_photo_white_side = fields.Boolean(string="White side")
-    cs_pt_remark_fouling = fields.Text(string="Remark fouling")
-
-    # Check Sheet - Assembly & Unit inspection
-    cs_existing_no_of_plate = fields.Integer(string="Existing no. of plate")
-    cs_final_installed = fields.Integer(string="Final installed")
-    cs_a_meas_before_dismantle = fields.Float(string="A-meas. before dismantle")
-    cs_a_meas_after_assembly = fields.Float(string="After assembly")
-    cs_service_test = fields.Boolean(string="Service test")
-    cs_leakage = fields.Boolean(string="Leakage")
-    cs_service_test_passed = fields.Boolean(string="Passed")
-    cs_hydro_hot_side = fields.Boolean(string="Hydro Hot side")
-    cs_hydro_hot_barg = fields.Char(string="barg")
-    cs_hydro_hot_min = fields.Char(string="min")
-    cs_hydro_hot_passed = fields.Boolean(string="Passed")
-    cs_hydro_cold_side = fields.Boolean(string="Hydro Cold side")
-    cs_hydro_cold_barg = fields.Char(string="barg")
-    cs_hydro_cold_min = fields.Char(string="min")
-    cs_hydro_cold_passed = fields.Boolean(string="Passed")
 
     # Service Report - header
     sr_report_no = fields.Char(string="Report No.", copy=False)
     sr_report_date = fields.Date(string="Date", default=fields.Date.context_today)
+    sr_customer_id = fields.Many2one("res.partner", string="Customer")
 
-    # Service Report - equipment summary lines, filled in directly on the table
-    report_line_ids = fields.One2many(
-        "bs.fsm.order.service_report.line", "order_id", string="Service Report Lines"
+    # Service Report - equipment summary: PHE-only, a read-only view
+    # auto-grouped by Model from check_sheet_line_ids (mirrors Request
+    # Workers in Planning), with Result reflecting Confirm status. Pump
+    # has no Check Sheet, so its Equipment Summary instead shows
+    # pump_line_ids directly (ungrouped, read-only) in the view.
+    check_sheet_summary_line_ids = fields.One2many(
+        "bs.fsm.order.check_sheet_summary.line",
+        "order_id",
+        string="Equipment Summary",
+        compute="_compute_check_sheet_summary_line_ids",
+        store=True,
     )
 
     # Service Report - Cleaning
@@ -275,25 +205,102 @@ class FSMOrder(models.Model):
         self.phe_line_ids = [(5, 0, 0)]
         self.pump_line_ids = [(5, 0, 0)]
         self.assigned_team_ids = [(5, 0, 0)]
-        self.report_line_ids = [(5, 0, 0)]
-        # Check Sheet tab is PHE-only - once the profile changes (in either
-        # direction), its data no longer applies, so wipe it clean and let
-        # the user fill in fresh data for whichever profile is now selected.
-        sr_phe_only_prefixes = ("sr_clean_", "sr_pt_", "sr_gasket_")
-        reset_vals = {}
-        for fname, field in self._fields.items():
-            is_check_sheet = fname.startswith("cs_") and fname != "cs_report_no"
-            is_sr_phe_only = fname.startswith(sr_phe_only_prefixes) or (
-                fname == "sr_supervisor_comment"
+        # Supervisor's Comment is still PHE-only - once the profile changes
+        # (in either direction), its data no longer applies, so wipe it
+        # clean. Cleaning/PT Test Results/Re-gasket are shown for both
+        # profiles now, so their data is kept across a profile switch.
+        if self.sr_supervisor_comment:
+            self.sr_supervisor_comment = False
+        self._sync_check_sheet_lines()
+
+    @api.onchange("phe_line_ids", "pump_line_ids")
+    def _onchange_equipment_lines_sync_check_sheet(self):
+        self._sync_check_sheet_lines()
+
+    def _sync_check_sheet_lines(self):
+        """Keep check_sheet_line_ids 1:1 with the Assigned Worker equipment
+        table (phe_line_ids for PHE orders; Check Sheet doesn't apply to
+        Pump). Only adds/removes lines at the margin so existing check
+        sheet data is never overwritten by an unrelated equipment edit."""
+        self.ensure_one()
+        if self.technician_profile != "phe":
+            if self.check_sheet_line_ids:
+                self.check_sheet_line_ids = [(5, 0, 0)]
+            return
+        target_count = len(self.phe_line_ids)
+        current = self.check_sheet_line_ids
+        current_count = len(current)
+        if current_count < target_count:
+            partner_id = self.location_id.partner_id.id if self.location_id else False
+            place = self.location_id.name if self.location_id else False
+            self.check_sheet_line_ids = [
+                (
+                    0,
+                    0,
+                    {
+                        "phe_line_id": line.id,
+                        "customer_id": partner_id,
+                        "place": place,
+                    },
+                )
+                for line in self.phe_line_ids[current_count:]
+            ]
+        elif current_count > target_count:
+            # Never auto-remove a confirmed check sheet: only trim draft
+            # lines from the tail, so removing an unrelated equipment row
+            # can't silently wipe out already-confirmed inspection data.
+            removable = current[target_count:].filtered(
+                lambda rec: rec.state != "confirmed"
             )
-            if not (is_check_sheet or is_sr_phe_only):
+            if removable:
+                self.check_sheet_line_ids = [(2, rec.id, 0) for rec in removable]
+        # model_id is related="phe_line_id.model_id", which the web client
+        # doesn't reliably re-render live across two sibling one2manys
+        # during onchange (it's only guaranteed correct after save/reload).
+        # Force-refresh it here so the Check Sheet tab reflects an Assigned
+        # Worker model change immediately, without needing a save.
+        for cs_line in self.check_sheet_line_ids:
+            source_model_id = cs_line.phe_line_id.model_id
+            if cs_line.phe_line_id and cs_line.model_id != source_model_id:
+                cs_line.model_id = source_model_id
+
+    @api.depends(
+        "technician_profile",
+        "check_sheet_line_ids.model_id",
+        "check_sheet_line_ids.maker",
+        "check_sheet_line_ids.state",
+    )
+    def _compute_check_sheet_summary_line_ids(self):
+        """Service Report's Equipment Summary (PHE only): one row per
+        distinct Model found in check_sheet_line_ids, with a count of how
+        many share it and Result reflecting Confirm status. Fully derived -
+        never manually added/edited. Pump has no Check Sheet, so its
+        Equipment Summary is shown directly from pump_line_ids in the view
+        instead of going through this grouped model."""
+        for order in self:
+            if order.technician_profile != "phe":
+                if order.check_sheet_summary_line_ids:
+                    order.check_sheet_summary_line_ids = [(5, 0, 0)]
                 continue
-            if field.type in ("integer", "float"):
-                reset_vals[fname] = 0
-            else:
-                reset_vals[fname] = False
-        if reset_vals:
-            self.update(reset_vals)
+            groups = {}
+            for line in order.check_sheet_line_ids:
+                groups.setdefault(line.model_id, []).append(line)
+            commands = [(5, 0, 0)]
+            for model, lines in groups.items():
+                all_confirmed = all(line.state == "confirmed" for line in lines)
+                commands.append(
+                    (
+                        0,
+                        0,
+                        {
+                            "model_id": model.id,
+                            "maker": lines[0].maker,
+                            "check_sheet_count": len(lines),
+                            "result": "pass" if all_confirmed else "pending",
+                        },
+                    )
+                )
+            order.check_sheet_summary_line_ids = commands
 
     @api.onchange("sr_pt_replaced_from_customer")
     def _onchange_sr_pt_replaced_from_customer(self):
@@ -328,16 +335,11 @@ class FSMOrder(models.Model):
     @api.onchange("location_id")
     def _onchange_location_id_check_sheet(self):
         if self.location_id:
-            self.cs_customer = self.location_id.partner_id
-            self.cs_place = self.location_id.name
+            self.sr_customer_id = self.location_id.partner_id
 
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if not vals.get("cs_report_no"):
-                vals["cs_report_no"] = self.env["ir.sequence"].next_by_code(
-                    "bs.fsm.order.check_sheet"
-                )
             if not vals.get("sr_report_no"):
                 vals["sr_report_no"] = self.env["ir.sequence"].next_by_code(
                     "bs.fsm.order.service_report"

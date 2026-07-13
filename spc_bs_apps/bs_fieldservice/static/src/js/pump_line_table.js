@@ -2,14 +2,37 @@
 
 import { registry } from "@web/core/registry";
 import { standardFieldProps } from "@web/views/fields/standard_field_props";
-import { Component } from "@odoo/owl";
+import { useService } from "@web/core/utils/hooks";
+import { Component, onWillStart, useState } from "@odoo/owl";
 
 export class PumpLineTable extends Component {
     static template = "bs_fieldservice.PumpLineTable";
     static props = { ...standardFieldProps };
 
+    setup() {
+        this.orm = useService("orm");
+        this.state = useState({ modelOptions: [] });
+        onWillStart(async () => {
+            this.state.modelOptions = await this.orm.searchRead(
+                "bs.equipment.model",
+                [],
+                ["id", "code"]
+            );
+        });
+    }
+
     get list() {
         return this.props.record.data[this.props.name];
+    }
+
+    async onModelChange(record, ev) {
+        const id = ev.target.value ? Number(ev.target.value) : false;
+        if (!id) {
+            await record.update({ model_id: false });
+            return;
+        }
+        const opt = this.state.modelOptions.find((o) => o.id === id);
+        await record.update({ model_id: [id, opt.code] });
     }
 
     async addLine() {

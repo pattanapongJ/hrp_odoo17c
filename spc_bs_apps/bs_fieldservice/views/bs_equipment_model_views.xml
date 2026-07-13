@@ -1,0 +1,39 @@
+<odoo>
+    <record id="view_bs_equipment_model_tree" model="ir.ui.view">
+        <field name="name">bs.equipment.model.tree</field>
+        <field name="model">bs.equipment.model</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="code" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_bs_equipment_model_form" model="ir.ui.view">
+        <field name="name">bs.equipment.model.form</field>
+        <field name="model">bs.equipment.model</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="code" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bs_equipment_model" model="ir.actions.act_window">
+        <field name="name">Models</field>
+        <field name="res_model">bs.equipment.model</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+        id="menu_bs_equipment_model"
+        name="Models"
+        parent="fieldservice.config"
+        action="action_bs_equipment_model"
+        sequence="40"
+    />
+</odoo>
