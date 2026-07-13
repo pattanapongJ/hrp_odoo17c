@@ -1,9 +1,20 @@
 .o_field_widget[name="phe_line_ids"],
 .o_field_widget[name="pump_line_ids"],
-.o_field_widget[name="equipment_line_ids"],
-.o_field_widget[name="report_line_ids"] {
+.o_field_widget[name="equipment_line_ids"] {
     width: 100%;
     display: block;
+}
+
+.o_bs_confirm_btn {
+    background-color: #dee2e6;
+}
+
+// The Check Sheet tab has its own search bar (see check_sheet_line_list.js),
+// so ks_list_view_manager's per-column advance-search row (<tr class=
+// "hide-on-modal"> holding <th class="ks_advance_search_row"> cells) is
+// hidden here - only for this field, everywhere else it's untouched.
+.o_field_widget[name="check_sheet_line_ids"] tr.hide-on-modal {
+    display: none !important;
 }
 
 .o_bs_line_table {

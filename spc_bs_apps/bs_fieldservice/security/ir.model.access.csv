@@ -11,5 +11,9 @@ access_bs_fsm_order_worker_status_log_user,bs.fsm.order.worker.status.log.user,m
 access_bs_fsm_order_worker_status_log_manager,bs.fsm.order.worker.status.log.manager,model_bs_fsm_order_worker_status_log,fieldservice.group_fsm_manager,1,1,1,1
 access_bs_fsm_order_equipment_line_user,bs.fsm.order.equipment.line.user,model_bs_fsm_order_equipment_line,fieldservice.group_fsm_user_own,1,1,1,1
 access_bs_fsm_order_equipment_line_manager,bs.fsm.order.equipment.line.manager,model_bs_fsm_order_equipment_line,fieldservice.group_fsm_manager,1,1,1,1
-access_bs_fsm_order_service_report_line_user,bs.fsm.order.service_report.line.user,model_bs_fsm_order_service_report_line,fieldservice.group_fsm_user_own,1,1,1,1
-access_bs_fsm_order_service_report_line_manager,bs.fsm.order.service_report.line.manager,model_bs_fsm_order_service_report_line,fieldservice.group_fsm_manager,1,1,1,1
+access_bs_fsm_order_check_sheet_line_user,bs.fsm.order.check_sheet.line.user,model_bs_fsm_order_check_sheet_line,fieldservice.group_fsm_user_own,1,1,1,1
+access_bs_fsm_order_check_sheet_line_manager,bs.fsm.order.check_sheet.line.manager,model_bs_fsm_order_check_sheet_line,fieldservice.group_fsm_manager,1,1,1,1
+access_bs_equipment_model_user,bs.equipment.model.user,model_bs_equipment_model,fieldservice.group_fsm_user_own,1,1,1,0
+access_bs_equipment_model_manager,bs.equipment.model.manager,model_bs_equipment_model,fieldservice.group_fsm_manager,1,1,1,1
+access_bs_fsm_order_check_sheet_summary_line_user,bs.fsm.order.check_sheet_summary.line.user,model_bs_fsm_order_check_sheet_summary_line,fieldservice.group_fsm_user_own,1,1,1,1
+access_bs_fsm_order_check_sheet_summary_line_manager,bs.fsm.order.check_sheet_summary.line.manager,model_bs_fsm_order_check_sheet_summary_line,fieldservice.group_fsm_manager,1,1,1,1

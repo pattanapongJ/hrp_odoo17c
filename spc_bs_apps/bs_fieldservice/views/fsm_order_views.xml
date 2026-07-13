@@ -104,7 +104,7 @@
                             <field name="sequence" widget="handle" />
                             <field name="tag_no" />
                             <field name="brand" />
-                            <field name="model" />
+                            <field name="model_id" />
                             <field name="media" />
                             <field name="plate_mat" />
                             <field name="no_plate" />
@@ -129,7 +129,7 @@
                             <field name="sequence" widget="handle" />
                             <field name="tag_no" />
                             <field name="brand" />
-                            <field name="model" />
+                            <field name="model_id" />
                             <field name="flow" />
                             <field name="head" />
                             <field name="power" />
@@ -302,291 +302,351 @@
                     name="check_sheet_page"
                     invisible="technician_profile != 'phe'"
                 >
-                    <group>
-                        <group string="Header">
+                    <field
+                        name="check_sheet_line_ids"
+                        nolabel="1"
+                        colspan="2"
+                        widget="bs_check_sheet_line_list"
+                    >
+                        <tree create="false" delete="false">
+                            <field name="sequence" widget="handle" />
+                            <field name="report_no" string="Report No." />
+                            <field name="tag_no" string="Tag No." />
+                            <field name="model_id" string="Model" />
                             <field
-                                name="cs_report_type"
-                                string="Type"
-                                widget="radio"
-                                options="{'horizontal': true}"
+                                name="state"
+                                widget="badge"
+                                decoration-success="state == 'confirmed'"
+                                decoration-info="state == 'draft'"
                             />
-                            <field name="cs_report_no" string="Report No." readonly="1" />
-                            <field name="cs_customer" string="Customer" />
-                            <field name="cs_place" string="Place" />
-                            <field name="cs_work_start" string="Work start" />
-                            <field name="cs_work_finish" string="Work finish" />
-                        </group>
-                        <group string="Job description">
-                            <field name="cs_job_mech_clean" string="Mech clean" />
-                            <field name="cs_job_replace_gasket" string="Replace new gasket" />
-                            <field name="cs_job_pt_test" string="PT test" />
-                        </group>
-                    </group>
-                    <group string="Equipment Information">
-                        <group>
-                            <field name="cs_item_no" string="Item no." />
-                            <field name="cs_serial_no" string="Serial no." />
-                        </group>
-                        <group>
-                            <field name="cs_maker" string="Maker" />
-                            <field name="cs_model" string="Model" />
-                        </group>
-                    </group>
-                    <group string="Condition check">
-                        <group>
-                            <field name="cs_a_measurement" string="A-measurement" />
-                            <field name="cs_pass_of_plate" string="Pass of plate" />
-                            <field name="cs_no_of_plate" string="No. of plate" />
-                        </group>
-                        <group>
-                            <field name="cs_wrench" string="Wrench" />
-                            <field name="cs_connection" string="Connection" />
-                            <field name="cs_tightening" string="Tightening" />
-                            <field
-                                name="cs_leakage_check"
-                                string="Leakage check"
-                                widget="radio"
-                                options="{'horizontal': true}"
+                            <button
+                                name="action_confirm"
+                                type="object"
+                                string="Confirm"
+                                icon="fa-check-circle"
+                                class="o_bs_confirm_btn"
+                                invisible="state == 'confirmed'"
                             />
-                        </group>
-                    </group>
-                    <group string="Physical Condition">
-                        <group>
-                            <field
-                                name="cs_pc_frame"
-                                string="Frame"
-                                widget="radio"
-                                options="{'horizontal': true}"
+                            <button
+                                name="action_reset_draft"
+                                type="object"
+                                string="Reset to Draft"
+                                icon="fa-undo"
+                                class="o_bs_confirm_btn"
+                                invisible="state == 'draft'"
+                                groups="fieldservice.group_fsm_manager"
                             />
-                            <field
-                                name="cs_pc_connection"
-                                string="Connection"
-                                widget="radio"
-                                options="{'horizontal': true}"
-                            />
-                        </group>
-                        <group>
-                            <field
-                                name="cs_pc_lining"
-                                string="Lining"
-                                widget="radio"
-                                options="{'horizontal': true}"
-                            />
-                            <field
-                                name="cs_pc_tightening"
-                                string="Tightening"
-                                widget="radio"
-                                options="{'horizontal': true}"
-                            />
-                        </group>
-                    </group>
-                    <group string="Plate inspection">
-                        <group>
-                            <field name="cs_plate_material" string="Plate material" />
-                            <field
-                                name="cs_plate"
-                                string="Plate"
-                                widget="radio"
-                                options="{'horizontal': true}"
-                            />
-                            <field name="cs_thick_plate" string="Thick plate" />
-                            <field name="cs_angle" string="Angle" />
-                            <field name="cs_immerse_plate" string="Immerse plate" />
-                        </group>
-                        <group>
-                            <label for="cs_photo_before_side1" string="Photo before clean" />
-                            <div class="d-flex gap-4">
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_photo_before_side1" nolabel="1" />
-                                    <span>Side 1</span>
-                                </div>
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_photo_before_side2" nolabel="1" />
-                                    <span>Side 2</span>
-                                </div>
-                            </div>
-                            <label for="cs_photo_after_side1" string="Photo after clean" />
-                            <div class="d-flex gap-4">
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_photo_after_side1" nolabel="1" />
-                                    <span>Side 1</span>
-                                </div>
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_photo_after_side2" nolabel="1" />
-                                    <span>Side 2</span>
-                                </div>
-                            </div>
-                        </group>
-                    </group>
-                    <group string="Gasket inspection">
-                        <group>
-                            <label for="cs_gasket_material_nbr" string="Gasket material" />
-                            <div class="d-flex gap-4">
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_gasket_material_nbr" nolabel="1" />
-                                    <span>NBR</span>
-                                </div>
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_gasket_material_epdm" nolabel="1" />
-                                    <span>EPDM</span>
-                                </div>
-                            </div>
-                            <label for="cs_gasket_fair" string="Gasket" />
-                            <div class="d-flex gap-4">
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_gasket_fair" nolabel="1" />
-                                    <span>Fair</span>
-                                </div>
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_gasket_damage" nolabel="1" />
-                                    <span>Damage</span>
-                                </div>
-                            </div>
-                        </group>
-                        <group>
-                            <field name="cs_gasket_new_qty" string="New" />
-                            <label for="cs_gasket_type_glue" string="Gasket type" />
-                            <div class="d-flex gap-4">
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_gasket_type_glue" nolabel="1" />
-                                    <span>Glue</span>
-                                </div>
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_gasket_type_clip_on" nolabel="1" />
-                                    <span>Clip on</span>
-                                </div>
-                            </div>
-                            <label for="cs_gasket_photo_taken" string="Photo attaching gasket" />
-                            <div class="d-flex align-items-center gap-1">
-                                <field name="cs_gasket_photo_taken" nolabel="1" />
-                                <span>ถ่ายภาพแล้ว</span>
-                            </div>
-                        </group>
-                    </group>
-                    <group string="PT test">
-                        <group>
-                            <label for="cs_pt_test_yes" string="PT test" />
-                            <div class="d-flex gap-4">
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_pt_test_yes" nolabel="1" />
-                                    <span>Yes</span>
-                                </div>
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_pt_test_no" nolabel="1" />
-                                    <span>No</span>
-                                </div>
-                            </div>
-                            <field name="cs_pt_test_count" string="No. of PT test" />
-                            <field name="cs_pt_new_replaced" string="New replaced" />
-                        </group>
-                        <group>
-                            <field name="cs_pt_pinhole_crack_found" string="Pin hole / crack found" />
-                            <label for="cs_pt_photo_red_side" string="Photo PT test" />
-                            <div class="d-flex gap-4">
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_pt_photo_red_side" nolabel="1" />
-                                    <span>Red side</span>
-                                </div>
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_pt_photo_white_side" nolabel="1" />
-                                    <span>White side</span>
-                                </div>
-                            </div>
-                        </group>
-                        <field name="cs_pt_remark_fouling" string="Remark fouling" colspan="2" placeholder="Enter remark..." />
-                    </group>
-                    <group string="Assembly &amp; Unit inspection">
-                        <group>
-                            <field name="cs_existing_no_of_plate" string="Existing no. of plate" />
-                            <field name="cs_final_installed" string="Final installed" />
-                            <field name="cs_a_meas_before_dismantle" string="A-meas. before dismantle" />
-                            <field name="cs_a_meas_after_assembly" string="After assembly" />
-                            <label for="cs_service_test" string="Test Result" />
-                            <div class="d-flex align-items-center flex-wrap gap-4">
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_service_test" nolabel="1" />
-                                    <span>Service test</span>
-                                </div>
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_leakage" nolabel="1" />
-                                    <span>Leakage</span>
-                                </div>
-                                <div class="d-flex align-items-center gap-1">
-                                    <field name="cs_service_test_passed" nolabel="1" />
-                                    <span>Passed</span>
-                                </div>
-                            </div>
-                        </group>
-                        <group>
-                            <label for="cs_hydro_hot_side" string="Hydro Hot side" />
-                            <div class="d-flex align-items-center flex-wrap gap-2">
-                                <field name="cs_hydro_hot_side" nolabel="1" />
-                                <span
-                                    class="d-flex align-items-center flex-wrap gap-2"
-                                    invisible="not cs_hydro_hot_side"
-                                >
-                                    <field name="cs_hydro_hot_barg" nolabel="1" style="width: 70px" />
-                                    <span>barg/</span>
-                                    <field name="cs_hydro_hot_min" nolabel="1" style="width: 70px" />
-                                    <span>min</span>
-                                    <field name="cs_hydro_hot_passed" nolabel="1" />
-                                    <span>Passed</span>
-                                </span>
-                            </div>
-                            <label for="cs_hydro_cold_side" string="Hydro Cold side" />
-                            <div class="d-flex align-items-center flex-wrap gap-2">
-                                <field name="cs_hydro_cold_side" nolabel="1" />
-                                <span
-                                    class="d-flex align-items-center flex-wrap gap-2"
-                                    invisible="not cs_hydro_cold_side"
-                                >
-                                    <field name="cs_hydro_cold_barg" nolabel="1" style="width: 70px" />
-                                    <span>barg/</span>
-                                    <field name="cs_hydro_cold_min" nolabel="1" style="width: 70px" />
-                                    <span>min</span>
-                                    <field name="cs_hydro_cold_passed" nolabel="1" />
-                                    <span>Passed</span>
-                                </span>
-                            </div>
-                        </group>
-                    </group>
+                        </tree>
+                        <form string="Check Sheet">
+                            <header>
+                                <button
+                                    name="action_confirm"
+                                    type="object"
+                                    string="Confirm"
+                                    class="btn-primary"
+                                    invisible="state == 'confirmed'"
+                                />
+                                <button
+                                    name="action_reset_draft"
+                                    type="object"
+                                    string="Reset to Draft"
+                                    invisible="state == 'draft'"
+                                    groups="fieldservice.group_fsm_manager"
+                                />
+                                <field name="state" widget="statusbar" statusbar_visible="draft,confirmed" />
+                            </header>
+                            <sheet readonly="state == 'confirmed'">
+                                <group>
+                                    <group string="Header">
+                                        <field
+                                            name="report_type"
+                                            string="Type"
+                                            widget="radio"
+                                            options="{'horizontal': true}"
+                                         readonly="state == 'confirmed'" />
+                                        <field name="report_no" string="Report No." readonly="1" />
+                                        <field name="customer_id" string="Customer"  readonly="state == 'confirmed'" />
+                                        <field name="place" string="Place"  readonly="state == 'confirmed'" />
+                                        <field name="work_start" string="Work start"  readonly="state == 'confirmed'" />
+                                        <field name="work_finish" string="Work finish"  readonly="state == 'confirmed'" />
+                                    </group>
+                                    <group string="Job description">
+                                        <field name="job_mech_clean" string="Mech clean"  readonly="state == 'confirmed'" />
+                                        <field name="job_replace_gasket" string="Replace new gasket"  readonly="state == 'confirmed'" />
+                                        <field name="job_pt_test" string="PT test"  readonly="state == 'confirmed'" />
+                                    </group>
+                                </group>
+                                <group string="Equipment Information">
+                                    <group>
+                                        <field name="item_no" string="Item no."  readonly="state == 'confirmed'" />
+                                        <field name="serial_no" string="Serial no."  readonly="state == 'confirmed'" />
+                                    </group>
+                                    <group>
+                                        <field name="maker" string="Maker"  readonly="state == 'confirmed'" />
+                                        <field name="model_id" string="Model" readonly="1" />
+                                    </group>
+                                </group>
+                                <group string="Condition check">
+                                    <group>
+                                        <field name="a_measurement" string="A-measurement"  readonly="state == 'confirmed'" />
+                                        <field name="pass_of_plate" string="Pass of plate"  readonly="state == 'confirmed'" />
+                                        <field name="no_of_plate" string="No. of plate"  readonly="state == 'confirmed'" />
+                                    </group>
+                                    <group>
+                                        <field name="wrench" string="Wrench"  readonly="state == 'confirmed'" />
+                                        <field name="connection" string="Connection"  readonly="state == 'confirmed'" />
+                                        <field name="tightening" string="Tightening"  readonly="state == 'confirmed'" />
+                                        <field
+                                            name="leakage_check"
+                                            string="Leakage check"
+                                            widget="radio"
+                                            options="{'horizontal': true}"
+                                         readonly="state == 'confirmed'" />
+                                    </group>
+                                </group>
+                                <group string="Physical Condition">
+                                    <group>
+                                        <field
+                                            name="pc_frame"
+                                            string="Frame"
+                                            widget="radio"
+                                            options="{'horizontal': true}"
+                                         readonly="state == 'confirmed'" />
+                                        <field
+                                            name="pc_connection"
+                                            string="Connection"
+                                            widget="radio"
+                                            options="{'horizontal': true}"
+                                         readonly="state == 'confirmed'" />
+                                    </group>
+                                    <group>
+                                        <field
+                                            name="pc_lining"
+                                            string="Lining"
+                                            widget="radio"
+                                            options="{'horizontal': true}"
+                                         readonly="state == 'confirmed'" />
+                                        <field
+                                            name="pc_tightening"
+                                            string="Tightening"
+                                            widget="radio"
+                                            options="{'horizontal': true}"
+                                         readonly="state == 'confirmed'" />
+                                    </group>
+                                </group>
+                                <group string="Plate inspection">
+                                    <group>
+                                        <field name="plate_material" string="Plate material"  readonly="state == 'confirmed'" />
+                                        <field
+                                            name="plate"
+                                            string="Plate"
+                                            widget="radio"
+                                            options="{'horizontal': true}"
+                                         readonly="state == 'confirmed'" />
+                                        <field name="thick_plate" string="Thick plate"  readonly="state == 'confirmed'" />
+                                        <field name="angle" string="Angle"  readonly="state == 'confirmed'" />
+                                        <field name="immerse_plate" string="Immerse plate"  readonly="state == 'confirmed'" />
+                                    </group>
+                                    <group>
+                                        <label for="photo_before_side1" string="Photo before clean" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="photo_before_side1" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Side 1</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="photo_before_side2" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Side 2</span>
+                                            </div>
+                                        </div>
+                                        <label for="photo_after_side1" string="Photo after clean" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="photo_after_side1" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Side 1</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="photo_after_side2" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Side 2</span>
+                                            </div>
+                                        </div>
+                                    </group>
+                                </group>
+                                <group string="Gasket inspection">
+                                    <group>
+                                        <label for="gasket_material_nbr" string="Gasket material" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="gasket_material_nbr" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>NBR</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="gasket_material_epdm" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>EPDM</span>
+                                            </div>
+                                        </div>
+                                        <label for="gasket_fair" string="Gasket" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="gasket_fair" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Fair</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="gasket_damage" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Damage</span>
+                                            </div>
+                                        </div>
+                                    </group>
+                                    <group>
+                                        <field name="gasket_new_qty" string="New"  readonly="state == 'confirmed'" />
+                                        <label for="gasket_type_glue" string="Gasket type" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="gasket_type_glue" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Glue</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="gasket_type_clip_on" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Clip on</span>
+                                            </div>
+                                        </div>
+                                        <label for="gasket_photo_taken" string="Photo attaching gasket" />
+                                        <div class="d-flex align-items-center gap-1">
+                                            <field name="gasket_photo_taken" nolabel="1"  readonly="state == 'confirmed'" />
+                                            <span>ถ่ายภาพแล้ว</span>
+                                        </div>
+                                    </group>
+                                </group>
+                                <group string="PT test">
+                                    <group>
+                                        <label for="pt_test_yes" string="PT test" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="pt_test_yes" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Yes</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="pt_test_no" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>No</span>
+                                            </div>
+                                        </div>
+                                        <field name="pt_test_count" string="No. of PT test"  readonly="state == 'confirmed'" />
+                                        <field name="pt_new_replaced" string="New replaced"  readonly="state == 'confirmed'" />
+                                    </group>
+                                    <group>
+                                        <field name="pt_pinhole_crack_found" string="Pin hole / crack found"  readonly="state == 'confirmed'" />
+                                        <label for="pt_photo_red_side" string="Photo PT test" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="pt_photo_red_side" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Red side</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="pt_photo_white_side" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>White side</span>
+                                            </div>
+                                        </div>
+                                    </group>
+                                    <field name="pt_remark_fouling" string="Remark fouling" colspan="2" placeholder="Enter remark..."  readonly="state == 'confirmed'" />
+                                </group>
+                                <group string="Assembly &amp; Unit inspection">
+                                    <group>
+                                        <field name="existing_no_of_plate" string="Existing no. of plate"  readonly="state == 'confirmed'" />
+                                        <field name="final_installed" string="Final installed"  readonly="state == 'confirmed'" />
+                                        <field name="a_meas_before_dismantle" string="A-meas. before dismantle"  readonly="state == 'confirmed'" />
+                                        <field name="a_meas_after_assembly" string="After assembly"  readonly="state == 'confirmed'" />
+                                        <label for="service_test" string="Test Result" />
+                                        <div class="d-flex align-items-center flex-wrap gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="service_test" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Service test</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="leakage" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Leakage</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="service_test_passed" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Passed</span>
+                                            </div>
+                                        </div>
+                                    </group>
+                                    <group>
+                                        <label for="hydro_hot_side" string="Hydro Hot side" />
+                                        <div class="d-flex align-items-center flex-wrap gap-2">
+                                            <field name="hydro_hot_side" nolabel="1"  readonly="state == 'confirmed'" />
+                                            <span
+                                                class="d-flex align-items-center flex-wrap gap-2"
+                                                invisible="not hydro_hot_side"
+                                            >
+                                                <field name="hydro_hot_barg" nolabel="1" style="width: 70px"  readonly="state == 'confirmed'" />
+                                                <span>barg/</span>
+                                                <field name="hydro_hot_min" nolabel="1" style="width: 70px"  readonly="state == 'confirmed'" />
+                                                <span>min</span>
+                                                <field name="hydro_hot_passed" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Passed</span>
+                                            </span>
+                                        </div>
+                                        <label for="hydro_cold_side" string="Hydro Cold side" />
+                                        <div class="d-flex align-items-center flex-wrap gap-2">
+                                            <field name="hydro_cold_side" nolabel="1"  readonly="state == 'confirmed'" />
+                                            <span
+                                                class="d-flex align-items-center flex-wrap gap-2"
+                                                invisible="not hydro_cold_side"
+                                            >
+                                                <field name="hydro_cold_barg" nolabel="1" style="width: 70px"  readonly="state == 'confirmed'" />
+                                                <span>barg/</span>
+                                                <field name="hydro_cold_min" nolabel="1" style="width: 70px"  readonly="state == 'confirmed'" />
+                                                <span>min</span>
+                                                <field name="hydro_cold_passed" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Passed</span>
+                                            </span>
+                                        </div>
+                                    </group>
+                                </group>
+                            </sheet>
+                        </form>
+                    </field>
                 </page>
                 <page string="Service Report" name="service_report_page">
                     <group>
                         <field name="sr_report_no" string="Report No." />
                         <field name="sr_report_date" string="Date" />
-                        <field name="cs_customer" string="Customer" />
+                        <field name="sr_customer_id" string="Customer" />
                     </group>
-                    <group string="Equipment Summary">
-                        <field
-                            name="report_line_ids"
-                            nolabel="1"
-                            colspan="2"
-                            widget="bs_service_report_table"
-                        >
-                            <tree editable="bottom">
+                    <group
+                        string="Equipment Summary"
+                        invisible="technician_profile != 'phe'"
+                    >
+                        <field name="check_sheet_summary_line_ids" nolabel="1" colspan="2">
+                            <tree create="false" delete="false" edit="false" no_open="1">
                                 <field name="sequence" widget="handle" />
-                                <field name="check_sheet_no" />
-                                <field name="tag_no" />
-                                <field name="maker_model" />
-                                <field name="report_type" />
-                                <field name="job_type" />
-                                <field name="mech_clean" />
-                                <field name="re_gasket" />
-                                <field name="pt_test_status" />
-                                <field name="hydro_test" />
-                                <field name="result" />
-                                <field name="work_done" />
-                                <field name="vibration_before" />
-                                <field name="vibration_after" />
-                                <field name="alignment" />
+                                <!-- <field name="maker" string="Maker" /> -->
+                                <field name="model_id" string="Model" />
+                                <field name="check_sheet_count" string="Check Sheet Count" />
+                                <field
+                                    name="result"
+                                    string="Result"
+                                    widget="badge"
+                                    decoration-success="result == 'pass'"
+                                    decoration-warning="result == 'pending'"
+                                />
                             </tree>
                         </field>
                     </group>
                     <group
-                        string="Cleaning"
-                        invisible="technician_profile != 'phe'"
+                        string="Equipment Summary"
+                        invisible="technician_profile != 'pump'"
                     >
+                        <field name="pump_line_ids" nolabel="1" colspan="2">
+                            <tree create="false" delete="false" edit="false" no_open="1">
+                                <field name="tag_no" />
+                                <!-- <field name="brand" string="Maker" /> -->
+                                <field name="model_id" string="Model" />
+                            </tree>
+                        </field>
+                    </group>
+                    <group string="Cleaning">
                         <label for="sr_clean_mech_naoh" string="Mechanical" />
                         <div class="d-flex gap-4">
                             <div class="d-flex align-items-center gap-1">
@@ -612,10 +672,7 @@
                         <field name="sr_remark_fouling_hot" string="Remark Fouling — Hot side" />
                         <field name="sr_remark_fouling_cold" string="Remark Fouling — Cold side" />
                     </group>
-                    <group
-                        string="PT Test Results"
-                        invisible="technician_profile != 'phe'"
-                    >
+                    <group string="PT Test Results">
                         <label for="sr_pt_tested_plates" string="Tested plates" />
                         <div class="d-flex align-items-center gap-1">
                             <field name="sr_pt_tested_plates" nolabel="1" style="width: 70px" />
@@ -649,10 +706,7 @@
                             </div>
                         </div>
                     </group>
-                    <group
-                        string="Re-gasket"
-                        invisible="technician_profile != 'phe'"
-                    >
+                    <group string="Re-gasket">
                         <field name="sr_gasket_material_type" string="Material / Type" />
                         <label for="sr_gasket_channel_qty" string="Channel gasket" />
                         <div class="d-flex align-items-center gap-1">
