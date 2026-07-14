@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//group[@name='order_details']/field[@name='has_active_pricelist']" position="before">
-                <field name="delivery_time" widget="datetime"/>
+                <field name="delivery_time" />
             </xpath>
             <xpath expr="//field[@name='payment_term_id']" position="after">
                 <field name="brand_logo_id"/>
