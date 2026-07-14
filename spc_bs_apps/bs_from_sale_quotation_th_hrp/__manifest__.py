@@ -1,0 +1,21 @@
+{
+    'name': 'BS From Sale Quotation TH HRP',
+    'version': '17.0.0.1',
+    'author': 'Basic-Solution Co., Ltd.',
+    'website': 'https://www.basic-solution.com/',
+    "license": "AGPL-3",
+    "category": "Accounting",
+    'depends': ['sale','bs_show_signature','bs_sale_order_hrp'],
+    'data': [
+        'report/components/report_template_company_info.xml',
+        'report/components/report_header_partner_info.xml',
+        'report/components/report_main_content.xml',
+        'report/components/report_footer.xml',
+        'report/bs_from_sale_quotation_th_template.xml',
+        'report/report_bs_from_sale_quotation_th_page.xml',
+        'report/set_up_action_report.xml',
+    ],
+    'installable': True,
+    'application': True,
+    'license': 'LGPL-3',
+}

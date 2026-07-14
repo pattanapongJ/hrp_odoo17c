@@ -254,15 +254,20 @@ class FSMOrder(models.Model):
             )
             if removable:
                 self.check_sheet_line_ids = [(2, rec.id, 0) for rec in removable]
-        # model_id is related="phe_line_id.model_id", which the web client
-        # doesn't reliably re-render live across two sibling one2manys
-        # during onchange (it's only guaranteed correct after save/reload).
-        # Force-refresh it here so the Check Sheet tab reflects an Assigned
-        # Worker model change immediately, without needing a save.
+        # model_id/no_plate are related="phe_line_id.xxx", which the web
+        # client doesn't reliably re-render live across two sibling
+        # one2manys during onchange (it's only guaranteed correct after
+        # save/reload). Force-refresh them here so the Check Sheet tab
+        # reflects an Assigned Worker change immediately, without a save.
         for cs_line in self.check_sheet_line_ids:
+            if not cs_line.phe_line_id:
+                continue
             source_model_id = cs_line.phe_line_id.model_id
-            if cs_line.phe_line_id and cs_line.model_id != source_model_id:
+            if cs_line.model_id != source_model_id:
                 cs_line.model_id = source_model_id
+            source_no_plate = cs_line.phe_line_id.no_plate
+            if cs_line.no_plate != source_no_plate:
+                cs_line.no_plate = source_no_plate
 
     @api.depends(
         "technician_profile",

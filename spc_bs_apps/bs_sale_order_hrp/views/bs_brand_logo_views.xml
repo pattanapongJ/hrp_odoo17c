@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bs_brand_logo_tree" model="ir.ui.view">
+        <field name="name">bs.brand.logo.tree</field>
+        <field name="model">bs.brand.logo</field>
+        <field name="arch" type="xml">
+            <tree string="Brand Logo">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_bs_brand_logo_form" model="ir.ui.view">
+        <field name="name">bs.brand.logo.form</field>
+        <field name="model">bs.brand.logo</field>
+        <field name="arch" type="xml">
+            <form string="Brand Logo">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="logo" widget="image"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bs_brand_logo" model="ir.actions.act_window">
+        <field name="name">Brand Logo</field>
+        <field name="res_model">bs.brand.logo</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_bs_brand_logo"
+        name="Brand Logo"
+        action="action_bs_brand_logo"
+        parent="sale.menu_sales_config"
+        sequence="30"/>
+</odoo>

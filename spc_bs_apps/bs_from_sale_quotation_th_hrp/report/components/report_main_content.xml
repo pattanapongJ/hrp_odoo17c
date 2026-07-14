@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_main_content">
+        <div class="row pt-2 pb-5" style="font-family: 'Kanit-Light'; font-size: 13.64px;">
+            <div class="col-12 p-0 m-0 pt-1">
+                <table class="table table-borderless">
+                    <thead style="background-color: #d9d9d9">
+                        <tr>
+                            <th class="text-center" scope="col" style="display: table-cell;
+                                    text-align: center;
+                                    vertical-align: middle; width: 40px;">
+                                <p class="p-0 m-0">ลำดับ</p>
+                            </th>
+                            <th class="text-center" scope="col" style="display: table-cell;
+                                    text-align: center;
+                                    vertical-align: middle;  width: 60px;">
+                                <p class="p-0 m-0">รหัสสินค้า</p>
+                            </th>
+                            <th class="text-center" scope="col" style="display: table-cell;
+                                    text-align: center;
+                                    vertical-align: middle;  width: 80px;">
+                                <p class="p-0 m-0">รายละเอียดสินค้า</p>
+                            </th>
+                            <th class="text-center" scope="col" style="display: table-cell;
+                                    text-align: center;
+                                    vertical-align: middle;  width: 70px;">
+                                <p class="p-0 m-0">จำนวน</p>
+                            </th>
+                            <th class="text-center" scope="col" style="display: table-cell;
+                                    text-align: center;
+                                    vertical-align: middle; width: 40px;">
+                                <p class="p-0 m-0">หน่วย</p>
+                            </th>
+                            <th class="text-center" scope="col" style="display: table-cell;
+                                    text-align: center;
+                                    vertical-align: middle;  width: 50px;">
+                                <p class="p-0 m-0">ราคา/หน่วย</p>
+                            </th>
+                            <th class="text-center" scope="col" style="display: table-cell;
+                                    text-align: center;
+                                    vertical-align: middle;  width: 95px;">
+                                <p class="p-0 m-0">
+                                    <span>จำนวนเงิน </span>(<span t-field="o.currency_id.name"/>)
+                                </p>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="total_val" t-value="0" />
+                        <t t-set="line_number" t-value="0" />
+                        <t t-foreach="o.order_line" t-as="line">
+                            <t t-if="line.tax_id.amount &gt; 0.0000">
+                                <t t-set="total_val" t-value="total_val + line.price_subtotal"/>
+                            </t>
+                            <t t-if="line.display_type">
+                                <tr>
+                                    <td colspan="8" class="text-left">
+                                        <t t-if="line.display_type == 'line_note'">
+                                            <span class="font-italic" t-field="line.name"/>
+                                        </t>
+                                        <t t-if="line.display_type == 'line_section'">
+                                            <span class="font-weight-bold" t-field="line.name"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                            <t t-if="not line.display_type">
+                                <tr>
+                                    <td class="text-center" scope="row text-center">
+                                        <t t-set="line_number" t-value="line_number + 1"/>
+                                        <span t-esc="line_number" />
+                                    </td>
+                                    <td class="text-left">
+                                        <span t-field="line.product_id.default_code"/>
+                                    </td>
+                                    <td class="text-left">
+                                        <span t-field="line.name"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="line.product_uom_qty" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="line.product_uom"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="line.price_unit" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="line.price_subtotal" t-options='{"widget": "float", "precision": 2}'/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+</odoo>

@@ -20,7 +20,7 @@ class FSMOrderCheckSheetLine(models.Model):
         copy=False,
     )
 
-    # Link to the source Assigned Worker equipment line - lets Tag No. and
+    # Link to the source Assigned Worker equipment line - lets No.Plate and
     # Model stay live-synced instead of being a one-time copy at creation.
     phe_line_id = fields.Many2one(
         "bs.fsm.order.phe.line", string="Equipment Line", ondelete="cascade"
@@ -31,15 +31,12 @@ class FSMOrderCheckSheetLine(models.Model):
     # phe_line_table.js) to appear correct on screen but vanish after Save.
     # Non-editability in the popup form is enforced via the view instead
     # (readonly="1" on the <field>), which doesn't have this issue.
-    tag_no = fields.Char(
-        related="phe_line_id.tag_no", string="Tag No.", store=True, readonly=False
+    no_plate = fields.Integer(
+        related="phe_line_id.no_plate", string="No.Plate", store=True, readonly=False
     )
 
     # Header
     report_no = fields.Char(string="Report No.", copy=False)
-    report_type = fields.Selection(
-        [("h", "H"), ("hs", "HS"), ("e", "E")], string="Type", default="h"
-    )
     customer_id = fields.Many2one("res.partner", string="Customer")
     place = fields.Char(string="Place")
     work_start = fields.Datetime(string="Work start")
