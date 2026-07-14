@@ -311,7 +311,7 @@
                         <tree create="false" delete="false">
                             <field name="sequence" widget="handle" />
                             <field name="report_no" string="Report No." />
-                            <field name="tag_no" string="Tag No." />
+                            <field name="no_plate" string="No.Plate" />
                             <field name="model_id" string="Model" />
                             <field
                                 name="state"
@@ -358,12 +358,6 @@
                             <sheet readonly="state == 'confirmed'">
                                 <group>
                                     <group string="Header">
-                                        <field
-                                            name="report_type"
-                                            string="Type"
-                                            widget="radio"
-                                            options="{'horizontal': true}"
-                                         readonly="state == 'confirmed'" />
                                         <field name="report_no" string="Report No." readonly="1" />
                                         <field name="customer_id" string="Customer"  readonly="state == 'confirmed'" />
                                         <field name="place" string="Place"  readonly="state == 'confirmed'" />
@@ -623,7 +617,7 @@
                                 <field name="sequence" widget="handle" />
                                 <!-- <field name="maker" string="Maker" /> -->
                                 <field name="model_id" string="Model" />
-                                <field name="check_sheet_count" string="Check Sheet Count" />
+                                <field name="check_sheet_count" string="Check Sheet Plate Count" />
                                 <field
                                     name="result"
                                     string="Result"

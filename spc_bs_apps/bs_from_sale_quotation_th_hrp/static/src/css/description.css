@@ -1,0 +1,20 @@
+.set_center_img {
+  display: -webkit-box; 
+  -webkit-box-pack: center;  
+  -webkit-box-orient: vertical;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.set_center_header_details {
+  display: -webkit-box; 
+   -webkit-box-pack: center;  
+   -webkit-box-orient: vertical;
+   display: flex;
+   justify-content: center;
+  flex-direction: column;
+}
+.max-width-95 {
+  max-width: 95%; 
+  height: auto;
+}

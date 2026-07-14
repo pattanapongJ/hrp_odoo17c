@@ -35,7 +35,7 @@ function guardKsAdvanceSearch() {
 }
 
 // A search row built into the Check Sheet tab's own table header (Report
-// No./Tag No./Model/Status), one <th> per real column, so it's sized and
+// No./No.Plate/Model/Status), one <th> per real column, so it's sized and
 // aligned exactly like the data below it instead of a floating bar with
 // its own widths. Replaces ks_list_view_manager's per-column search for
 // this list only (see bs_line_table.scss), so this tab's search doesn't
@@ -48,7 +48,7 @@ export class CheckSheetListRenderer extends ListRenderer {
     setup() {
         super.setup();
         guardKsAdvanceSearch();
-        this.csSearch = useState({ reportNo: "", tagNo: "", modelCode: "", state: "" });
+        this.csSearch = useState({ reportNo: "", noPlate: "", modelCode: "", state: "" });
         this.csSearchRowRef = useRef("csSearchRow");
         onMounted(() => this.applyCsFilter());
         onPatched(() => this.applyCsFilter());
@@ -71,7 +71,7 @@ export class CheckSheetListRenderer extends ListRenderer {
         if (!table) {
             return;
         }
-        const { reportNo, tagNo, modelCode, state } = this.csSearch;
+        const { reportNo, noPlate, modelCode, state } = this.csSearch;
         const columnIndex = this.csColumnIndex;
         const cellText = (row, name) => {
             const index = columnIndex[name];
@@ -81,7 +81,7 @@ export class CheckSheetListRenderer extends ListRenderer {
         table.querySelectorAll("tbody > tr.o_data_row").forEach((dataRow) => {
             const matches =
                 (!reportNo || cellText(dataRow, "report_no").includes(reportNo.toLowerCase())) &&
-                (!tagNo || cellText(dataRow, "tag_no").includes(tagNo.toLowerCase())) &&
+                (!noPlate || cellText(dataRow, "no_plate").includes(noPlate.toLowerCase())) &&
                 (!modelCode ||
                     cellText(dataRow, "model_id").includes(modelCode.toLowerCase())) &&
                 (!state || cellText(dataRow, "state") === state);

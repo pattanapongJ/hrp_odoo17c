@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_inherit_delivery_time" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.bs.delivery.time</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='order_details']/field[@name='has_active_pricelist']" position="before">
+                <field name="delivery_time" widget="datetime"/>
+            </xpath>
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="brand_logo_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

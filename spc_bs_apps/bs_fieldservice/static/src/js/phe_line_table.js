@@ -37,9 +37,9 @@ export class PheLineTable extends Component {
         return csField.records[idx];
     }
 
-    // model_id there is related="phe_line_id.model_id", which the web
+    // model_id/no_plate there are related="phe_line_id.xxx", which the web
     // client doesn't reliably re-render live across two sibling one2manys
-    // during onchange - so push tag_no/model_id edits straight into the
+    // during onchange - so push model_id/no_plate edits straight into the
     // sibling check_sheet_line record here for instant feedback, instead of
     // waiting on an onchange round-trip.
     async syncCheckSheetSibling(pheRecord, fieldName, value) {
@@ -79,8 +79,8 @@ export class PheLineTable extends Component {
 
     async updateField(record, fieldName, value) {
         await record.update({ [fieldName]: value });
-        if (fieldName === "tag_no") {
-            await this.syncCheckSheetSibling(record, "tag_no", value);
+        if (fieldName === "no_plate") {
+            await this.syncCheckSheetSibling(record, "no_plate", value);
         }
     }
 
