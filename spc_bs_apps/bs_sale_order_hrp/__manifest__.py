@@ -1,6 +1,6 @@
 {
     "name": "BS Sale Order HRP",
-    "version": "17.0.0.1",
+    "version": "17.0.0.2",
     "summary": "Add Delivery Time and Brand Logo fields on the sales quotation",
     "author": "Basic Solution Co.,Ltd.",
     "website": "http://www.basic-solution.com",
