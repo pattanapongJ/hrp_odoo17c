@@ -45,7 +45,7 @@
                     </tbody>
                 </table>
                 <div t-if="page_lines_last" style="width: 100%; margin: 0; font-weight: bold;">
-                    <div style="width: 70%; float: left; box-sizing: border-box; vertical-align: top; padding: 6px 4px; font-weight: regular; font-size: 8.8pt; border-top: 1px solid #000; border-left: 1px solid #000;">
+                    <div style="width: 70%; float: left; box-sizing: border-box; vertical-align: top; padding: 6px 4px; font-weight: regular; font-size: 8.8pt; border-top: 1px solid #000;">
                         <span>Accordling to general Conditions ORGALIME S2000-M2000</span>
                         <span>Cancellation : Cancellation of order is subject to charge 25% based on order value</span>
                         <div style="font-weight: bold; margin-top: 4px;">REMARK :</div>
