@@ -16,7 +16,7 @@ export class PumpLineTable extends Component {
             this.state.modelOptions = await this.orm.searchRead(
                 "bs.equipment.model",
                 [],
-                ["id", "code"]
+                ["id", "code", "brand"]
             );
         });
     }
@@ -32,7 +32,12 @@ export class PumpLineTable extends Component {
             return;
         }
         const opt = this.state.modelOptions.find((o) => o.id === id);
-        await record.update({ model_id: [id, opt.code] });
+        const updates = { model_id: [id, opt.code] };
+        // Auto-fill Brand from the selected Model's master data, when set.
+        if (opt.brand) {
+            updates.brand = opt.brand;
+        }
+        await record.update(updates);
     }
 
     async addLine() {

@@ -430,18 +430,65 @@
                                 </group>
                                 <group string="Plate inspection">
                                     <group>
-                                        <field name="plate_material" string="Plate material"  readonly="state == 'confirmed'" />
-                                        <field
-                                            name="plate"
-                                            string="Plate"
-                                            widget="radio"
-                                            options="{'horizontal': true}"
-                                         readonly="state == 'confirmed'" />
-                                        <field name="thick_plate" string="Thick plate"  readonly="state == 'confirmed'" />
-                                        <field name="angle" string="Angle"  readonly="state == 'confirmed'" />
-                                        <field name="immerse_plate" string="Immerse plate"  readonly="state == 'confirmed'" />
+                                        <label for="plate_material_ss316" string="Plate material" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="plate_material_ss316" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>SS316</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="plate_material_ti" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Ti</span>
+                                            </div>
+                                        </div>
+                                        <label for="plate_damage" string="Plate" />
+                                        <div class="d-flex align-items-center gap-1">
+                                            <field name="plate_damage" nolabel="1"  readonly="state == 'confirmed'" />
+                                            <span>Damage</span>
+                                        </div>
+                                        <label for="thick_plate_05mm" string="Thick plate" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="thick_plate_05mm" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>0.5 mm.</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="thick_plate_06mm" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>0.6 mm.</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="thick_plate_good" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Good</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="thick_plate_fair" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Fair</span>
+                                            </div>
+                                        </div>
+                                        <label for="angle_high" string="Angle" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="angle_high" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>High</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="angle_low" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Low</span>
+                                            </div>
+                                        </div>
                                     </group>
                                     <group>
+                                        <label for="immerse_plate_naoh" string="Immerse plate" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="immerse_plate_naoh" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>NaOH</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="immerse_plate_acid" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Acid</span>
+                                            </div>
+                                        </div>
                                         <label for="photo_before_side1" string="Photo before clean" />
                                         <div class="d-flex gap-4">
                                             <div class="d-flex align-items-center gap-1">

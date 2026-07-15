@@ -17,7 +17,7 @@ export class PheLineTable extends Component {
             this.state.modelOptions = await this.orm.searchRead(
                 "bs.equipment.model",
                 [],
-                ["id", "code"]
+                ["id", "code", "brand"]
             );
         });
     }
@@ -52,11 +52,17 @@ export class PheLineTable extends Component {
     async onModelChange(record, ev) {
         const id = ev.target.value ? Number(ev.target.value) : false;
         let modelValue = false;
+        let opt;
         if (id) {
-            const opt = this.state.modelOptions.find((o) => o.id === id);
+            opt = this.state.modelOptions.find((o) => o.id === id);
             modelValue = [id, opt.code];
         }
-        await record.update({ model_id: modelValue });
+        const updates = { model_id: modelValue };
+        // Auto-fill Brand from the selected Model's master data, when set.
+        if (opt && opt.brand) {
+            updates.brand = opt.brand;
+        }
+        await record.update(updates);
         await this.syncCheckSheetSibling(record, "model_id", modelValue);
     }
 
