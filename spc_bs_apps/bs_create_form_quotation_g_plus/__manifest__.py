@@ -1,6 +1,6 @@
 {
     "name": "BS Create Form Quotation G Plus",
-    "version": "17.0.0.1",
+    "version": "17.0.0.2",
     "author": "Basic-Solution Co., Ltd.",
     "maintainer": "varit",
     "website": "https://www.basic-solution.com/",
