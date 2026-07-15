@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_footer_g_plus">
+        <div style="font-family: 'AngsanaUPC'; font-size: 8.8pt; font-weight: bold; text-align: center;">
+            <div class ="row">
+                <div class="col-1"></div>
+                <div class="col-5">
+                    <span>Confirm to order and accept all terms &amp; condition</span>
+                    <div style="border-bottom: 1px dotted #000; width: 80%; margin: 0 auto 10px auto; min-height: 80px;"></div>
+                    <span class="mb-1">Authorized Signature  / Date.</span>
+                </div>
+                <div class="col-3">
+                    <div style="width: 80%; margin: 0 auto 10px auto; min-height: 80px;">
+                        <img t-if="o.env.user.user_signature" t-att-src="image_data_uri(o.env.user.user_signature)" style="max-height: 80px; max-width: 100%;"/>
+                    </div>
+
+                    (<span style="font-weight: bold;" t-field="o.env.user.name"></span>)
+                    <br/>
+                    <span t-field="o.env.user.function"> </span>
+                </div>
+                <div class="col-3">
+                    <div style="width: 80%; margin: 0 auto 10px auto; min-height: 80px;">
+                    </div>
+
+                    (<span style="font-weight: bold;"></span>)
+                    <br/>
+                    <span> </span>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>
