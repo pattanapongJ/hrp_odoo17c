@@ -3,7 +3,7 @@
     <template id="report_main_content_g_plus">
         <div style="font-family: 'AngsanaUPC'; font-size: 8.8pt; " t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id">
             <t t-foreach="o._get_quotation_report_pages(15)" t-as="page_lines">
-                <table class="table table-borderless" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+                <table style="width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed;">
                     <thead style="font-weight: bold; ">
                         <tr>
                             <th rowspan="2" style="width: 10%; text-align: center; height: 22px; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Item</th>
@@ -43,53 +43,58 @@
                             </td>
                         </tr>
                     </tbody>
-                    <tfoot t-if="page_lines_last" style="font-weight: bold;">
-                        <tr>
-                            <td colspan="4" rowspan="5" style="border-top: 1px solid #000; border-left: 1px solid #000; border-right: none; border-bottom: none; vertical-align: top; padding: 6px 4px; font-weight: regular; font-size: 8.8pt;">
-                                <span>Accordling to general Conditions ORGALIME S2000-M2000</span>
-                                <span>Cancellation : Cancellation of order is subject to charge 25% based on order value</span>
-                                <div style="font-weight: bold; margin-top: 4px;">REMARK :</div>
-                                <div style="width: 100%; margin-top: 2px;">
-                                    <div style="width: 50%; float: left; box-sizing: border-box; padding: 4px; font-weight: regular; white-space: pre-line; font-size: 7.92pt;">
-                                        <span t-esc="o._get_quotation_terms_template_text(0)"/>
-                                    </div>
-                                    <div style="width: 50%; float: left; box-sizing: border-box; padding: 4px; font-weight: regular; white-space: pre-line; font-size: 7.92pt;">
-                                        <span t-esc="o._get_quotation_terms_template_text(1)"/>
-                                    </div>
-                                    <div style="clear: both;"/>
-                                </div>
-                            </td>
-                            <td style="text-align: left; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Subtotal</td>
-                            <td style="text-align: right; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
-                                <span t-esc="'{:,.2f}'.format(o.total_amt_wo_global_disc)"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Discount</td>
-                            <td style="text-align: right; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
-                                <span t-esc="'{:,.2f}'.format(o.total_global_discount)"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Before TAX</td>
-                            <td style="text-align: right; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
-                                <span t-esc="'{:,.2f}'.format(o.amount_untaxed)"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">TAX</td>
-                            <td style="text-align: right; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
-                                <span t-esc="'{:,.2f}'.format(o.amount_tax)"/>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Total</td>
-                            <td style="text-align: right; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
-                                <span t-esc="'{:,.2f}'.format(o.amount_total)"/>
-                            </td>
-                        </tr>
-                    </tfoot>
                 </table>
+                <div t-if="page_lines_last" style="width: 100%; margin: 0; font-weight: bold;">
+                    <div style="width: 70%; float: left; box-sizing: border-box; vertical-align: top; padding: 6px 4px; font-weight: regular; font-size: 8.8pt; border-top: 1px solid #000; border-left: 1px solid #000;">
+                        <span>Accordling to general Conditions ORGALIME S2000-M2000</span>
+                        <span>Cancellation : Cancellation of order is subject to charge 25% based on order value</span>
+                        <div style="font-weight: bold; margin-top: 4px;">REMARK :</div>
+                        <div style="width: 100%; margin-top: 2px;">
+                            <div style="width: 50%; float: left; box-sizing: border-box; padding: 4px; font-weight: regular; white-space: pre-line; font-size: 7.92pt;">
+                                <span t-esc="o._get_quotation_terms_template_text(0)"/>
+                            </div>
+                            <div style="width: 50%; float: left; box-sizing: border-box; padding: 4px; font-weight: regular; white-space: pre-line; font-size: 7.92pt;">
+                                <span t-esc="o._get_quotation_terms_template_text(1)"/>
+                            </div>
+                            <div style="clear: both;"/>
+                        </div>
+                    </div>
+                    <div style="width: 30%; float: left; box-sizing: border-box;">
+                        <table style="width: 100%; border-collapse: collapse; font-weight: bold;">
+                            <tr>
+                                <td style="text-align: left; height: 22px; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Subtotal</td>
+                                <td style="text-align: right; height: 22px; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
+                                    <span t-esc="'{:,.2f}'.format(o.total_amt_wo_global_disc)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Discount</td>
+                                <td style="text-align: right; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
+                                    <span t-esc="'{:,.2f}'.format(o.total_global_discount)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Before TAX</td>
+                                <td style="text-align: right; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
+                                    <span t-esc="'{:,.2f}'.format(o.amount_untaxed)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">TAX</td>
+                                <td style="text-align: right; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
+                                    <span t-esc="'{:,.2f}'.format(o.amount_tax)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Total</td>
+                                <td style="text-align: right; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
+                                    <span t-esc="'{:,.2f}'.format(o.amount_total)"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div style="clear: both;"/>
+                </div>
                 <div t-if="not page_lines_last" style="page-break-after: always;"/>
             </t>
         </div>
