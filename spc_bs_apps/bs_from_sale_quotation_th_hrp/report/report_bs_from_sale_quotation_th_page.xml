@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_page">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="bs_from_sale_quotation_th_hrp.request_layout">
+                    <div class="page" >
+                        <t t-call="bs_from_sale_quotation_th_hrp.report_main_content"/>                       
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,742 @@
+<odoo>
+    <record id="view_fsm_order_form_bs_fieldservice" model="ir.ui.view">
+        <field name="name">fsm.order.form.bs.fieldservice</field>
+        <field name="model">fsm.order</field>
+        <field name="inherit_id" ref="fieldservice.fsm_order_form" />
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <!-- Technician Profile selector -->
+            <field name="type" position="after">
+                <field name="technician_profile" />
+            </field>
+
+            <!-- Hide unused tabs -->
+            <xpath expr="//page[@name='instructions_page']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='execution_page']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@id='stock']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath
+                expr="//page[field[@name='order_activity_ids']]"
+                position="attributes"
+            >
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- New tab: Service Request SR (shown for both profiles, before Planning) -->
+            <xpath expr="//page[@name='planning_page']" position="before">
+                <page string="Service Request SR" name="service_request_sr_page">
+                    <group>
+                        <group>
+                            <field
+                                name="sale_id"
+                                string="QT No."
+                                options="{'no_create': True}"
+                            />
+                            <field name="customer_po" />
+                        </group>
+                        <group>
+                            <field name="job_no" />
+                            <field name="sr_date" />
+                        </group>
+                    </group>
+                    <group string="Customer Information" name="sr_customer_info">
+                        <group>
+                            <field name="location_id" string="Customer" />
+                            <field name="full_address" string="Address" />
+                            <field name="phone" string="Phone / Fax" />
+                        </group>
+                        <group>
+                            <field name="contact_person_id" />
+                            <field
+                                name="customer_type"
+                                widget="radio"
+                                options="{'horizontal': true}"
+                            />
+                            <field
+                                name="sr_priority"
+                                widget="radio"
+                                options="{'horizontal': true}"
+                            />
+                            <field name="sr_planned_date" />
+                            <field name="sr_completion_date" />
+                        </group>
+                    </group>
+                    <group string="Reason for service" name="sr_reason">
+                        <group>
+                            <field name="reason_external_leakage" />
+                            <field name="reason_internal_leakage" />
+                            <field name="reason_preventive_maintenance" />
+                        </group>
+                        <group>
+                            <field name="reason_other" />
+                            <field
+                                name="reason_other_note"
+                                nolabel="1"
+                                invisible="not reason_other"
+                            />
+                        </group>
+                    </group>
+                    <group string="Scope of Service" name="sr_scope">
+                        <group>
+                            <field name="scope_dismantle_unit" />
+                            <field name="scope_pickup_plate_pack" />
+                            <field name="scope_service_report_required" />
+                        </group>
+                        <group>
+                            <field name="scope_transport_to_workshop" />
+                            <field name="scope_onsite_service" />
+                        </group>
+                    </group>
+                    <group string="Assigned Worker" name="sr_assigned_worker" />
+                    <field
+                        name="phe_line_ids"
+                        nolabel="1"
+                        colspan="2"
+                        widget="bs_phe_line_table"
+                        invisible="technician_profile != 'phe'"
+                    >
+                        <tree editable="bottom" string="Equipment Line - PHE Technician">
+                            <field name="sequence" widget="handle" />
+                            <field name="tag_no" />
+                            <field name="brand" />
+                            <field name="model_id" />
+                            <field name="media" />
+                            <field name="plate_mat" />
+                            <field name="no_plate" />
+                            <field name="gasket" />
+                            <field name="mech" />
+                            <field name="chem" />
+                            <field name="pt_percent" />
+                            <field name="regskt_wh" />
+                            <field name="regskt_cus" />
+                            <field name="source" />
+                            <field name="pressure_test" />
+                        </tree>
+                    </field>
+                    <field
+                        name="pump_line_ids"
+                        nolabel="1"
+                        colspan="2"
+                        widget="bs_pump_line_table"
+                        invisible="technician_profile != 'pump'"
+                    >
+                        <tree editable="bottom" string="Equipment Line - Pump Technician">
+                            <field name="sequence" widget="handle" />
+                            <field name="tag_no" />
+                            <field name="brand" />
+                            <field name="model_id" />
+                            <field name="flow" />
+                            <field name="head" />
+                            <field name="power" />
+                            <field name="equipment_type" string="Type" />
+                            <field name="scope_of_service" />
+                        </tree>
+                    </field>
+                    <group string="Critical remarks" name="sr_critical_remarks">
+                        <group>
+                            <field name="remark_correction_work" />
+                            <field name="remark_messenger_pickup" />
+                        </group>
+                        <group>
+                            <field name="remark_glueless_work" />
+                            <field name="remark_crane_work" />
+                        </group>
+                        <group>
+                            <field name="remark_explosion_proof_area" />
+                            <field name="remark_safety_training_required" />
+                        </group>
+                    </group>
+                    <field
+                        name="critical_remarks_note"
+                        nolabel="1"
+                        colspan="2"
+                        placeholder="Critical remarks / notes..."
+                    />
+                    <group string="Spare Parts From" name="sr_spare_parts">
+                        <group>
+                            <field
+                                name="plate_from"
+                                widget="radio"
+                                options="{'horizontal': true}"
+                            />
+                            <field name="plate_qty" />
+                        </group>
+                        <group>
+                            <field name="gasket_from_wh" />
+                            <field name="gasket_from_cus" />
+                            <field name="gasket_qty" />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+            <!-- Planning tab redesign -->
+            <!-- Description used to be global (above all tabs); move it into Planning only -->
+            <xpath expr="//group[@name='description_grp']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- Old Schedule Details group (start/duration/end) is repositioned below the sub-slot table -->
+            <xpath expr="//group[@id='schedule']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[@name='request_workers']" position="replace">
+                <group string="Request Workers" name="request_workers">
+                    <field name="worker_line_ids" nolabel="1" colspan="2">
+                        <tree create="false" delete="false" edit="false">
+                            <field name="person_id" string="Name" />
+                            <field
+                                name="category_ids"
+                                widget="many2many_tags"
+                                options="{'color_field': 'color'}"
+                                groups="fieldservice.group_fsm_category"
+                            />
+                            <field name="schedule_display" />
+                            <field
+                                name="status"
+                                widget="badge"
+                                decoration-success="status == 'available'"
+                                decoration-danger="status == 'conflict'"
+                            />
+                        </tree>
+                    </field>
+                    <field
+                        name="worker_status_log_ids"
+                        nolabel="1"
+                        colspan="2"
+                        string="Status Change Log"
+                    >
+                        <tree create="false" delete="false" edit="false">
+                            <field name="changed_on" />
+                            <field name="person_id" />
+                            <field name="status_from" />
+                            <field name="status_to" />
+                        </tree>
+                    </field>
+                </group>
+                <group string="Schedule Details (Sub-slot)" name="schedule_slot_grp">
+                    <field name="schedule_slot_count" invisible="1" />
+                    <!-- <div
+                        class="alert alert-info"
+                        role="alert"
+                        colspan="2"
+                        invisible="schedule_slot_count &lt;= 1"
+                    >
+                        This job is split into multiple time periods, since the
+                        technician needs to travel to disassemble, return to work
+                        at the workshop, then travel again to reassemble/deliver.
+                    </div> -->
+                    <field name="schedule_slot_ids" nolabel="1" colspan="2">
+                        <tree editable="bottom">
+                            <field name="sequence" widget="handle" />
+                            <field name="person_id" readonly="1" />
+                            <field name="slot_type" />
+                            <field name="date_from" />
+                            <field name="date_to" />
+                            <field name="time_from" widget="float_time" />
+                            <field name="time_to" widget="float_time" />
+                            <field name="location" />
+                        </tree>
+                    </field>
+                </group>
+                <group name="schedule_summary_grp">
+                    <field name="scheduled_date_start" string="Scheduled Start (ETA)" />
+                    <field name="scheduled_date_end" string="Scheduled End" />
+                    <field
+                        name="actual_work_summary"
+                        string="Actual Work Time"
+                        readonly="1"
+                    />
+                </group>
+                <group string="Description" name="planning_description_grp">
+                    <field
+                        name="description"
+                        nolabel="1"
+                        colspan="2"
+                        placeholder="Add a description for the order..."
+                    />
+                </group>
+            </xpath>
+
+            <!-- Equipments tab redesign: withdraw/use/return tracking -->
+            <xpath
+                expr="//page[@name='equipements_page']/field[@name='equipment_ids']"
+                position="replace"
+            >
+                <field name="equipment_total_count" invisible="1" />
+                <field name="equipment_withdrawn_count" invisible="1" />
+                <field name="equipment_returned_count" invisible="1" />
+                <field name="equipment_overdue_count" invisible="1" />
+                <field
+                    name="equipment_line_ids"
+                    nolabel="1"
+                    colspan="2"
+                    widget="bs_equipment_line_table"
+                >
+                    <tree>
+                        <field name="equipment_id" />
+                        <field name="code" />
+                        <field name="equipment_name" />
+                        <field name="serial_number" />
+                        <field name="qty_total" />
+                        <field name="qty_withdrawn" />
+                        <field name="qty_returned" />
+                        <field name="withdrawn_date" />
+                        <field name="returned_date" />
+                        <field name="return_deadline" />
+                        <field name="notes" />
+                        <field name="status" />
+                        <field name="return_status" />
+                    </tree>
+                </field>
+            </xpath>
+
+            <!-- New tabs: Check Sheet (PHE only) and Service Report (both, after Equipments) -->
+            <xpath expr="//page[@name='equipements_page']" position="after">
+                <page
+                    string="Check Sheet"
+                    name="check_sheet_page"
+                    invisible="technician_profile != 'phe'"
+                >
+                    <field
+                        name="check_sheet_line_ids"
+                        nolabel="1"
+                        colspan="2"
+                        widget="bs_check_sheet_line_list"
+                    >
+                        <tree create="false" delete="false">
+                            <field name="sequence" widget="handle" />
+                            <field name="report_no" string="Report No." />
+                            <field name="no_plate" string="No.Plate" />
+                            <field name="model_id" string="Model" />
+                            <field
+                                name="state"
+                                widget="badge"
+                                decoration-success="state == 'confirmed'"
+                                decoration-info="state == 'draft'"
+                            />
+                            <button
+                                name="action_confirm"
+                                type="object"
+                                string="Confirm"
+                                icon="fa-check-circle"
+                                class="o_bs_confirm_btn"
+                                invisible="state == 'confirmed'"
+                            />
+                            <button
+                                name="action_reset_draft"
+                                type="object"
+                                string="Reset to Draft"
+                                icon="fa-undo"
+                                class="o_bs_confirm_btn"
+                                invisible="state == 'draft'"
+                                groups="fieldservice.group_fsm_manager"
+                            />
+                        </tree>
+                        <form string="Check Sheet">
+                            <header>
+                                <button
+                                    name="action_confirm"
+                                    type="object"
+                                    string="Confirm"
+                                    class="btn-primary"
+                                    invisible="state == 'confirmed'"
+                                />
+                                <button
+                                    name="action_reset_draft"
+                                    type="object"
+                                    string="Reset to Draft"
+                                    invisible="state == 'draft'"
+                                    groups="fieldservice.group_fsm_manager"
+                                />
+                                <field name="state" widget="statusbar" statusbar_visible="draft,confirmed" />
+                            </header>
+                            <sheet readonly="state == 'confirmed'">
+                                <group>
+                                    <group string="Header">
+                                        <field name="report_no" string="Report No." readonly="1" />
+                                        <field name="customer_id" string="Customer"  readonly="state == 'confirmed'" />
+                                        <field name="place" string="Place"  readonly="state == 'confirmed'" />
+                                        <field name="work_start" string="Work start"  readonly="state == 'confirmed'" />
+                                        <field name="work_finish" string="Work finish"  readonly="state == 'confirmed'" />
+                                    </group>
+                                    <group string="Job description">
+                                        <field name="job_mech_clean" string="Mech clean"  readonly="state == 'confirmed'" />
+                                        <field name="job_replace_gasket" string="Replace new gasket"  readonly="state == 'confirmed'" />
+                                        <field name="job_pt_test" string="PT test"  readonly="state == 'confirmed'" />
+                                    </group>
+                                </group>
+                                <group string="Equipment Information">
+                                    <group>
+                                        <field name="item_no" string="Item no."  readonly="state == 'confirmed'" />
+                                        <field name="serial_no" string="Serial no."  readonly="state == 'confirmed'" />
+                                    </group>
+                                    <group>
+                                        <field name="maker" string="Maker"  readonly="state == 'confirmed'" />
+                                        <field name="model_id" string="Model" readonly="1" />
+                                    </group>
+                                </group>
+                                <group string="Condition check">
+                                    <group>
+                                        <field name="a_measurement" string="A-measurement"  readonly="state == 'confirmed'" />
+                                        <field name="pass_of_plate" string="Pass of plate"  readonly="state == 'confirmed'" />
+                                        <field name="no_of_plate" string="No. of plate"  readonly="state == 'confirmed'" />
+                                    </group>
+                                    <group>
+                                        <field name="wrench" string="Wrench"  readonly="state == 'confirmed'" />
+                                        <field name="connection" string="Connection"  readonly="state == 'confirmed'" />
+                                        <field name="tightening" string="Tightening"  readonly="state == 'confirmed'" />
+                                        <field
+                                            name="leakage_check"
+                                            string="Leakage check"
+                                            widget="radio"
+                                            options="{'horizontal': true}"
+                                         readonly="state == 'confirmed'" />
+                                    </group>
+                                </group>
+                                <group string="Physical Condition">
+                                    <group>
+                                        <field
+                                            name="pc_frame"
+                                            string="Frame"
+                                            widget="radio"
+                                            options="{'horizontal': true}"
+                                         readonly="state == 'confirmed'" />
+                                        <field
+                                            name="pc_connection"
+                                            string="Connection"
+                                            widget="radio"
+                                            options="{'horizontal': true}"
+                                         readonly="state == 'confirmed'" />
+                                    </group>
+                                    <group>
+                                        <field
+                                            name="pc_lining"
+                                            string="Lining"
+                                            widget="radio"
+                                            options="{'horizontal': true}"
+                                         readonly="state == 'confirmed'" />
+                                        <field
+                                            name="pc_tightening"
+                                            string="Tightening"
+                                            widget="radio"
+                                            options="{'horizontal': true}"
+                                         readonly="state == 'confirmed'" />
+                                    </group>
+                                </group>
+                                <group string="Plate inspection">
+                                    <group>
+                                        <field name="plate_material" string="Plate material"  readonly="state == 'confirmed'" />
+                                        <field
+                                            name="plate"
+                                            string="Plate"
+                                            widget="radio"
+                                            options="{'horizontal': true}"
+                                         readonly="state == 'confirmed'" />
+                                        <field name="thick_plate" string="Thick plate"  readonly="state == 'confirmed'" />
+                                        <field name="angle" string="Angle"  readonly="state == 'confirmed'" />
+                                        <field name="immerse_plate" string="Immerse plate"  readonly="state == 'confirmed'" />
+                                    </group>
+                                    <group>
+                                        <label for="photo_before_side1" string="Photo before clean" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="photo_before_side1" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Side 1</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="photo_before_side2" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Side 2</span>
+                                            </div>
+                                        </div>
+                                        <label for="photo_after_side1" string="Photo after clean" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="photo_after_side1" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Side 1</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="photo_after_side2" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Side 2</span>
+                                            </div>
+                                        </div>
+                                    </group>
+                                </group>
+                                <group string="Gasket inspection">
+                                    <group>
+                                        <label for="gasket_material_nbr" string="Gasket material" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="gasket_material_nbr" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>NBR</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="gasket_material_epdm" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>EPDM</span>
+                                            </div>
+                                        </div>
+                                        <label for="gasket_fair" string="Gasket" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="gasket_fair" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Fair</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="gasket_damage" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Damage</span>
+                                            </div>
+                                        </div>
+                                    </group>
+                                    <group>
+                                        <field name="gasket_new_qty" string="New"  readonly="state == 'confirmed'" />
+                                        <label for="gasket_type_glue" string="Gasket type" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="gasket_type_glue" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Glue</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="gasket_type_clip_on" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Clip on</span>
+                                            </div>
+                                        </div>
+                                        <label for="gasket_photo_taken" string="Photo attaching gasket" />
+                                        <div class="d-flex align-items-center gap-1">
+                                            <field name="gasket_photo_taken" nolabel="1"  readonly="state == 'confirmed'" />
+                                            <span>ถ่ายภาพแล้ว</span>
+                                        </div>
+                                    </group>
+                                </group>
+                                <group string="PT test">
+                                    <group>
+                                        <label for="pt_test_yes" string="PT test" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="pt_test_yes" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Yes</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="pt_test_no" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>No</span>
+                                            </div>
+                                        </div>
+                                        <field name="pt_test_count" string="No. of PT test"  readonly="state == 'confirmed'" />
+                                        <field name="pt_new_replaced" string="New replaced"  readonly="state == 'confirmed'" />
+                                    </group>
+                                    <group>
+                                        <field name="pt_pinhole_crack_found" string="Pin hole / crack found"  readonly="state == 'confirmed'" />
+                                        <label for="pt_photo_red_side" string="Photo PT test" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="pt_photo_red_side" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Red side</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="pt_photo_white_side" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>White side</span>
+                                            </div>
+                                        </div>
+                                    </group>
+                                    <field name="pt_remark_fouling" string="Remark fouling" colspan="2" placeholder="Enter remark..."  readonly="state == 'confirmed'" />
+                                </group>
+                                <group string="Assembly &amp; Unit inspection">
+                                    <group>
+                                        <field name="existing_no_of_plate" string="Existing no. of plate"  readonly="state == 'confirmed'" />
+                                        <field name="final_installed" string="Final installed"  readonly="state == 'confirmed'" />
+                                        <field name="a_meas_before_dismantle" string="A-meas. before dismantle"  readonly="state == 'confirmed'" />
+                                        <field name="a_meas_after_assembly" string="After assembly"  readonly="state == 'confirmed'" />
+                                        <label for="service_test" string="Test Result" />
+                                        <div class="d-flex align-items-center flex-wrap gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="service_test" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Service test</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="leakage" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Leakage</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="service_test_passed" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Passed</span>
+                                            </div>
+                                        </div>
+                                    </group>
+                                    <group>
+                                        <label for="hydro_hot_side" string="Hydro Hot side" />
+                                        <div class="d-flex align-items-center flex-wrap gap-2">
+                                            <field name="hydro_hot_side" nolabel="1"  readonly="state == 'confirmed'" />
+                                            <span
+                                                class="d-flex align-items-center flex-wrap gap-2"
+                                                invisible="not hydro_hot_side"
+                                            >
+                                                <field name="hydro_hot_barg" nolabel="1" style="width: 70px"  readonly="state == 'confirmed'" />
+                                                <span>barg/</span>
+                                                <field name="hydro_hot_min" nolabel="1" style="width: 70px"  readonly="state == 'confirmed'" />
+                                                <span>min</span>
+                                                <field name="hydro_hot_passed" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Passed</span>
+                                            </span>
+                                        </div>
+                                        <label for="hydro_cold_side" string="Hydro Cold side" />
+                                        <div class="d-flex align-items-center flex-wrap gap-2">
+                                            <field name="hydro_cold_side" nolabel="1"  readonly="state == 'confirmed'" />
+                                            <span
+                                                class="d-flex align-items-center flex-wrap gap-2"
+                                                invisible="not hydro_cold_side"
+                                            >
+                                                <field name="hydro_cold_barg" nolabel="1" style="width: 70px"  readonly="state == 'confirmed'" />
+                                                <span>barg/</span>
+                                                <field name="hydro_cold_min" nolabel="1" style="width: 70px"  readonly="state == 'confirmed'" />
+                                                <span>min</span>
+                                                <field name="hydro_cold_passed" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Passed</span>
+                                            </span>
+                                        </div>
+                                    </group>
+                                </group>
+                            </sheet>
+                        </form>
+                    </field>
+                </page>
+                <page string="Service Report" name="service_report_page">
+                    <group>
+                        <field name="sr_report_no" string="Report No." />
+                        <field name="sr_report_date" string="Date" />
+                        <field name="sr_customer_id" string="Customer" />
+                    </group>
+                    <group
+                        string="Equipment Summary"
+                        invisible="technician_profile != 'phe'"
+                    >
+                        <field name="check_sheet_summary_line_ids" nolabel="1" colspan="2">
+                            <tree create="false" delete="false" edit="false" no_open="1">
+                                <field name="sequence" widget="handle" />
+                                <!-- <field name="maker" string="Maker" /> -->
+                                <field name="model_id" string="Model" />
+                                <field name="check_sheet_count" string="Check Sheet Plate Count" />
+                                <field
+                                    name="result"
+                                    string="Result"
+                                    widget="badge"
+                                    decoration-success="result == 'pass'"
+                                    decoration-warning="result == 'pending'"
+                                />
+                            </tree>
+                        </field>
+                    </group>
+                    <group
+                        string="Equipment Summary"
+                        invisible="technician_profile != 'pump'"
+                    >
+                        <field name="pump_line_ids" nolabel="1" colspan="2">
+                            <tree create="false" delete="false" edit="false" no_open="1">
+                                <field name="tag_no" />
+                                <!-- <field name="brand" string="Maker" /> -->
+                                <field name="model_id" string="Model" />
+                            </tree>
+                        </field>
+                    </group>
+                    <group string="Cleaning">
+                        <label for="sr_clean_mech_naoh" string="Mechanical" />
+                        <div class="d-flex gap-4">
+                            <div class="d-flex align-items-center gap-1">
+                                <field name="sr_clean_mech_naoh" nolabel="1" />
+                                <span>NaOH</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <field name="sr_clean_mech_acid" nolabel="1" />
+                                <span>Acid</span>
+                            </div>
+                        </div>
+                        <label for="sr_clean_cip_naoh" string="CIP" />
+                        <div class="d-flex gap-4">
+                            <div class="d-flex align-items-center gap-1">
+                                <field name="sr_clean_cip_naoh" nolabel="1" />
+                                <span>NaOH</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <field name="sr_clean_cip_acid" nolabel="1" />
+                                <span>Acid</span>
+                            </div>
+                        </div>
+                        <field name="sr_remark_fouling_hot" string="Remark Fouling — Hot side" />
+                        <field name="sr_remark_fouling_cold" string="Remark Fouling — Cold side" />
+                    </group>
+                    <group string="PT Test Results">
+                        <label for="sr_pt_tested_plates" string="Tested plates" />
+                        <div class="d-flex align-items-center gap-1">
+                            <field name="sr_pt_tested_plates" nolabel="1" style="width: 70px" />
+                            <span>pcs.</span>
+                        </div>
+                        <label for="sr_pt_leakage_found" string="Leakage found" />
+                        <div class="d-flex align-items-center gap-1">
+                            <field name="sr_pt_leakage_found" nolabel="1" style="width: 70px" />
+                            <span>pcs.</span>
+                        </div>
+                        <label for="sr_pt_replaced_from_customer" string="Replaced from" />
+                        <div class="d-flex gap-4">
+                            <div class="d-flex align-items-center gap-1">
+                                <field name="sr_pt_replaced_from_customer" nolabel="1" />
+                                <span>Customer</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <field name="sr_pt_replaced_from_warehouse" nolabel="1" />
+                                <span>Warehouse</span>
+                            </div>
+                        </div>
+                        <label for="sr_pt_old_plate_return" string="Old plate" />
+                        <div class="d-flex gap-4">
+                            <div class="d-flex align-items-center gap-1">
+                                <field name="sr_pt_old_plate_return" nolabel="1" />
+                                <span>Return</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <field name="sr_pt_old_plate_dispose" nolabel="1" />
+                                <span>Dispose</span>
+                            </div>
+                        </div>
+                    </group>
+                    <group string="Re-gasket">
+                        <field name="sr_gasket_material_type" string="Material / Type" />
+                        <label for="sr_gasket_channel_qty" string="Channel gasket" />
+                        <div class="d-flex align-items-center gap-1">
+                            <field name="sr_gasket_channel_qty" nolabel="1" style="width: 70px" />
+                            <span>pcs.</span>
+                        </div>
+                        <label for="sr_gasket_oring_qty" string="O-ring" />
+                        <div class="d-flex align-items-center gap-1">
+                            <field name="sr_gasket_oring_qty" nolabel="1" style="width: 70px" />
+                            <span>pcs.</span>
+                        </div>
+                        <label for="sr_gasket_new_from_customer" string="New gasket from" />
+                        <div class="d-flex gap-4">
+                            <div class="d-flex align-items-center gap-1">
+                                <field name="sr_gasket_new_from_customer" nolabel="1" />
+                                <span>Customer</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <field name="sr_gasket_new_from_warehouse" nolabel="1" />
+                                <span>Warehouse</span>
+                            </div>
+                        </div>
+                    </group>
+                    <group
+                        string="Supervisor's Comment"
+                        invisible="technician_profile != 'phe'"
+                    >
+                        <field
+                            name="sr_supervisor_comment"
+                            nolabel="1"
+                            colspan="2"
+                            placeholder="Enter supervisor's comment..."
+                        />
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

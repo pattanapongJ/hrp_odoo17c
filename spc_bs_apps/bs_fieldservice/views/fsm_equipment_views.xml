@@ -1,0 +1,23 @@
+<odoo>
+    <record id="fsm_equipment_form_view_bs_fieldservice" model="ir.ui.view">
+        <field name="name">fsm.equipment.form.bs.fieldservice</field>
+        <field name="model">fsm.equipment</field>
+        <field name="inherit_id" ref="fieldservice.fsm_equipment_form_view" />
+        <field name="arch" type="xml">
+            <field name="parent_id" position="before">
+                <field name="code" />
+                <field name="serial_number" />
+            </field>
+        </field>
+    </record>
+    <record id="fsm_equipment_tree_view_bs_fieldservice" model="ir.ui.view">
+        <field name="name">fsm.equipment.tree.bs.fieldservice</field>
+        <field name="model">fsm.equipment</field>
+        <field name="inherit_id" ref="fieldservice.fsm_equipment_tree_view" />
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <field name="code" />
+            </field>
+        </field>
+    </record>
+</odoo>

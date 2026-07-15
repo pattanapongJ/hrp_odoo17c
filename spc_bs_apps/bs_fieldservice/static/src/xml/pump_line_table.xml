@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bs_fieldservice.PumpLineTable">
+        <div class="o_bs_line_table table-responsive">
+            <table class="table table-sm table-bordered mb-2">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tag No.</th>
+                        <th>Brand</th>
+                        <th>Model</th>
+                        <th>Flow (m3/h)</th>
+                        <th>Head (m)</th>
+                        <th>Power (kW)</th>
+                        <th>Type</th>
+                        <th>Scope of Service</th>
+                        <th t-if="!props.readonly"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="list.records" t-as="record" t-key="record.id">
+                        <tr>
+                            <td t-esc="record_index + 1"/>
+                            <td>
+                                <input type="text" class="form-control form-control-sm"
+                                    t-att-value="record.data.tag_no" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onTextChange(record, 'tag_no', ev)"/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm"
+                                    t-att-value="record.data.brand" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onTextChange(record, 'brand', ev)"/>
+                            </td>
+                            <td>
+                                <select class="form-select form-select-sm" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onModelChange(record, ev)">
+                                    <option value="">-</option>
+                                    <t t-foreach="state.modelOptions" t-as="opt" t-key="opt.id">
+                                        <option t-att-value="opt.id"
+                                            t-att-selected="record.data.model_id and record.data.model_id[0] === opt.id">
+                                            <t t-esc="opt.code"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm"
+                                    t-att-value="record.data.flow" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onNumberChange(record, 'flow', ev)"/>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm"
+                                    t-att-value="record.data.head" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onNumberChange(record, 'head', ev)"/>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm"
+                                    t-att-value="record.data.power" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onNumberChange(record, 'power', ev)"/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm"
+                                    t-att-value="record.data.equipment_type" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onTextChange(record, 'equipment_type', ev)"/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm"
+                                    t-att-value="record.data.scope_of_service" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onTextChange(record, 'scope_of_service', ev)"/>
+                            </td>
+                            <td t-if="!props.readonly" class="text-center">
+                                <button type="button" class="btn btn-sm btn-link text-danger p-0"
+                                    t-on-click="() => this.removeLine(record)">
+                                    <i class="fa fa-trash-o"/>
+                                </button>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+            <button t-if="!props.readonly" type="button" class="btn btn-link p-0" t-on-click="addLine">
+                <i class="fa fa-plus-square-o me-1"/>Add Pump
+            </button>
+        </div>
+    </t>
+</templates>

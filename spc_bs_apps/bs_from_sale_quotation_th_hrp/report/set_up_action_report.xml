@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="paper_format_bs_from_sale_quotation_th_hrp_report" model="report.paperformat">
+            <field name="name">sales order request quotation TH</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">65</field>
+            <field name="margin_bottom">78</field>
+            <field name="margin_left">10</field>
+            <field name="margin_right">10</field>
+            <field name="header_spacing">64</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="action_report_quotations_employment" model="ir.actions.report">
+            <field name="name">Quotation (TH)</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">bs_from_sale_quotation_th_hrp.report_page</field>
+            <field name="report_file">bs_from_sale_quotation_th_hrp.report_page</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="print_report_name">'Quotation (TH)'</field>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="paper_format_bs_from_sale_quotation_th_hrp_report"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_footer">
+        <div class="row border-top border-bottom border-dark pt-2 pb-2"
+            style="font-family: 'Kanit-Light'; font-size: 13.64px; page-break-inside: avoid;">
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-9 mb-0 p-3 text-center" style="background-color: #d0d0d0;">
+                        <t t-set="currency" t-value="o.currency_id.with_context(lang='th_TH')" />
+                        <t t-esc="currency.amount_to_text(o.amount_total)" />
+                    </div>
+                    <div class="col-3 mb-0"></div>
+                </div>
+                <div class="row pl-3">
+                    <div class="col-12 mb-0 pt-1 text-left">
+                        <span>Remark :</span>
+                    </div>
+                </div>
+                <div class="row pl-3" style="line-height: 30px; height: 60px; overflown-hidden;">
+                    <div class="col-12 mb-0 pt-1 text-left">
+                        <span t-field="o.note" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-4">
+                <div class="row pt-1" style="background-color: #d0d0d0;">
+                    <div class="col-7 pr-0 mr-0 mb-0 text-left">
+                        <span>รวมเป็นเงิน</span>
+                    </div>
+                    <div class="col-5 pl-0 ml-0 mb-0 text-right">
+                        <span t-esc="o.amount_untaxed"
+                            t-options='{"widget": "float", "precision": 2}' />
+                    </div>
+                </div>
+
+                <!-- Tax Calculation for Odoo 17 -->
+                <t t-set="taxes" t-value="[]" />
+                <t t-foreach="o.order_line" t-as="line">
+                    <t
+                        t-foreach="line.tax_id.compute_all(line.price_unit, o.currency_id, line.product_uom_qty, product=line.product_id, partner=o.partner_id)['taxes']"
+                        t-as="tax">
+                        <t t-set="tax_entry" t-value="(tax['name'], tax['amount'])" />
+                        <t t-set="taxes" t-value="taxes + [tax_entry]" />
+                    </t>
+                </t>
+                <!-- Display Tax Groups with Renamed Labels -->
+                <t t-if="taxes">
+                    <t t-set="first_tax" t-value="True" />
+                    <!-- Flag for first tax entry -->
+                    <t t-foreach="taxes" t-as="tax">
+                        <div class="row" style="background-color: #d0d0d0;">
+                            <div class="col-7 pr-0 mr-0 mb-0 text-left">
+                                <t t-if="first_tax">
+                                    <span>มูลค่าที่คำนวณภาษี</span>
+                                    <t t-set="first_tax" t-value="False" />
+                                    <!-- Set flag to False after first entry -->
+                                </t>
+                                <t t-else="">
+                                    <span>ภาษีมูลค่าเพิ่ม</span>
+                                </t>
+                            </div>
+                            <div class="col-5 pl-0 ml-0 mb-0 text-right">
+                                <span t-esc="tax[1]" t-options='{"widget": "float", "precision": 2}' />
+                            </div>
+                        </div>
+                    </t>
+                </t>
+                <t t-else="">
+                    <div class="row" style="background-color: #d0d0d0;">
+                        <div class="col-7 pr-0 mr-0 mb-0 text-left">
+                            <span>VAT</span>
+                        </div>
+                        <div class="col-5 pl-0 ml-0 mb-0 text-right">
+                            <span>0.00</span>
+                        </div>
+                    </div>
+                </t>
+                <div class="row pb-1" style="background-color: #d0d0d0;">
+                    <div class="col-7 pr-0 mr-0 mb-0 text-left">
+                        <span>มูลค่าสุทธิ</span>
+                    </div>
+                    <div class="col-5 pl-0 ml-0 mb-0 text-right">
+                        <span t-esc="o.amount_total" t-options='{"widget": "float", "precision": 2}' />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <t t-set="show_signature"
+            t-value="env['ir.actions.report'].search([('report_name', '=', xmlid)], limit=1).show_signature" />
+        <t t-set="report_signature"
+            t-value="env['ir.actions.report'].search([('report_name', '=', xmlid)], limit=1).signature_image" />
+        <t t-set="tier_validation"
+            t-value="env['ir.actions.report'].search([('report_name', '=', xmlid)], limit=1).tier_validation" />
+        <!-- Signatures Section -->
+        <div class="row p-0 m-0" style="font-family: 'Kanit-Light'; font-size: 13.64px">
+            <div class="col-1"></div>
+            <div class="col-4 text-center" style="padding: 0 36px 0 36px;">
+                <div class="border-bottom border-dark m-0 p-0" style="height: 80px;">
+                    <t t-if="tier_validation">
+                        <t t-if="len(o.review_ids) > 0">
+                            <t t-set="last_review" t-value="o.review_ids[-1]" />
+                            <t t-set="reviewer_employee"
+                                t-value="env['hr.employee'].search([('user_id', '=', last_review.done_by.id)], limit=1)" />
+                        </t>
+                        <t t-if="tier_validation or (show_signature and tier_validation)">
+                            <t t-if="reviewer_employee">
+                                <img t-att-src="image_data_uri(reviewer_employee.signature)"
+                                    alt="Reviewer Signature"
+                                    style="max-width:200px; max-height:65px; margin-top: 10px;" />
+                            </t>
+                        </t>
+                        <t t-elif="show_signature and not tier_validation and report_signature">
+                            <img t-att-src="image_data_uri(report_signature)"
+                                alt="Approval Signature"
+                                style="max-width:200px; max-height:65px; margin-top: 10px;" />
+                        </t>
+                    </t>
+                    <t t-elif="show_signature and report_signature and not tier_validation">
+                        <img t-att-src="image_data_uri(report_signature)" alt="Approval Signature"
+                            style="max-width:200px; max-height:65px; margin-top: 10px;" />
+                    </t>
+                </div>
+                <div class="pt-1" style="padding-top:30px">
+                    <span>ผู้มีอำนาจอนุมัติ</span>
+                    <br />
+                    <div style="padding-top:15px">
+                        <t t-if="tier_validation">
+                            <t t-if="len(o.review_ids) &gt; 0">
+                                <t t-set="len_num" t-value="len(o.review_ids) - 1" />
+                                <t t-set="review_date" t-value="o.review_ids[len_num].reviewed_date" />
+                            </t>
+                            <t t-if="len(o.review_ids) == 0">
+                                <t t-set="review_date" t-value="o.review_ids.reviewed_date" />
+                            </t>
+                            <t t-if="review_date">
+                                <span>
+                                    <t t-esc="review_date.strftime('%d/%m/%Y')" />
+                                </span>
+                            </t>
+                            <t t-else="">
+                                <span>............../............../..............</span>
+                            </t>
+                        </t>
+                        <t t-elif="show_signature and not tier_validation">
+                            <t t-if="o.create_date">
+                                <span>
+                                    <t t-esc="o.create_date.strftime('%d/%m/%Y')" />
+                                </span>
+                            </t>
+                            <t t-else="">
+                                <span>............../............../..............</span>
+                            </t>
+                        </t>
+                        <t t-else="">
+                            <span>............../............../..............</span>
+                        </t>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2"></div>
+            <div class="col-4 text-center" style="padding: 0 36px 0 36px;">
+                <div class="border-bottom border-dark m-0 p-0" style="height: 80px;">
+                    <div class="pt-5">
+                        <span t-field="o.partner_invoice_id.name" />
+                    </div>
+                </div>
+                <div style="padding-top:2px">
+                    <span>ผู้ยืนยันการสั่งซื้อ</span>
+                    <br />
+                    <div style="padding-top:15px">
+                        <span>............../............../..............</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-1"></div>
+        </div>
+    </template>
+</odoo>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bs_fieldservice.EquipmentLineTable">
+        <div class="o_bs_equipment_table">
+            <div class="o_bs_equipment_summary">
+                <div class="o_bs_stat_tile">
+                    <div class="o_bs_stat_value" t-esc="props.record.data.equipment_total_count"/>
+                    <div class="o_bs_stat_label">ทั้งหมด</div>
+                </div>
+                <div class="o_bs_stat_tile o_bs_stat_success">
+                    <div class="o_bs_stat_value" t-esc="props.record.data.equipment_withdrawn_count"/>
+                    <div class="o_bs_stat_label">เบิกแล้ว</div>
+                </div>
+                <div class="o_bs_stat_tile o_bs_stat_success">
+                    <div class="o_bs_stat_value" t-esc="props.record.data.equipment_returned_count"/>
+                    <div class="o_bs_stat_label">คืนแล้ว</div>
+                </div>
+                <div class="o_bs_stat_tile o_bs_stat_danger">
+                    <div class="o_bs_stat_value" t-esc="props.record.data.equipment_overdue_count"/>
+                    <div class="o_bs_stat_label">ค้างคืน</div>
+                </div>
+            </div>
+            <div class="o_bs_line_table table-responsive">
+                <table class="table table-sm table-bordered mb-2">
+                    <thead>
+                        <tr>
+                            <th>รหัส</th>
+                            <th>ชื่ออุปกรณ์</th>
+                            <th>Serial</th>
+                            <th>สถานะ</th>
+                            <th>เบิก/ทั้งหมด</th>
+                            <th>เบิกเมื่อ</th>
+                            <th>คืนเมื่อ</th>
+                            <th>กำหนดคืน</th>
+                            <th>การคืน</th>
+                            <th>หมายเหตุ</th>
+                            <th t-if="!props.readonly"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="list.records" t-as="record" t-key="record.id">
+                            <tr t-att-class="record.data.status === 'overdue' ? 'o_bs_row_overdue' : ''">
+                                <td t-esc="record.data.code"/>
+                                <td class="o_bs_equipment_picker">
+                                    <select class="form-select form-select-sm"
+                                        t-on-change="(ev) => this.onEquipmentChange(record, ev)">
+                                        <option value="">-</option>
+                                        <t t-foreach="state.equipmentOptions" t-as="opt" t-key="opt.id">
+                                            <option t-att-value="opt.id"
+                                                t-att-selected="record.data.equipment_id and record.data.equipment_id[0] === opt.id">
+                                                <t t-esc="opt.name"/>
+                                            </option>
+                                        </t>
+                                    </select>
+                                </td>
+                                <td t-esc="record.data.serial_number"/>
+                                <td>
+                                    <span t-attf-class="o_bs_status_dot o_bs_dot_{{record.data.status}}"/>
+                                    <span t-esc="this.statusLabel(record.data.status)"/>
+                                </td>
+                                <td class="o_bs_qty_cell">
+                                    <div class="d-flex align-items-center gap-1">
+                                        <input type="number" class="form-control form-control-sm"
+                                            t-att-value="record.data.qty_withdrawn"
+                                            t-on-change="(ev) => this.onNumberChange(record, 'qty_withdrawn', ev)"/>
+                                        <span>/</span>
+                                        <input type="number" class="form-control form-control-sm"
+                                            t-att-value="record.data.qty_total"
+                                            t-on-change="(ev) => this.onNumberChange(record, 'qty_total', ev)"/>
+                                    </div>
+                                    <div class="o_bs_progress">
+                                        <div class="o_bs_progress_bar" t-attf-style="width: {{this.progressPct(record)}}%"/>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input type="datetime-local" class="form-control form-control-sm"
+                                        t-att-value="this.formatDateInput(record, 'withdrawn_date')"
+                                        t-on-change="(ev) => this.onDateChange(record, 'withdrawn_date', ev)"/>
+                                </td>
+                                <td>
+                                    <input type="datetime-local" class="form-control form-control-sm"
+                                        t-att-value="this.formatDateInput(record, 'returned_date')"
+                                        t-on-change="(ev) => this.onDateChange(record, 'returned_date', ev)"/>
+                                </td>
+                                <td>
+                                    <input type="datetime-local" class="form-control form-control-sm"
+                                        t-att-value="this.formatDateInput(record, 'return_deadline')"
+                                        t-on-change="(ev) => this.onDateChange(record, 'return_deadline', ev)"/>
+                                </td>
+                                <td t-esc="this.returnStatusLabel(record.data.return_status)"/>
+                                <td>
+                                    <input type="text" class="form-control form-control-sm"
+                                        t-att-value="record.data.notes"
+                                        t-on-change="(ev) => this.onTextChange(record, 'notes', ev)"/>
+                                </td>
+                                <td t-if="!props.readonly" class="text-center">
+                                    <button type="button" class="btn btn-sm btn-link text-danger p-0"
+                                        t-on-click="() => this.removeLine(record)">
+                                        <i class="fa fa-trash-o"/>
+                                    </button>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+                <button t-if="!props.readonly" type="button" class="btn btn-link p-0" t-on-click="addLine">
+                    <i class="fa fa-plus-square-o me-1"/>Add Equipment
+                </button>
+            </div>
+            <div t-if="overdueLines.length" class="alert alert-warning mt-2" role="alert">
+                <t t-foreach="overdueLines" t-as="line" t-key="line.id">
+                    <div>
+                        <i class="fa fa-exclamation-triangle me-1"/>
+                        <t t-esc="line.data.code"/> ค้างคืนเกินกำหนด — กรุณาคืนก่อนปิดงาน
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>

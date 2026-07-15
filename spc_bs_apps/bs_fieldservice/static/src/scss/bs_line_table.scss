@@ -1,0 +1,136 @@
+.o_field_widget[name="phe_line_ids"],
+.o_field_widget[name="pump_line_ids"],
+.o_field_widget[name="equipment_line_ids"] {
+    width: 100%;
+    display: block;
+}
+
+.o_bs_confirm_btn {
+    background-color: #dee2e6;
+}
+
+// The Check Sheet tab has its own search bar (see check_sheet_line_list.js),
+// so ks_list_view_manager's per-column advance-search row (<tr class=
+// "hide-on-modal"> holding <th class="ks_advance_search_row"> cells) is
+// hidden here - only for this field, everywhere else it's untouched.
+.o_field_widget[name="check_sheet_line_ids"] tr.hide-on-modal {
+    display: none !important;
+}
+
+.o_bs_line_table {
+    width: 100%;
+    background-color: #fff;
+
+    table {
+        width: 100%;
+        background-color: #fff;
+    }
+
+    thead th {
+        background-color: #f0f0f0;
+        vertical-align: middle;
+        font-weight: 600;
+    }
+
+    .bs_pt_header,
+    .bs_pt_cell {
+        background-color: #fdf2e3;
+    }
+
+    td,
+    th {
+        padding: 4px 6px;
+        vertical-align: middle;
+    }
+
+    .form-control-sm {
+        min-width: 70px;
+    }
+}
+
+.o_bs_equipment_table {
+    width: 100%;
+    background-color: #fff;
+
+    .o_bs_equipment_summary {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .o_bs_stat_tile {
+        flex: 1;
+        background-color: #f7f7f7;
+        border-radius: 6px;
+        padding: 10px 16px;
+        text-align: center;
+    }
+
+    .o_bs_stat_value {
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    .o_bs_stat_label {
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+    .o_bs_stat_success .o_bs_stat_value {
+        color: #28a745;
+    }
+
+    .o_bs_stat_danger .o_bs_stat_value {
+        color: #dc3545;
+    }
+
+    .o_bs_status_dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 4px;
+    }
+
+    .o_bs_dot_not_withdrawn {
+        background-color: #adb5bd;
+    }
+
+    .o_bs_dot_in_use {
+        background-color: #0d6efd;
+    }
+
+    .o_bs_dot_partial {
+        background-color: #fd7e14;
+    }
+
+    .o_bs_dot_overdue {
+        background-color: #dc3545;
+    }
+
+    .o_bs_dot_returned {
+        background-color: #28a745;
+    }
+
+    .o_bs_progress {
+        height: 4px;
+        background-color: #e9ecef;
+        border-radius: 2px;
+        margin-top: 4px;
+    }
+
+    .o_bs_progress_bar {
+        height: 100%;
+        background-color: #0d6efd;
+        border-radius: 2px;
+    }
+
+    .o_bs_qty_cell .form-control-sm {
+        min-width: 45px;
+        width: 45px;
+    }
+
+    tr.o_bs_row_overdue {
+        background-color: #fdecea;
+    }
+}

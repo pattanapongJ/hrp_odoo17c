@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="bs_fieldservice.PheLineTable">
+        <div class="o_bs_line_table table-responsive">
+            <table class="table table-sm table-bordered mb-2">
+                <thead>
+                    <tr>
+                        <th rowspan="2">#</th>
+                        <th rowspan="2">Tag No.</th>
+                        <th rowspan="2">Brand</th>
+                        <th rowspan="2">Model</th>
+                        <th rowspan="2">Media (H/C)</th>
+                        <th rowspan="2">Plate Mat.</th>
+                        <th rowspan="2">No.Plate</th>
+                        <th rowspan="2">Gasket</th>
+                        <th colspan="6" class="text-center bs_scope_header">Scope of Service (✓)</th>
+                        <th rowspan="2" t-if="!props.readonly"></th>
+                    </tr>
+                    <tr>
+                        <th class="text-center">Mech</th>
+                        <th class="text-center">Chem</th>
+                        <th class="text-center bs_pt_header">PT (%)</th>
+                        <th class="text-center">Re-gskt</th>
+                        <th>Source</th>
+                        <th>Pressure Test</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="list.records" t-as="record" t-key="record.id">
+                        <tr>
+                            <td t-esc="record_index + 1"/>
+                            <td>
+                                <input type="text" class="form-control form-control-sm"
+                                    t-att-value="record.data.tag_no" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onTextChange(record, 'tag_no', ev)"/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm"
+                                    t-att-value="record.data.brand" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onTextChange(record, 'brand', ev)"/>
+                            </td>
+                            <td>
+                                <select class="form-select form-select-sm" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onModelChange(record, ev)">
+                                    <option value="">-</option>
+                                    <t t-foreach="state.modelOptions" t-as="opt" t-key="opt.id">
+                                        <option t-att-value="opt.id"
+                                            t-att-selected="record.data.model_id and record.data.model_id[0] === opt.id">
+                                            <t t-esc="opt.code"/>
+                                        </option>
+                                    </t>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm"
+                                    t-att-value="record.data.media" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onTextChange(record, 'media', ev)"/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm"
+                                    t-att-value="record.data.plate_mat" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onTextChange(record, 'plate_mat', ev)"/>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm"
+                                    t-att-value="record.data.no_plate" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onNumberChange(record, 'no_plate', ev)"/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm"
+                                    t-att-value="record.data.gasket" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onTextChange(record, 'gasket', ev)"/>
+                            </td>
+                            <td class="text-center">
+                                <input type="checkbox"
+                                    t-att-checked="record.data.mech" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onCheckboxChange(record, 'mech', ev)"/>
+                            </td>
+                            <td class="text-center">
+                                <input type="checkbox"
+                                    t-att-checked="record.data.chem" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onCheckboxChange(record, 'chem', ev)"/>
+                            </td>
+                            <td class="bs_pt_cell">
+                                <input type="number" class="form-control form-control-sm"
+                                    t-att-value="record.data.pt_percent" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onNumberChange(record, 'pt_percent', ev)"/>
+                            </td>
+                            <td class="text-center">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input"
+                                        t-att-checked="record.data.regskt_wh" t-att-disabled="props.readonly"
+                                        t-on-change="(ev) => this.onCheckboxChange(record, 'regskt_wh', ev)"/>
+                                    <label class="form-check-label">WH</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input"
+                                        t-att-checked="record.data.regskt_cus" t-att-disabled="props.readonly"
+                                        t-on-change="(ev) => this.onCheckboxChange(record, 'regskt_cus', ev)"/>
+                                    <label class="form-check-label">CUS</label>
+                                </div>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm"
+                                    t-att-value="record.data.source" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onTextChange(record, 'source', ev)"/>
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm"
+                                    t-att-value="record.data.pressure_test" t-att-disabled="props.readonly"
+                                    t-on-change="(ev) => this.onTextChange(record, 'pressure_test', ev)"/>
+                            </td>
+                            <td t-if="!props.readonly" class="text-center">
+                                <button type="button" class="btn btn-sm btn-link text-danger p-0"
+                                    t-on-click="() => this.removeLine(record)">
+                                    <i class="fa fa-trash-o"/>
+                                </button>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+            <button t-if="!props.readonly" type="button" class="btn btn-link p-0" t-on-click="addLine">
+                <i class="fa fa-plus-square-o me-1"/>Add PHE
+            </button>
+        </div>
+    </t>
+</templates>
