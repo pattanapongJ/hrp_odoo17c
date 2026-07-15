@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="bs_fieldservice.WorkerCalendar" owl="1">
+        <div class="o_bs_worker_calendar d-flex flex-column h-100">
+            <div class="o_bs_wc_header d-flex align-items-center gap-2 p-3 border-bottom">
+                <button class="btn btn-secondary" t-on-click="prevMonth">
+                    <i class="fa fa-chevron-left" />
+                </button>
+                <button class="btn btn-secondary" t-on-click="nextMonth">
+                    <i class="fa fa-chevron-right" />
+                </button>
+                <button class="btn btn-secondary" t-on-click="goToday">Today</button>
+                <h4 class="mb-0 ms-2" t-esc="monthLabel" />
+            </div>
+            <div class="o_bs_wc_body d-flex flex-grow-1 overflow-auto">
+                <div class="o_bs_wc_grid flex-grow-1 p-3">
+                    <div class="o_bs_wc_weekdays d-grid">
+                        <t t-foreach="['Sun','Mon','Tue','Wed','Thu','Fri','Sat']" t-as="wd" t-key="wd">
+                            <div class="o_bs_wc_weekday text-center fw-bold" t-esc="wd" />
+                        </t>
+                    </div>
+                    <t t-foreach="weeks" t-as="week" t-key="week_index">
+                        <div class="o_bs_wc_week d-grid">
+                            <t t-foreach="week" t-as="day" t-key="day.iso">
+                                <div
+                                    t-attf-class="o_bs_wc_day {{ !day.inMonth ? 'o_bs_wc_day_out' : '' }} {{ day.isToday ? 'o_bs_wc_day_today' : '' }}"
+                                >
+                                    <div class="o_bs_wc_day_number" t-esc="day.day" />
+                                    <div
+                                        t-if="day.entry"
+                                        t-attf-class="o_bs_wc_entry {{ day.entry.orderId ? 'o_bs_wc_entry_clickable' : '' }} {{ day.entry.fullDay ? 'o_bs_wc_entry_full_day' : '' }}"
+                                        t-attf-style="background-color: {{ day.entry.color }};"
+                                        t-att-title="day.entry.fullDay ? 'ไม่ว่างทั้งวัน' : ''"
+                                        t-on-click="() => this.openOrder(day.entry.orderId)"
+                                        t-esc="day.entry.label"
+                                    />
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                </div>
+                <div class="o_bs_wc_sidebar p-3 border-start">
+                    <h5>Legend</h5>
+                    <t t-foreach="state.legend" t-as="entry" t-key="entry.value">
+                        <div class="o_bs_wc_legend_item">
+                            <span
+                                class="o_bs_wc_dot"
+                                t-attf-style="background-color: {{ entry.color }};"
+                            />
+                            <span t-esc="entry.label" />
+                        </div>
+                    </t>
+                    <div class="o_bs_wc_legend_item">
+                        <span class="o_bs_wc_dot o_bs_wc_dot_full_day" />
+                        ไม่ว่างทั้งวัน (Full day)
+                    </div>
+                    <h5 class="mt-4">Technician</h5>
+                    <select class="form-select" t-on-change="onPersonChange">
+                        <t t-foreach="state.persons" t-as="person" t-key="person.id">
+                            <option
+                                t-att-value="person.id"
+                                t-att-selected="person.id === state.personId"
+                                t-esc="person.name"
+                            />
+                        </t>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

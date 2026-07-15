@@ -220,6 +220,15 @@
                 </group>
                 <group string="Schedule Details (Sub-slot)" name="schedule_slot_grp">
                     <field name="schedule_slot_count" invisible="1" />
+                    <div
+                        class="alert alert-warning"
+                        role="alert"
+                        colspan="2"
+                        invisible="not worker_busy_dates_summary"
+                    >
+                        This worker already has other bookings:
+                        <field name="worker_busy_dates_summary" nolabel="1" readonly="1" />
+                    </div>
                     <!-- <div
                         class="alert alert-info"
                         role="alert"
@@ -232,13 +241,23 @@
                     </div> -->
                     <field name="schedule_slot_ids" nolabel="1" colspan="2">
                         <tree editable="bottom">
+                            <field name="order_id" column_invisible="1" />
                             <field name="sequence" widget="handle" />
                             <field name="person_id" readonly="1" />
                             <field name="slot_type" />
-                            <field name="date_from" />
-                            <field name="date_to" />
-                            <field name="time_from" widget="float_time" />
-                            <field name="time_to" widget="float_time" />
+                            <field name="duration_type" />
+                            <field name="date_from" widget="bs_schedule_slot_date" />
+                            <field name="date_to" widget="bs_schedule_slot_date" />
+                            <field
+                                name="time_from"
+                                widget="float_time"
+                                readonly="duration_type == 'full_day'"
+                            />
+                            <field
+                                name="time_to"
+                                widget="float_time"
+                                readonly="duration_type == 'full_day'"
+                            />
                             <field name="location" />
                         </tree>
                     </field>
