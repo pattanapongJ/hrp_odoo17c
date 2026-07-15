@@ -11,12 +11,32 @@ class TestSaleOrder(TransactionCase):
                 "text": "<p>Terms template ${object.partner_id.name}</p>",
             }
         )
+        self.term_template_2 = self.env["sale.terms_template"].create(
+            {
+                "name": "My second terms and conditions template",
+                "text": "<p>Second terms template</p>",
+            }
+        )
         self.sale_order = self.env.ref("sale.sale_order_2")
 
     def test_on_change_term_template(self):
         self.assertEqual(self.sale_order.note, False)
-        self.sale_order.terms_template_id = self.term_template
-        self.sale_order._onchange_terms_template_id()
+        self.sale_order.terms_template_ids = self.term_template
+        self.sale_order._onchange_terms_template_ids()
         self.assertEqual(
-            self.sale_order.note, "<p>Terms template ${object.partner_id.name}</p>"
+            self.sale_order.note,
+            "<p>Terms template ${object.partner_id.name}</p>",
+        )
+
+    def test_on_change_multiple_term_templates(self):
+        self.sale_order.terms_template_ids = self.term_template
+        self.sale_order._onchange_terms_template_ids()
+        self.sale_order.terms_template_ids = [
+            (4, self.term_template_2.id),
+        ]
+        self.sale_order._onchange_terms_template_ids()
+        self.assertEqual(
+            self.sale_order.note,
+            "<p>Terms template ${object.partner_id.name}</p>"
+            "<p>Second terms template</p>",
         )
