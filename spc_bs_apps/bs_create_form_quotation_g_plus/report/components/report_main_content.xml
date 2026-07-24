@@ -1,101 +1,103 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <template id="report_main_content_g_plus">
-        <div style="font-family: 'AngsanaUPC'; font-size: 8.8pt; " t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id">
+        <div style="font-family: 'AngsanaUPC'; font-size: 12.90px;" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id ">
             <t t-foreach="o._get_quotation_report_pages(15)" t-as="page_lines">
-                <table style="width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed;">
-                    <thead style="font-weight: bold; ">
-                        <tr>
-                            <th rowspan="2" style="width: 10%; text-align: center; height: 22px; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Item</th>
-                            <th rowspan="2" style="width: 40%; text-align: center; height: 22px; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Description</th>
-                            <th colspan="2" style="width: 20%; text-align: center; height: 22px; padding: 2px 4px; border-top: 1px solid #000; border-bottom: none; border-left: 1px solid #000; border-right: 1px solid #000;">Qty</th>
-                            <th rowspan="2" style="width: 15%; text-align: center; height: 22px; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Unit Price</th>
-                            <th rowspan="2" style="width: 15%; text-align: center; height: 22px; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Amount</th>
-                        </tr>
-                        <tr>
-                            <th style="width: 10%; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;"/>
-                            <th style="width: 10%; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;"/>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr t-foreach="page_lines" t-as="entry">
-                            <t t-set="row_number" t-value="entry[0]"/>
-                            <t t-set="line" t-value="entry[1]"/>
-                            <t t-set="is_last_row_of_last_page" t-value="entry_last and page_lines_last"/>
-                            <t t-set="fill_border" t-value="'none' if is_last_row_of_last_page else '1px solid #000'"/>
-                            <td t-attf-style="text-align: center; height: 22px; padding: 2px 4px; border-top: none; border-bottom: #{fill_border}; border-left: 1px solid #000; border-right: 1px solid #000;">
-                                <span t-if="line" t-esc="row_number"/>
-                            </td>
-                            <td t-attf-style="text-align: left; height: 22px; padding: 2px 4px; border-top: none; border-bottom: #{fill_border}; border-left: 1px solid #000; border-right: 1px solid #000;">
-                                <span t-if="line" t-field="line.name"/>
-                            </td>
-                            <td t-attf-style="text-align: center; height: 22px; padding: 2px 4px; border-top: none; border-bottom: #{fill_border}; border-left: 1px solid #000; border-right: 1px solid #000;">
-                                <span t-if="line" t-esc="'{:,.2f}'.format(line.product_uom_qty)"/>
-                            </td>
-                            <td t-attf-style="text-align: center; height: 22px; padding: 2px 4px; border-top: none; border-bottom: #{fill_border}; border-left: 1px solid #000; border-right: 1px solid #000;">
-                                <span t-if="line" t-field="line.product_uom"/>
-                            </td>
-                            <td style="text-align: right; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
-                                <span t-if="line" t-esc="'{:,.2f}'.format(line.price_unit)"/>
-                            </td>
-                            <td style="text-align: right; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
-                                <span t-if="line" t-esc="'{:,.2f}'.format(line.price_subtotal)"/>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div t-if="page_lines_last" style="width: 100%; margin: 0; font-weight: bold;">
-                    <div style="width: 70%; float: left; box-sizing: border-box; vertical-align: top; padding: 6px 4px; font-weight: regular; font-size: 8.8pt; border-top: 1px solid #000;">
-                        <span>Accordling to general Conditions ORGALIME S2000-M2000</span>
-                        <span>Cancellation : Cancellation of order is subject to charge 25% based on order value</span>
-                        <div style="font-weight: bold; margin-top: 4px;">REMARK :</div>
-                        <div style="width: 100%; margin-top: 2px;">
-                            <div style="width: 50%; float: left; box-sizing: border-box; padding: 4px; font-weight: regular; white-space: pre-line; font-size: 7.92pt;">
-                                <span t-esc="o._get_quotation_terms_template_text(0)"/>
+                <div t-attf-style="box-sizing: border-box; border-left: 1px solid #000; border-right: 1px solid #000; #{'' if page_lines_first else 'page-break-before: always;'}">
+                    <table class="table-borderless" style="width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed;">
+                        <thead style="font-weight: bold; ">
+                            <tr>
+                                <th rowspan="2" style="width: 10%; vertical-align: middle; text-align: center; height: 22px; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">Item</th>
+                                <th rowspan="2" style="width: 40%; vertical-align: middle; text-align: center; height: 22px; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Description</th>
+                                <th colspan="2" style="width: 20%; vertical-align: middle; text-align: center; height: 22px; padding: 2px 4px; border-top: 1px solid #000; border-bottom: none; border-left: 1px solid #000; border-right: 1px solid #000;">Qty</th>
+                                <th rowspan="2" style="width: 15%; vertical-align: middle; text-align: center; height: 22px; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Unit Price</th>
+                                <th rowspan="2" style="width: 15%; vertical-align: middle; text-align: center; height: 22px; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000;">Amount</th>
+                            </tr>
+                            <tr>
+                                <th style="width: 10%; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;"/>
+                                <th style="width: 10%; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;"/>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="page_lines" t-as="entry">
+                                <t t-set="row_number" t-value="entry[0]"/>
+                                <t t-set="line" t-value="entry[1]"/>
+                                <td style="text-align: center; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-right: 1px solid #000;">
+                                    <span t-if="line" t-esc="row_number"/>
+                                </td>
+                                <td style="text-align: left; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
+                                    <span t-if="line" t-field="line.name"/>
+                                </td>
+                                <td style="text-align: center; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
+                                    <span t-if="line" t-esc="'{:,.2f}'.format(line.product_uom_qty)"/>
+                                </td>
+                                <td style="text-align: center; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
+                                    <span t-if="line" t-field="line.product_uom"/>
+                                </td>
+                                <td style="text-align: right; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
+                                    <span t-if="line" t-esc="'{:,.2f}'.format(line.price_unit)"/>
+                                </td>
+                                <td style="text-align: right; height: 22px; padding: 2px 4px; border-top: none; border-bottom: 1px solid #000; border-left: 1px solid #000;">
+                                    <span t-if="line" t-esc="'{:,.2f}'.format(line.price_subtotal)"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="width: 100%; font-weight: regular; font-size: 12.90px; display: table; table-layout: fixed;">
+                        <div style="display: table-cell; vertical-align: top; width: 70.1%; padding: 5px; ">
+                            <span>Accordling to general Conditions ORGALIME S2000-M2000</span>
+                            <br/>
+                            <span>Cancellation : Cancellation of order is subject to charge 25% based on order value</span>
+                            <div style="font-weight: bold; padding-top: 2px; margin: 0;">
+                                <span>REMARK :</span>
                             </div>
-                            <div style="width: 50%; float: left; box-sizing: border-box; padding: 4px; font-weight: regular; white-space: pre-line; font-size: 7.92pt;">
-                                <span t-esc="o._get_quotation_terms_template_text(1)"/>
+                            <div style="width: 100%; margin-top: 0;">
+                                <div style="float: left; width: 50%;  font-weight: regular; white-space: pre-line;">
+                                    <span t-esc="o._get_quotation_remark_text(0, page_lines_index)"/>
+                                </div>
+                                <div style="float: left; width: 50%; font-weight: regular; white-space: pre-line;">
+                                    <span t-esc="o._get_quotation_remark_text(1, page_lines_index)"/>
+                                </div>
+                                <div style="clear: both;"/>
                             </div>
-                            <div style="clear: both;"/>
+                        </div>
+                        <div style="display: table-cell; vertical-align: top; width: 29.9%; box-sizing: border-box;">
+                            <table style="width: 100%; border-collapse: collapse; font-weight: bold; table-layout: fixed;">
+                                <tr>
+                                    <td style="width: 50%; text-align: left; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000; vertical-align: middle;">Subtotal</td>
+                                    <td style="width: 50%; text-align: right; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; vertical-align: middle;">
+                                        <span t-if="page_lines_last" t-esc="'{:,.2f}'.format(o.total_amt_wo_global_disc)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000; vertical-align: middle;">Discount</td>
+                                    <td style="text-align: right; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; vertical-align: middle;">
+                                        <span t-if="page_lines_last" t-esc="'{:,.2f}'.format(o.total_global_discount)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000; vertical-align: middle;">Before VAT</td>
+                                    <td style="text-align: right; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; vertical-align: middle;">
+                                        <span t-if="page_lines_last" t-esc="'{:,.2f}'.format(o.amount_untaxed)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000; vertical-align: middle;">VAT</td>
+                                    <td style="text-align: right; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; vertical-align: middle;">
+                                        <span t-if="page_lines_last" t-esc="'{:,.2f}'.format(o.amount_tax)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000; vertical-align: middle;">Total</td>
+                                    <td style="text-align: right; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; vertical-align: middle;">
+                                        <span t-if="page_lines_last" t-esc="'{:,.2f}'.format(o.amount_total)"/>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
-                    <div style="width: 30%; float: left; box-sizing: border-box;">
-                        <table style="width: 100%; border-collapse: collapse; font-weight: bold;">
-                            <tr>
-                                <td style="text-align: left; height: 22px; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Subtotal</td>
-                                <td style="text-align: right; height: 22px; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
-                                    <span t-esc="'{:,.2f}'.format(o.total_amt_wo_global_disc)"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Discount</td>
-                                <td style="text-align: right; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
-                                    <span t-esc="'{:,.2f}'.format(o.total_global_discount)"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Before TAX</td>
-                                <td style="text-align: right; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
-                                    <span t-esc="'{:,.2f}'.format(o.amount_untaxed)"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">TAX</td>
-                                <td style="text-align: right; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
-                                    <span t-esc="'{:,.2f}'.format(o.amount_tax)"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">Total</td>
-                                <td style="text-align: right; height: 22px; padding: 2px 4px; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;">
-                                    <span t-esc="'{:,.2f}'.format(o.amount_total)"/>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div style="clear: both;"/>
+
                 </div>
-                <div t-if="not page_lines_last" style="page-break-after: always;"/>
             </t>
         </div>
     </template>

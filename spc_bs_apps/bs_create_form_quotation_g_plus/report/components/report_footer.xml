@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <template id="report_footer_g_plus">
-        <div style="font-family: 'AngsanaUPC'; font-size: 8.8pt; font-weight: bold; text-align: center;">
-            <div class ="row">
+        <div style="font-family: 'AngsanaUPC'; font-size: 12.90px; font-weight: bold; text-align: center; border-right: 1px solid #000; border-left: 1px solid #000; border-bottom: 1px solid #000;">
+            <div class ="last-page row">
                 <div class="col-1"></div>
                 <div class="col-5">
                     <span>Confirm to order and accept all terms &amp; condition</span>
@@ -16,7 +16,7 @@
 
                     (<span style="font-weight: bold;" t-field="o.env.user.name"></span>)
                     <br/>
-                    <span t-field="o.env.user.function"> </span>
+                    <span t-field="o.env.user.job_title"> </span>
                 </div>
                 <div class="col-3">
                     <div style="width: 80%; margin: 0 auto 10px auto; min-height: 80px;">
