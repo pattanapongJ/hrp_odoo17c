@@ -18,7 +18,10 @@
                                 <th style="width: 10%; border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000;"/>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody >
+                            <tr>
+                                <td colspan="6" style="height: 6px; padding: 0; border: none;"/>
+                            </tr>
                             <tr t-foreach="page_lines" t-as="entry">
                                 <t t-set="row_number" t-value="entry[0]"/>
                                 <t t-set="line" t-value="entry[1]"/>

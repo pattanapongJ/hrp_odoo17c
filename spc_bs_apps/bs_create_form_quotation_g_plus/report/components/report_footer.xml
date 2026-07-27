@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <template id="report_footer_g_plus">
-        <div style="font-family: 'AngsanaUPC'; font-size: 12.90px; font-weight: bold; text-align: center;">
+        <div style="font-family: 'AngsanaUPC'; font-size: 12.90px; text-align: center;">
             <t t-foreach="range(o._get_quotation_total_page_count())" t-as="remark_page_index">
                 <div t-attf-class="js-remark-page-#{remark_page_index + 1}" style="display: none; width: 100%; font-weight: regular; font-size: 12.90px; border-top: 1px solid #000;">
                     <div style="display: table; width: 100%; table-layout: fixed;">
