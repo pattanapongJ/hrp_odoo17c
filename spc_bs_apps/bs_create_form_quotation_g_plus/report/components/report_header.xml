@@ -4,17 +4,22 @@
         <div class="row">
             <div class="col-12" style="font-family: 'AngsanaUPC'; ">
                 <div class="row" style="border-bottom: 1px solid #000; background-color: #CBE6FA;">
-                    <div class="col-2">
-                        <div class="row">
-                            <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 55pt; max-width: 55pt;"/>
-                        </div>
+                    <div class="col-2 p-0 m-0">
+                        <!-- <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style=" max-height: 55pt; max-width: 55pt;"/> -->
+                        <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="
+                     max-width: 95%;     /* Limit the maximum width */
+                     max-height: 86px;   /* Limit the maximum height */
+                     width: auto;        /* Scale width while maintaining aspect ratio */
+                     height: auto;       /* Scale height while maintaining aspect ratio */
+                     object-fit: contain; /* Ensures the image fits inside the boundary */
+                 " alt="Logo"/>
                     </div>
                     <div class="col-10 text-left" style="font-weight: bold; font-size: 14.08px;">
                         <div class="row">
                             <div class = "col-12" style="white-space: nowrap; overflow: hidden;">
                                 <span style="font-size: 17.6px; font-weight: bold;" t-field="o.company_id.name_en"/>
                             </div>
-                        </div> 
+                        </div>
                         <div class="row">
                             <div class="col-3">
                                 <span>Tel : </span>
@@ -39,14 +44,13 @@
                         <div class="row">
                             <div class="col-12">
                                 <span>E-Mail :   </span>
-                                <t t-if="o.company_id.email">
-                                    <span t-esc="o.company_id.email"/>
+                                <t t-if="o.env.user.employee_id.work_email">
+                                    <span t-esc="o.env.user.employee_id.work_email"/>
                                 </t>
-                                <t t-if="not o.company_id.email">
+                                <t t-if="not o.env.user.employee_id.work_email">
                                     <span> - </span>
                                 </t>
                             </div>
-
                         </div>
                         <div class="row">
                             <div class="col-12">
