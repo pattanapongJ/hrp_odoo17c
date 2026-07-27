@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_bs_create_form_receipt_th_hrp_template">
+        <t t-call="bs_create_form_receipt_th_hrp.report_bs_create_form_receipt_th_hrp"></t>
+        <t t-call="bs_create_form_receipt_th_hrp.report_bs_create_form_receipt_th_hrp_copy"></t>
+    </template>
+</odoo>
