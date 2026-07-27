@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_bs_create_form_receipt_th_hrp">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="bs_create_form_receipt_th_hrp.request_layout">
+                    <div class="page">
+                       <t t-call="bs_create_form_receipt_th_hrp.report_main_content"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

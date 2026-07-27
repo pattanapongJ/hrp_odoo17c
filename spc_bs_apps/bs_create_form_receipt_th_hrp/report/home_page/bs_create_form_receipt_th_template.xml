@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- custom report template -->
+    <template id="request_layout">
+        <t t-if="not o" t-set="o" t-value="doc" />
+        <t t-if="not company">
+            <!-- Multicompany -->
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id" />
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()" />
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company" />
+            </t>
+        </t>
+
+        <!-- header -->
+        <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
+            <div class="row pt-2 pb-1" style="font-family: 'Kanit-Light';">
+                <t t-call="bs_create_form_receipt_th_hrp.report_compay_info"/>
+                <div class="col-3 text-right pd-3">
+                    <span style="font-size: 25px">ใบเสร็จรับเงิน</span>
+                    <br/>
+                    <span style="font-size: 16.67px">Receipt</span>
+                    <br/>
+                    <span style="font-size: 16.67px">ต้นฉบับ</span>
+                    <br/>
+                    <div t-if="report_type == 'pdf'" class="text-muted text-right col" style="font-size:12.5px">
+                        <li class="list-inline-item">
+                            <div class="row">
+                                <span>หน้าที่</span>
+                                <span class="page" />/
+                                <span class="topage" />
+                            </div>
+                        </li>
+                    </div>
+                </div>
+            </div>
+            <t t-call="bs_create_form_receipt_th_hrp.report_partner_info"/>
+        </div>
+
+        <!-- content  or article-->
+        <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"
+            t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id"
+            t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-raw="0" />
+        </div>
+
+        <!-- footer -->
+        <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
+            <t t-call="bs_create_form_receipt_th_hrp.report_footer" />
+        </div>
+    </template>
+</odoo>

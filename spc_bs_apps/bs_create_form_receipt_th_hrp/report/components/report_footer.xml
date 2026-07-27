@@ -1,0 +1,203 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_footer">
+        <t t-set="balance_total" t-value="0"/>
+        <t t-set="has_balance_lines" t-value="False"/>
+        <t t-foreach="o.move_id._get_reconciled_invoices_partials()[0]" t-as="rec">
+            <t t-if="rec and len(rec) > 2">
+                <t t-set="invoice_line" t-value="rec[2]"/>
+                <t t-if="invoice_line and invoice_line.move_id">
+                    <t t-set="signed_amount" t-value="invoice_line.balance"/>
+                    <t t-set="balance_total" t-value="balance_total + signed_amount"/>
+                    <t t-set="has_balance_lines" t-value="True"/>
+                    <t t-set="inv" t-value="invoice_line.move_id"/>
+                    <t t-if="inv.move_type in ('out_invoice', 'in_invoice', 'out_receipt', 'in_receipt')">
+                        <t t-foreach="inv._get_reconciled_invoices_partials()[0]" t-as="inv_rec">
+                            <t t-if="inv_rec and len(inv_rec) > 2">
+                                <t t-set="other_line" t-value="inv_rec[2]"/>
+                                <t t-if="other_line and other_line.move_id">
+                                    <t t-set="other_move" t-value="other_line.move_id"/>
+                                    <t t-if="other_move.id != o.move_id.id and not other_move.payment_id and other_move.move_type in ('entry', 'out_refund', 'in_refund')">
+                                        <t t-set="other_signed_amount" t-value="other_line.balance"/>
+                                        <t t-set="balance_total" t-value="balance_total + other_signed_amount"/>
+                                        <t t-set="has_balance_lines" t-value="True"/>
+                                    </t>
+                                </t>
+                            </t>
+                        </t>
+                    </t>
+                </t>
+            </t>
+        </t>
+        <div class="row border-top border-dark pt-2 pb-2" style="font-family: 'Kanit-Light'; font-size: 13.64px; page-break-inside: avoid;">
+            <!-- Left Side: Amount in Words -->
+            <div class="col-8">
+                <div class="row">
+                    <div class="col-9 mb-0 p-3 text-center" style="background-color: #d0d0d0;">
+                        <t t-set="currency" t-value="o.company_id.currency_id"/>
+                        <t t-if="has_balance_lines">
+                            <t t-esc="currency.with_context({'lang': 'th_TH'}).amount_to_text(balance_total)"/>
+                        </t>
+                        <t t-else="">
+                            <span>-</span>
+                        </t>
+                    </div>
+                    <div class="col-3 mb-0"></div>
+                </div>
+            </div>
+            <!-- Right Side: Net Total -->
+            <div class="col-4">
+                <div class="row pt-3 pb-3">
+                    <div class="col-7 mb-0 text-left">
+                        <span>ยอดรวมสุทธิ</span>
+                    </div>
+                    <div class="col-5 mb-0 p-0 pr-1 text-right">
+                        <t t-if="has_balance_lines">
+                            <span t-esc="balance_total" t-options='{"widget": "float", "precision": 2}'/>
+                        </t>
+                        <t t-else="">
+                            <span>-</span>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Methods Section -->
+        <div style="font-family: 'Kanit-Light'; font-size: 13.64px; page-break-inside: avoid;">
+            <div class="row border-top border-dark pt-4 pb-2">
+                <!-- Left Side: Cash & Check Details -->
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-2 d-flex flex-column justify-content-end">
+                            <input type="checkbox"/>
+                            <br/>
+                            <input type="checkbox"/>
+                            <br/>
+                        </div>
+                        <div class="col-1"/>
+                        <div class="col-3">
+                            <span>เงินสด : </span>
+                            <br/>
+                            <span>เช็คธนาคาร : </span>
+                            <br/>
+                            <span>เช็คเลขที่ : </span>
+                            <br/>
+                        </div>
+                        <div class="col-6 pl-3">
+                            <div style="border-bottom: 1px solid black; height: 15px;"></div>
+                            <div style="border-bottom: 1px solid black; height: 23px;"></div>
+                            <div style="border-bottom: 1px solid black; height: 23px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right Side: Branch & Date -->
+                <div class="col-6">
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col-2">
+                            <span>สาขา: </span>
+                            <br/>
+                            <span>ลงวันที่: </span>
+                            <br/>
+                        </div>
+                        <div class="col-6">
+                            <div style="border-bottom: 1px solid black; height: 16px;"></div>
+                            <div style="border-bottom: 1px solid black; height: 22px;"></div>
+                        </div>
+                        <div class="col-3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Notice Section -->
+            <div class="row border-bottom border-dark pb-2 text-left set_center_header_details">
+                <div class="col-8">
+                    <span>เมื่อชำระด้วยเช็ค ดร๊าฟ โปรดสั่งจ่ายในนาม บริษัท เฮอริง พลัส จำกัด </span>
+                    <br/>
+                    <span>ขีดฆ่าคำว่า "หรือผู้ถือหุ้น" ออก และขีดคร่อมเช็คด้วย</span>
+                    <br/>
+                    <span>ใบเสร็จรับเงินฉบับนี้จะสมบูรณ์ก็ต่อเมื่อบริษัทฯ ได้รับเงินเข้าบัญชีเรียบร้อยแล้วเท่านั้น </span>
+                    <br/>
+                    <span>กรณีชำระด้วยเช็ค ใบเสร็จรับเงินฉบับนี้จะสมบูรณ์ก็ต่อเมื่อบริษัทได้รับเงินตามเช็คเรียบร้อย</span>
+                </div>
+                <div class="col-4"></div>
+            </div>
+
+            <!-- Signatures Section -->
+            <div class="last-page">
+                <div class="row pt-2 m-0" style="font-family: 'Kanit-Light'; font-size: 13.64px">
+                    <t t-set="show_signature" t-value="env['ir.actions.report'].search([('report_name', '=', xmlid)], limit=1).show_signature"/>
+                    <t t-set="report_signature" t-value="env['ir.actions.report'].search([('report_name', '=', xmlid)], limit=1).signature_image"/>
+                    <t t-set="tier_validation" t-value="env['ir.actions.report'].search([('report_name', '=', xmlid)], limit=1).tier_validation"/>
+                    <div class="col-1"></div>
+                    <div class="col-4 text-center" style="padding: 0 36px 0 36px;">
+                        <div class="border-bottom border-dark m-0 p-0" style="height: 80px;"></div>
+                        <div class="pt-1" style="padding-bottom:30px">
+                            <span>ผู้รับเงิน/BILL COLLECTOR</span>
+                        </div>
+                        <div>
+                            <span>Date............../............../..............</span>
+                        </div>
+                    </div>
+                    <div class="col-2"></div>
+                    <div class="col-4 text-center" style="padding: 0 36px 0 36px;">
+                        <div class="border-bottom border-dark m-0 p-0" style="height: 80px;">
+                            <t t-if="tier_validation">
+                                <t t-if="len(o.review_ids) > 0">
+                                    <t t-set="last_review" t-value="o.review_ids[-1]"/>
+                                    <t t-set="reviewer_employee" t-value="env['hr.employee'].search([('user_id', '=', last_review.done_by.id)], limit=1)"/>
+                                </t>
+                                <t t-if="tier_validation or (show_signature and tier_validation)">
+                                    <t t-if="reviewer_employee">
+                                        <img t-att-src="image_data_uri(reviewer_employee.signature)" alt="Reviewer Signature" style="max-width:200px; max-height:60px; margin-top: 9px;"/>
+                                    </t>
+                                </t>
+                                <t t-elif="show_signature and not tier_validation and report_signature">
+                                    <img t-att-src="image_data_uri(report_signature)" alt="Approval Signature" style="max-width:200px; max-height:60px; margin-top: 9px;"/>
+                                </t>
+                            </t>
+                            <t t-elif="show_signature and report_signature and not tier_validation">
+                                <img t-att-src="image_data_uri(report_signature)" alt="Approval Signature" style="max-width:200px; max-height:60px; margin-top: 9px;"/>
+                            </t>
+                        </div>
+                        <div class="pt-1" style="padding-top:30px">
+                            <span>ผู้มีอำนาจลงนาม/AUTHORIZED SIGNATURE</span>
+                        </div>
+                        <div style="padding-top:10px">
+                            <t t-if="tier_validation">
+                                <t t-if="len(o.review_ids) &gt; 0">
+                                    <t t-set="len_num" t-value="len(o.review_ids) - 1"/>
+                                    <t t-set="review_date" t-value="o.review_ids[len_num].reviewed_date"/>
+                                </t>
+                                <t t-if="len(o.review_ids) == 0">
+                                    <t t-set="review_date" t-value="o.review_ids.reviewed_date"/>
+                                </t>
+                                <t t-if="review_date">
+                                    <span>Date <t t-esc="review_date.strftime('%d/%m/%Y')"/>
+                                    </span>
+                                </t>
+                                <t t-else="">
+                                    <span>Date............../............../..............</span>
+                                </t>
+                            </t>
+                            <t t-elif="show_signature and not tier_validation">
+                                <t t-if="o.create_date">
+                                    <span>Date <t t-esc="o.create_date.strftime('%d/%m/%Y')" />
+                                    </span>
+                                </t>
+                                <t t-else="">
+                                    <span>Date............../............../..............</span>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <span>Date............../............../..............</span>
+                            </t>
+                        </div>
+                    </div>
+                    <div class="col-1"></div>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

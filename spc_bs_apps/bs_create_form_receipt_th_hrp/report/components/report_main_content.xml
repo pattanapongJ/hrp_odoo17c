@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_main_content">
+        <div class="row pt-2 pb-5" style="font-family: 'Kanit-Light'; font-size: 13.64px;">
+            <style>
+                .row-border {
+                    border-bottom: 1px solid #d9d9d9 !important;
+                }
+            </style>
+            <div class="col-12 p-0 m-0 pt-1">
+                <table class="table table-borderless">
+                    <thead style="background-color: #d9d9d9">
+                        <tr>
+                            <th class="text-center" scope="col" style="width: 50px;">
+                                <p class="p-0 m-0 font-weight-bold">ลำดับ</p> 
+                            </th>
+                            <th class="text-center" scope="col" style="width: 105px;">
+                                <p class="p-0 m-0 font-weight-bold">วันที่</p> 
+                            </th>
+                            <th class="text-center" scope="col" style="width: 105px;">
+                                <p class="p-0 m-0 font-weight-bold">เลขที่ใบแจ้งหนี้</p> 
+                            </th>
+                            <th class="text-center" scope="col" style="width: 105px;">
+                                <p class="p-0 m-0 font-weight-bold">
+                                    <span>ยอดคงเหลือ </span>(<span t-field="o.company_id.currency_id.name"/>)
+                                </p>  
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="row_number" t-value="1"/>
+                        <t t-set="amount_inv" t-value="0"/>
+
+                        <t t-foreach="o.move_id._get_reconciled_invoices_partials()[0]" t-as="rec">
+                            <t t-if="rec and len(rec) > 2">
+                                <t t-set="invoice_line" t-value="rec[2]"/>
+                                <t t-if="invoice_line and invoice_line.move_id">
+                                    <t t-set="signed_amount" t-value="invoice_line.balance"/>
+                                    <t t-set="inv" t-value="invoice_line.move_id"/>
+                                    <t t-set="amount_inv" t-value="amount_inv + signed_amount"/>
+                                    <tr>
+                                        <td class="text-center">
+                                            <span t-esc="row_number"/>
+                                        </td>
+                                        <td class="text-center">
+                                            <span t-field="inv.invoice_date"/>
+                                        </td>
+                                        <td class="text-left">
+                                            <span t-field="inv.name"/>
+                                        </td>
+                                        <td class="text-right">
+                                            <span t-esc="signed_amount" t-options='{"widget": "float", "precision": 2}'/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="row_number" t-value="row_number + 1"/>
+                                    <t t-if="inv.move_type in ('out_invoice', 'in_invoice', 'out_receipt', 'in_receipt')">
+                                        <t t-foreach="inv._get_reconciled_invoices_partials()[0]" t-as="inv_rec">
+                                            <t t-if="inv_rec and len(inv_rec) > 2">
+                                                <t t-set="other_line" t-value="inv_rec[2]"/>
+                                                <t t-if="other_line and other_line.move_id">
+                                                    <t t-set="other_move" t-value="other_line.move_id"/>
+                                                    <t t-if="other_move.id != o.move_id.id and not other_move.payment_id and other_move.move_type in ('entry', 'out_refund', 'in_refund')">
+                                                        <t t-set="other_signed_amount" t-value="other_line.balance"/>
+                                                        <t t-set="amount_inv" t-value="amount_inv + other_signed_amount"/>
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                <span t-esc="row_number"/>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <span t-field="other_move.invoice_date"/>
+                                                            </td>
+                                                            <td class="text-left">
+                                                                <span t-field="other_move.name"/>
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <span t-esc="other_signed_amount" t-options='{"widget": "float", "precision": 2}'/>
+                                                            </td>
+                                                        </tr>
+                                                        <t t-set="row_number" t-value="row_number + 1"/>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                        </t>
+                                    </t>
+                                </t>
+                            </t>
+                        </t>
+
+                        <!-- Show message if no data exists -->
+                        <t t-if="row_number == 1">
+                            <tr>
+                                <td colspan="4" class="text-center">
+                                    <span>No reconciled invoices found</span>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+</odoo>
