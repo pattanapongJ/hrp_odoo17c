@@ -21,23 +21,16 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-7">
-                                <div class ="row">
-                                    <div class="col-2">
-                                        <span>Address : </span>
-                                    </div>
-                                    <div class="col-10">
-                                        <span t-field="g_plus_company.street_en"/>
-                                        <span t-field="g_plus_company.street2_en"/>
-                                        <span t-field="g_plus_company.city_en"/>
-                                        <br/>
-                                        <span t-field="g_plus_company.state_id_en"/>
-                                        <span t-field="g_plus_company.zip_en"/>
-                                        <span t-field="g_plus_company.country_id_en"/>
-                                    </div>
-                                </div>
+                            <div class="col-2">
+                                <span>Address : </span>
                             </div>
-                            <div class="col-5">
+                            <div class="col-10" style="margin-left:-53px;">
+                                <span t-field="g_plus_company.street_en"/>
+                                <span t-field="g_plus_company.street2_en"/>
+                                <br/>
+                                <span t-field="g_plus_company.city_en"/>
+                                <span t-field="g_plus_company.state_id_en"/>
+                                <span t-field="g_plus_company.zip_en"/>
                             </div>
                         </div>
                         <div class="row">
