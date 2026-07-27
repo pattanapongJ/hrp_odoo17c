@@ -1,4 +1,4 @@
-from datetime import datetime, time, timedelta
+from datetime import date, datetime, time, timedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
@@ -111,6 +111,10 @@ class FSMOrder(models.Model):
         string="Actual Work Summary",
         compute="_compute_actual_work_summary",
         store=True,
+    )
+    worker_busy_dates_summary = fields.Char(
+        string="Worker's Other Bookings",
+        compute="_compute_worker_busy_dates_summary",
     )
 
     # Equipments tab
@@ -531,6 +535,60 @@ class FSMOrder(models.Model):
     def _compute_actual_work_summary(self):
         for order in self:
             order.actual_work_summary = order._build_actual_work_summary()
+
+    @api.depends("person_id")
+    def _compute_worker_busy_dates_summary(self):
+        # Not stored, and can't meaningfully @api.depends on OTHER orders'
+        # schedule slots - this is a best-effort, read-time convenience
+        # summary (see the calendar day-graying in schedule_slot_date_field.js
+        # for the real-time equivalent, and _check_no_overlap for the
+        # authoritative server-side check), not a hard data-integrity field.
+        for order in self:
+            if not order.person_id:
+                order.worker_busy_dates_summary = False
+                continue
+            current_id = order._origin.id if order._origin else order.id
+            other_slots = self.env["bs.fsm.order.schedule.slot"].search(
+                [
+                    ("person_id", "=", order.person_id.id),
+                    (
+                        "order_id",
+                        "!=",
+                        current_id if isinstance(current_id, int) else 0,
+                    ),
+                    ("slot_type", "!=", "idle"),
+                ]
+            )
+            if not other_slots:
+                order.worker_busy_dates_summary = False
+                continue
+            parts = []
+            # date_from can be unset on a still-incomplete slot (e.g. a row
+            # just added elsewhere, no date picked yet) - sorted() would
+            # otherwise crash comparing False to a real date.
+            for slot in other_slots.sorted(lambda s: s.date_from or date.min):
+                date_label = (
+                    slot.date_from.strftime("%d/%m/%Y") if slot.date_from else "?"
+                )
+                if slot.date_to and slot.date_to != slot.date_from:
+                    date_label += " - %s" % slot.date_to.strftime("%d/%m/%Y")
+                time_label = "%s-%s" % (
+                    self._format_float_time(slot.time_from),
+                    self._format_float_time(slot.time_to),
+                )
+                parts.append(
+                    "%s (%s %s)" % (slot.order_id.name, date_label, time_label)
+                )
+            order.worker_busy_dates_summary = ", ".join(parts)
+
+    @api.model
+    def _format_float_time(self, value):
+        hours = int(value or 0.0)
+        minutes = round((value or 0.0) % 1 * 60)
+        if minutes == 60:
+            hours += 1
+            minutes = 0
+        return "%02d:%02d" % (hours, minutes)
 
     def _build_actual_work_summary(self):
         self.ensure_one()

@@ -1,0 +1,14 @@
+<odoo>
+    <record id="action_bs_worker_calendar" model="ir.actions.client">
+        <field name="name">Bookings</field>
+        <field name="tag">bs_fieldservice.worker_calendar</field>
+    </record>
+
+    <menuitem
+        id="menu_bs_worker_calendar"
+        name="Calendar"
+        parent="fieldservice.root"
+        action="action_bs_worker_calendar"
+        sequence="25"
+    />
+</odoo>

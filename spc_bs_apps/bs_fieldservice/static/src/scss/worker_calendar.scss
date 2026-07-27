@@ -1,0 +1,88 @@
+.o_bs_worker_calendar {
+    .o_bs_wc_sidebar {
+        width: 220px;
+        min-width: 220px;
+    }
+
+    .o_bs_wc_weekdays,
+    .o_bs_wc_week {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+    }
+
+    .o_bs_wc_weekday {
+        padding: 4px 0;
+        color: #6c757d;
+    }
+
+    .o_bs_wc_day {
+        min-height: 90px;
+        border: 1px solid #e9ecef;
+        padding: 4px;
+        overflow: hidden;
+    }
+
+    .o_bs_wc_day_out {
+        background-color: #f8f9fa;
+        color: #adb5bd;
+    }
+
+    .o_bs_wc_day_today .o_bs_wc_day_number {
+        display: inline-block;
+        background-color: #714b67;
+        color: #fff;
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        text-align: center;
+        line-height: 22px;
+    }
+
+    // Entry/legend dot colors come from SLOT_TYPE_COLORS in worker_calendar.js
+    // (inline style), mirroring bs.fsm.order.schedule.slot's slot_type
+    // Selection directly - only structural styling lives here.
+    .o_bs_wc_entry {
+        margin-top: 4px;
+        padding: 2px 4px;
+        border-radius: 4px;
+        font-size: 11px;
+        line-height: 1.3;
+        overflow-wrap: break-word;
+        color: #212529;
+    }
+
+    .o_bs_wc_entry_clickable {
+        cursor: pointer;
+
+        &:hover {
+            outline: 2px solid rgba(0, 0, 0, 0.25);
+        }
+    }
+
+    // Duration = Full day - the slot occupies the whole day, so it's shown
+    // with a solid dark border on top of its normal slot_type color, to
+    // read as "unavailable all day" at a glance versus a partial-time slot.
+    .o_bs_wc_entry_full_day {
+        border: 2px solid #842029;
+        font-weight: 600;
+    }
+
+    .o_bs_wc_legend_item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+
+    .o_bs_wc_dot {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+    }
+
+    .o_bs_wc_dot_full_day {
+        background-color: transparent;
+        border: 2px solid #842029;
+    }
+}

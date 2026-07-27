@@ -63,7 +63,7 @@ class FSMOrderCheckSheetLine(models.Model):
     connection = fields.Char(string="Connection")
     tightening = fields.Char(string="Tightening")
     leakage_check = fields.Selection(
-        [("pass", "Pass"), ("fail", "Fail")], string="Leakage check"
+        [("no_leakage", "No leakage"), ("leakage", "Leakage")], string="Leakage check"
     )
 
     # Physical Condition
@@ -73,11 +73,17 @@ class FSMOrderCheckSheetLine(models.Model):
     pc_tightening = fields.Selection(CONDITION_SELECTION, string="Tightening")
 
     # Plate inspection
-    plate_material = fields.Char(string="Plate material")
-    plate = fields.Selection(CONDITION_SELECTION, string="Plate")
-    thick_plate = fields.Float(string="Thick plate")
-    angle = fields.Char(string="Angle")
-    immerse_plate = fields.Boolean(string="Immerse plate")
+    plate_material_ss316 = fields.Boolean(string="SS316")
+    plate_material_ti = fields.Boolean(string="Ti")
+    plate_damage = fields.Boolean(string="Damage")
+    thick_plate_05mm = fields.Boolean(string="0.5 mm.")
+    thick_plate_06mm = fields.Boolean(string="0.6 mm.")
+    thick_plate_good = fields.Boolean(string="Good")
+    thick_plate_fair = fields.Boolean(string="Fair")
+    angle_high = fields.Boolean(string="High")
+    angle_low = fields.Boolean(string="Low")
+    immerse_plate_naoh = fields.Boolean(string="NaOH")
+    immerse_plate_acid = fields.Boolean(string="Acid")
     photo_before_side1 = fields.Boolean(string="Side 1")
     photo_before_side2 = fields.Boolean(string="Side 2")
     photo_after_side1 = fields.Boolean(string="Side 1")
@@ -119,6 +125,56 @@ class FSMOrderCheckSheetLine(models.Model):
     hydro_cold_barg = fields.Char(string="barg")
     hydro_cold_min = fields.Char(string="min")
     hydro_cold_passed = fields.Boolean(string="Passed")
+
+    @api.onchange("plate_material_ss316")
+    def _onchange_plate_material_ss316(self):
+        if self.plate_material_ss316:
+            self.plate_material_ti = False
+
+    @api.onchange("plate_material_ti")
+    def _onchange_plate_material_ti(self):
+        if self.plate_material_ti:
+            self.plate_material_ss316 = False
+
+    @api.onchange("thick_plate_05mm")
+    def _onchange_thick_plate_05mm(self):
+        if self.thick_plate_05mm:
+            self.thick_plate_06mm = False
+
+    @api.onchange("thick_plate_06mm")
+    def _onchange_thick_plate_06mm(self):
+        if self.thick_plate_06mm:
+            self.thick_plate_05mm = False
+
+    @api.onchange("thick_plate_good")
+    def _onchange_thick_plate_good(self):
+        if self.thick_plate_good:
+            self.thick_plate_fair = False
+
+    @api.onchange("thick_plate_fair")
+    def _onchange_thick_plate_fair(self):
+        if self.thick_plate_fair:
+            self.thick_plate_good = False
+
+    @api.onchange("angle_high")
+    def _onchange_angle_high(self):
+        if self.angle_high:
+            self.angle_low = False
+
+    @api.onchange("angle_low")
+    def _onchange_angle_low(self):
+        if self.angle_low:
+            self.angle_high = False
+
+    @api.onchange("immerse_plate_naoh")
+    def _onchange_immerse_plate_naoh(self):
+        if self.immerse_plate_naoh:
+            self.immerse_plate_acid = False
+
+    @api.onchange("immerse_plate_acid")
+    def _onchange_immerse_plate_acid(self):
+        if self.immerse_plate_acid:
+            self.immerse_plate_naoh = False
 
     @api.model_create_multi
     def create(self, vals_list):

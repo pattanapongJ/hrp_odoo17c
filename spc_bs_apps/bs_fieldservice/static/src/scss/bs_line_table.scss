@@ -17,6 +17,21 @@
     display: none !important;
 }
 
+// Schedule Sub-slot date picker (see schedule_slot_date_field.js):
+// - partially-booked days (custom time on another order) get a soft tint,
+//   still selectable.
+// - fully-booked days (a "Full day" slot on another order) are hard
+//   blocked (isDateValid) and shown in a stronger red.
+.o_bs_slot_busy_day {
+    background-color: #f8d7da;
+}
+
+.o_bs_slot_busy_day_full {
+    background-color: #f1aeb5;
+    color: #58151c;
+    pointer-events: none;
+}
+
 .o_bs_line_table {
     width: 100%;
     background-color: #fff;
