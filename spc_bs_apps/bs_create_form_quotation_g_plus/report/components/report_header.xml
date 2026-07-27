@@ -3,9 +3,8 @@
     <template id="report_header_info_g_plus">
         <div class="row">
             <div class="col-12" style="font-family: 'AngsanaUPC'; ">
-                <div class="row" style="border-bottom: 1px solid #000; background-color: #CBE6FA;">
-                    <div class="col-2 p-0 m-0">
-                        <!-- <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style=" max-height: 55pt; max-width: 55pt;"/> -->
+                <div style="display: table; width: 100%; border-bottom: 1px solid #000; background-color: #CBE6FA;">
+                    <div style="display: table-cell; vertical-align: middle; text-align: center; width: 16.6667%;">
                         <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="
                      max-width: 95%;     /* Limit the maximum width */
                      max-height: 86px;   /* Limit the maximum height */
@@ -14,7 +13,7 @@
                      object-fit: contain; /* Ensures the image fits inside the boundary */
                  " alt="Logo"/>
                     </div>
-                    <div class="col-10 text-left" style="font-weight: bold; font-size: 14.08px;">
+                    <div style="display: table-cell; vertical-align: middle; text-align: left; width: 83.3333%; font-weight: bold; font-size: 14.08px;">
                         <div class="row">
                             <div class = "col-12" style="white-space: nowrap; overflow: hidden;">
                                 <span style="font-size: 17.6px; font-weight: bold;" t-field="o.company_id.name_en"/>
@@ -74,7 +73,7 @@
                         <span class="topage"/>
                     </div>
                 </div>
-                <div class="row pb-2 pt-3" style="font-weight: bold; font-size: 16.42px;">
+                <div class="row pb-2 pt-3" style="font-weight: bold; font-size: 17.6px;">
                     <div class="col-4"/>
                     <div class="col-4 text-center">
                         <span>Quotation</span>
