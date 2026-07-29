@@ -59,8 +59,11 @@ export class PheLineTable extends Component {
         }
         const updates = { model_id: modelValue };
         // Auto-fill Brand from the selected Model's master data, when set.
+        // bs.equipment.model.brand is a Many2one (bs.equipment.brand), so
+        // searchRead returns it as [id, name] - this line's own Brand
+        // field is still plain text, so take just the name.
         if (opt && opt.brand) {
-            updates.brand = opt.brand;
+            updates.brand = opt.brand[1];
         }
         await record.update(updates);
         await this.syncCheckSheetSibling(record, "model_id", modelValue);
