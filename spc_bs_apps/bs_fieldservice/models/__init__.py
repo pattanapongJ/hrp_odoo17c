@@ -1,3 +1,4 @@
+from . import bs_equipment_brand
 from . import bs_equipment_model
 from . import fsm_equipment
 from . import fsm_order

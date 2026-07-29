@@ -5,6 +5,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="code" />
+                <field name="brand" />
             </tree>
         </field>
     </record>
@@ -17,7 +18,7 @@
                 <sheet>
                     <group>
                         <field name="code" />
-                        <field name="brand" />
+                        <field name="brand" options="{'no_create': True}" />
                     </group>
                 </sheet>
             </form>
@@ -36,5 +37,43 @@
         parent="fieldservice.config"
         action="action_bs_equipment_model"
         sequence="40"
+    />
+
+    <record id="view_bs_equipment_brand_tree" model="ir.ui.view">
+        <field name="name">bs.equipment.brand.tree</field>
+        <field name="model">bs.equipment.brand</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_bs_equipment_brand_form" model="ir.ui.view">
+        <field name="name">bs.equipment.brand.form</field>
+        <field name="model">bs.equipment.brand</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bs_equipment_brand" model="ir.actions.act_window">
+        <field name="name">Brands</field>
+        <field name="res_model">bs.equipment.brand</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem
+        id="menu_bs_equipment_brand"
+        name="Brands"
+        parent="fieldservice.config"
+        action="action_bs_equipment_brand"
+        sequence="35"
     />
 </odoo>
