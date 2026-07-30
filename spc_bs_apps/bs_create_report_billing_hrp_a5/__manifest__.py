@@ -1,6 +1,6 @@
 {
     'name': 'BS Create Report Billing HRP A5',
-    'version': '17.0.0.3',
+    'version': '17.0.0.4',
     'author': 'Basic-Solution Co., Ltd.',
     'website': 'https://www.basic-solution.com/',
     "category": "Accounting",

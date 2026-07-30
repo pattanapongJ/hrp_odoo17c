@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <template id="report_partner_info">
-        <div class="row mx-0 pt-1 pb-1" style="font-family: 'Kanit-Light'; font-size: 13.64px">
+        <div class="row mx-0 pt-1 pb-1" style="font-family: 'Kanit-Light'; font-size: 15.64px">
             <div class="col-1"></div>
             <div class="col-6">
                 <div class="row">
@@ -36,8 +36,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-1"></div>
-            <div class="col-4 pt-1 pb-1 mr-1 ml-5">
+            <!-- <div class="col-1"></div> -->
+            <div class="col-5 pt-1 pb-1 mr-1 ml-5">
                 <div class="row pt-1 pb-1">
                     <div class="col-6 p-0 mb-0 pl-2 text-left">
                         <span>เลขที่ใบวางบิล:  </span>

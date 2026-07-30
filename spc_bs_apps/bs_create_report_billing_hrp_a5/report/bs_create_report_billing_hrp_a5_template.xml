@@ -22,8 +22,8 @@
             <div class="row mx-0 pt-1 pb-1" style="font-family: 'Kanit-Light';">
                 <t t-call="bs_create_report_billing_hrp_a5.report_compay_info"/>
                 <div class="col-4 text-right">
-                    <span style="font-size: 18px">ใบวางบิล</span>
-                    <div t-if="report_type == 'pdf'" class="text-muted" style="font-size:11px;">
+                    <span style="font-size: 20px">ใบวางบิล</span>
+                    <div t-if="report_type == 'pdf'" class="text-muted" style="font-size:13px;">
                         <span>หน้าที่ </span>
                         <span class="page" />
                         <span> / </span>

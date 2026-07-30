@@ -114,9 +114,11 @@
                                             <span>ในนาม</span>
                                             <span t-field="o.company_id.name"/>
                                         </div>
-                                        <div style="padding-top:5px">
+                                        <div class="opacity-0 select-none" style="padding-top:15px">.</div>
+                                        <div style="padding-top:20px">
                                             <span>ชื่อผู้วางบิล</span>
-                                            <span t-esc="o.env.user.name"/>
+                                            <!-- <span t-esc="o.env.user.name"/> -->
+                                            <span>.....................................................</span>
                                         </div>
                                     </div>
                                 </div>
