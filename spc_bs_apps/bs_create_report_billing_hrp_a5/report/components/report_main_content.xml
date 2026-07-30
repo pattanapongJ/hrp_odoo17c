@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <template id="report_main_content">
-        <div class="row mx-0 pt-1" style="font-family: 'Kanit-Light'; font-size: 12px;">
+        <div class="row mx-0 pt-1" style="font-family: 'Kanit-Light'; font-size: 14px;">
             <div class="col-12 p-0 m-0">
                 <t t-foreach="o.get_billing_report_pages_a5()" t-as="page">
                     <table class="table" style="margin: 0; border-collapse: collapse; table-layout: fixed; width: 100%; border-top: 1px solid #000;">
@@ -104,7 +104,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="7" style="border-top: none; border-left: 1px dashed #000; border-right: 1px dashed #000; padding: 4px; font-size: 11px; height: 53px;">
+                            <td colspan="7" style="border-top: none; border-left: 1px dashed #000; border-right: 1px dashed #000; padding: 4px; font-size: 13px; height: 53px;">
                                 <div style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; max-height: 45px; line-height: 15px;">
                                     <span>หมายเหตุ : </span>
                                     <span t-field="o.narration" />
@@ -130,9 +130,10 @@
                                             <span>ในนาม</span>
                                             <span t-field="o.company_id.name" />
                                         </div>
-                                         <div style="padding-top:6px">
+                                         <div style="padding-top:20px">
                                             <span>ชื่อผู้วางบิล</span>
-                                            <span t-esc="o.env.user.name"/>
+                                            <!-- <span t-esc="o.env.user.name"/> -->
+                                            <sapn>.....................................................</sapn>
                                         </div>
                                     </div>
                                 </div>
