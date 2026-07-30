@@ -12,13 +12,13 @@ class FSMOrderScheduleSlot(models.Model):
     order_id = fields.Many2one(
         "fsm.order", string="Order", required=True, ondelete="cascade"
     )
-    person_id = fields.Many2one(
-        related="order_id.person_id",
-        string="Worker",
-        store=True,
-        help="Mirrors the order's Assigned To - an order only ever has one "
-        "worker, so slots don't need an independent worker selection.",
-    )
+    # Freely selectable by the user, but restricted in the view (domain +
+    # no_create) to only the order's own Request Workers via
+    # requested_person_ids - an order can now have several Request
+    # Workers, each with their own set of sub-slots, so this is no longer
+    # mirrored from a single Assigned To. Never auto-added: a sub-slot row
+    # only ever exists if a user creates it here directly.
+    person_id = fields.Many2one("fsm.person", string="Worker")
     order_request_early = fields.Datetime(
         related="order_id.request_early",
         string="Order Earliest Request Date",
@@ -154,16 +154,27 @@ class FSMOrderScheduleSlot(models.Model):
         other orders for the same worker (person_id) - idle slots never
         count as a conflict. Returns None if there's no overlap. Shared by
         the hard constraint below and the onchange warning, so both use
-        the exact same definition of "overlap"."""
+        the exact same definition of "overlap".
+
+        The same-order check only compares slots that share the SAME
+        worker - an order can now have several Request Workers, each with
+        their own independent sub-slots, so two DIFFERENT workers legitimately
+        overlapping in time on the same order is not a conflict at all (it's
+        two people working in parallel). A slot with no worker chosen yet
+        skips this check entirely - there's nothing to compare identity
+        against."""
         self.ensure_one()
         start, end = self._get_datetime_range()
         if not start or not end:
             return None
-        for other in self.order_id.schedule_slot_ids - self:
-            other_start, other_end = other._get_datetime_range()
-            if other_start and other_end and start < other_end and other_start < end:
-                return other, True, other_start, other_end
         if self.person_id:
+            for other in self.order_id.schedule_slot_ids - self:
+                if other.person_id != self.person_id:
+                    continue
+                other_start, other_end = other._get_datetime_range()
+                if other_start and other_end and start < other_end and other_start < end:
+                    return other, True, other_start, other_end
+
             current_id = self._origin.id if self._origin else self.id
             cross_order_others = self.env["bs.fsm.order.schedule.slot"].search(
                 [
@@ -213,7 +224,9 @@ class FSMOrderScheduleSlot(models.Model):
                 )
             )
 
-    @api.onchange("duration_type", "date_from", "date_to", "time_from", "time_to")
+    @api.onchange(
+        "duration_type", "date_from", "date_to", "time_from", "time_to", "person_id"
+    )
     def _onchange_check_no_overlap_warning(self):
         # @api.constrains only runs on actual Save (write/create) - this
         # gives the same feedback immediately while still editing in the

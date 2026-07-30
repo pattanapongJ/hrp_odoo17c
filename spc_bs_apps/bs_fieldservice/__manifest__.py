@@ -1,6 +1,6 @@
 {
     "name": "BS Field Service - Technician Profile",
-    "version": "17.0.1.0.5",
+    "version": "17.0.1.0.6",
     "summary": "Add Technician Profile (PHE / Pump) to Field Service Orders "
     "with profile-specific tabs",
     "author": "Basic Solution Co.,Ltd.",
@@ -11,6 +11,7 @@
         "fieldservice_stock",
         "fieldservice_activity",
         "fieldservice_sale",
+        "fieldservice_calendar",
     ],
     "data": [
         "security/ir.model.access.csv",

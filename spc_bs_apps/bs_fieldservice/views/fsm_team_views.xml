@@ -7,6 +7,9 @@
             <field name="location_id" position="after">
                 <field name="team_side" />
             </field>
+            <field name="calendar_user_id" position="after">
+                <field name="team_manager_id" />
+            </field>
         </field>
     </record>
 </odoo>

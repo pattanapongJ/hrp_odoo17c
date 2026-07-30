@@ -13,10 +13,25 @@ class FSMOrder(models.Model):
         required=True,
         default="phe",
     )
-    person_id = fields.Many2one(required=True)
+    # No longer picked directly (locked readonly="1" in the view, alongside
+    # team_id) - derived from the order's own team_id (itself already
+    # computed from location_id by base fieldservice's _compute_team_id),
+    # mirroring that team's Team Manager. store+precompute+readonly=False
+    # matches team_id's own pattern, so this keeps working on create()/API
+    # calls too, not just interactively in the browser (a plain @api.onchange
+    # would only ever fire during UI form editing).
+    person_id = fields.Many2one(
+        compute="_compute_person_id_from_team",
+        store=True,
+        readonly=False,
+        precompute=True,
+    )
 
     # Service Request SR - header
-    job_no = fields.Char(string="Job No.")
+    # Auto-derived from QT No. (sale_id.name) on create()/write() below -
+    # never typed in by the user, hence readonly here (see
+    # _job_no_from_qt_no/_onchange_sale_id_set_job_no).
+    job_no = fields.Char(string="Job No.", readonly=True, copy=False)
     customer_po = fields.Char(string="Customer PO")
     sr_date = fields.Date(string="Date", default=fields.Date.context_today)
     full_address = fields.Char(string="Address", compute="_compute_full_address")
@@ -97,9 +112,19 @@ class FSMOrder(models.Model):
         string="Request Workers",
         compute="_compute_worker_line_ids",
         store=True,
+        readonly=False,
     )
     schedule_slot_ids = fields.One2many(
         "bs.fsm.order.schedule.slot", "order_id", string="Schedule Sub-slots"
+    )
+    # Exposed purely so the Schedule Sub-slot tree's Worker field can
+    # restrict its selection to this order's own Request Workers (see
+    # domain on schedule_slot_ids.person_id in fsm_order_views.xml) - not
+    # meant to be shown/edited directly.
+    requested_person_ids = fields.Many2many(
+        "fsm.person",
+        compute="_compute_requested_person_ids",
+        string="Requested Workers",
     )
     worker_status_log_ids = fields.One2many(
         "bs.fsm.order.worker.status.log", "order_id", string="Worker Status Log"
@@ -204,6 +229,39 @@ class FSMOrder(models.Model):
                 for line in lines.filtered(lambda ln: ln.status == "overdue")
             )
 
+    @api.model
+    def _job_no_from_qt_no(self, qt_no):
+        """Derive Job No. from the linked Quotation's QT No. by swapping
+        the leading "QT" for "JOB" (e.g. QT-2026-0015 -> JOB-2026-0015)."""
+        if not qt_no:
+            return False
+        if qt_no[:2].upper() == "QT":
+            return "JOB" + qt_no[2:]
+        return qt_no
+
+    @api.constrains("job_no")
+    def _check_job_no_unique(self):
+        for order in self:
+            if not order.job_no:
+                continue
+            duplicate = self.search_count(
+                [("job_no", "=", order.job_no), ("id", "!=", order.id)]
+            )
+            if duplicate:
+                raise ValidationError(
+                    _(
+                        'Job No. "%(job_no)s" already exists on another '
+                        "Service Request.",
+                        job_no=order.job_no,
+                    )
+                )
+
+    @api.onchange("sale_id")
+    def _onchange_sale_id_set_job_no(self):
+        self.job_no = (
+            self._job_no_from_qt_no(self.sale_id.name) if self.sale_id else False
+        )
+
     @api.onchange("technician_profile")
     def _onchange_technician_profile(self):
         self.phe_line_ids = [(5, 0, 0)]
@@ -242,11 +300,43 @@ class FSMOrder(models.Model):
                 line.work_finish = self.request_late or False
 
     def write(self, vals):
+        if "sale_id" in vals:
+            sale = self.env["sale.order"].browse(vals["sale_id"])
+            vals["job_no"] = self._job_no_from_qt_no(sale.name)
         res = super().write(vals)
         if "request_early" in vals or "request_late" in vals:
             for order in self:
                 order._sync_check_sheet_work_dates()
+        if {
+            "schedule_slot_ids",
+            "worker_line_ids",
+            "location_id",
+            "scheduled_date_start",
+            "scheduled_date_end",
+        } & vals.keys():
+            self._refresh_worker_line_status()
         return res
+
+    def _refresh_worker_line_status(self):
+        """Force-recompute each Request Worker's Conflict/Available status
+        against the FINAL, just-written state of this order (schedule sub-
+        slots included). worker_line_ids.status is a readonly=False stored
+        compute field, so the web client's save payload always includes an
+        explicit value for it (whatever the last onchange in the browser
+        computed) - when schedule_slot_ids is written in that SAME create/
+        write call, Odoo's dependency-triggered recompute doesn't override
+        that explicit client value, leaving it stuck on a stale status
+        (e.g. still "available" even though a sub-slot for today was just
+        added). Calling this straight after super().create()/write() with
+        the fully persisted data guarantees the correct, final status."""
+        for order in self:
+            for line in order.worker_line_ids:
+                new_status = order._get_worker_conflict_status(line.person_id)
+                if line.status != new_status:
+                    order._log_worker_status_change(
+                        line.person_id, line.status, new_status
+                    )
+                    line.status = new_status
 
     def _sync_check_sheet_lines(self):
         """Keep check_sheet_line_ids 1:1 with the Assigned Worker equipment
@@ -375,6 +465,11 @@ class FSMOrder(models.Model):
         if self.location_id:
             self.sr_customer_id = self.location_id.partner_id
 
+    @api.depends("team_id", "team_id.team_manager_id")
+    def _compute_person_id_from_team(self):
+        for order in self:
+            order.person_id = order.team_id.team_manager_id
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -382,7 +477,12 @@ class FSMOrder(models.Model):
                 vals["sr_report_no"] = self.env["ir.sequence"].next_by_code(
                     "bs.fsm.order.service_report"
                 )
-        return super().create(vals_list)
+            if not vals.get("job_no") and vals.get("sale_id"):
+                sale = self.env["sale.order"].browse(vals["sale_id"])
+                vals["job_no"] = self._job_no_from_qt_no(sale.name)
+        orders = super().create(vals_list)
+        orders._refresh_worker_line_status()
+        return orders
 
     def _calc_scheduled_dates(self, vals):
         # Core recalculates scheduled_date_start from
@@ -421,7 +521,8 @@ class FSMOrder(models.Model):
                 )
 
     @api.depends(
-        "person_id",
+        "location_id",
+        "location_id.person_ids.person_id",
         "scheduled_date_start",
         "scheduled_date_end",
         "schedule_slot_ids.date_from",
@@ -429,28 +530,42 @@ class FSMOrder(models.Model):
         "schedule_slot_ids.slot_type",
     )
     def _compute_worker_line_ids(self):
+        # Purely additive - never removes a line, whether it was added here
+        # from a previous Location or typed in manually (worker_line_ids is
+        # readonly=False specifically so users can still add extra workers
+        # beyond the Location's own list). Only two things happen: (1) any
+        # worker on location_id.person_ids not already on the list gets
+        # added, and (2) every EXISTING line's Conflict/Available status is
+        # refreshed in place, since that can change independently (e.g. a
+        # schedule sub-slot edit) regardless of who's on the list.
         for order in self:
             existing = order.worker_line_ids
-            if not order.person_id:
-                order.worker_line_ids = [(5, 0, 0)]
-                continue
-            new_status = order._get_worker_conflict_status(order.person_id)
-            if existing and existing.person_id == order.person_id:
-                # Same worker as before - update the existing row in place
-                # (instead of delete+recreate) so a status flip can be
-                # logged as an actual FROM -> TO transition.
-                line = existing[0]
+            wanted_persons = order.location_id.person_ids.person_id
+            existing_person_ids = existing.mapped("person_id")
+
+            update_commands = []
+            for line in existing:
+                new_status = order._get_worker_conflict_status(line.person_id)
                 if line.status != new_status:
                     order._log_worker_status_change(
-                        order.person_id, line.status, new_status
+                        line.person_id, line.status, new_status
                     )
-                order.worker_line_ids = [(1, line.id, {"status": new_status})]
-            else:
-                order._log_worker_status_change(order.person_id, False, new_status)
-                order.worker_line_ids = [
-                    (5, 0, 0),
-                    (0, 0, {"person_id": order.person_id.id, "status": new_status}),
-                ]
+                    update_commands.append((1, line.id, {"status": new_status}))
+
+            add_commands = []
+            for person in wanted_persons - existing_person_ids:
+                new_status = order._get_worker_conflict_status(person)
+                order._log_worker_status_change(person, False, new_status)
+                add_commands.append(
+                    (0, 0, {"person_id": person.id, "status": new_status})
+                )
+
+            order.worker_line_ids = update_commands + add_commands
+
+    @api.depends("worker_line_ids.person_id")
+    def _compute_requested_person_ids(self):
+        for order in self:
+            order.requested_person_ids = order.worker_line_ids.person_id
 
     def _log_worker_status_change(self, person, status_from, status_to):
         self.ensure_one()
@@ -498,6 +613,18 @@ class FSMOrder(models.Model):
             return "available"
         today = fields.Date.context_today(self)
 
+        # This runs as part of _compute_worker_line_ids, itself triggered
+        # by schedule_slot_ids changing - on a fresh create() (or a write()
+        # that also touches schedule_slot_ids in the same call), those
+        # sibling sub-slot rows may still only be pending in the ORM cache
+        # at this point, not yet visible to the raw SQL search_count()
+        # below. Flushing first guarantees this order's own just-added/
+        # edited sub-slots are actually queryable, instead of silently
+        # computing "available" against stale (pre-write) data.
+        self.env["bs.fsm.order.schedule.slot"].flush_model(
+            ["person_id", "slot_type", "date_from", "date_to"]
+        )
+
         busy_via_slot = self.env["bs.fsm.order.schedule.slot"].search_count(
             [
                 ("person_id", "=", person.id),
@@ -528,9 +655,14 @@ class FSMOrder(models.Model):
         """Runs hourly - Conflict/Available depends on today's date, which
         isn't a trackable ORM dependency, so a stored order can go stale
         (e.g. a past conflict clears at midnight) without anyone editing it.
-        This forces a fresh recompute for all open orders with a worker."""
+        This forces a fresh recompute for all open orders with a worker.
+
+        Filters on worker_line_ids (not person_id/Assigned To) - Request
+        Workers now comes from location_id.person_ids, independent of
+        whether this order's Team has a resolved Team Manager, so an order
+        can have workers to refresh here even with person_id empty."""
         orders = self.search(
-            [("stage_id.is_closed", "=", False), ("person_id", "!=", False)]
+            [("stage_id.is_closed", "=", False), ("worker_line_ids", "!=", False)]
         )
         if orders:
             orders._compute_worker_line_ids()
