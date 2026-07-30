@@ -937,4 +937,12 @@
             </xpath>
         </field>
     </record>
+
+    <!-- Dashboard > Orders: drop the native Calendar view mode - the
+         custom Calendar page (bs_fieldservice.worker_calendar, under this
+         app's own "Calendar" menu) replaces it, so leaving both around
+         would just be a confusing duplicate. -->
+    <record id="fieldservice.action_fsm_dash_order" model="ir.actions.act_window">
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
 </odoo>

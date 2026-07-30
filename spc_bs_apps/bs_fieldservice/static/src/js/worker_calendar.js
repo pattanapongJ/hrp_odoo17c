@@ -3,6 +3,7 @@
 import { registry } from "@web/core/registry";
 import { Component, useState, onWillStart } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
+import { usePopover } from "@web/core/popover/popover_hook";
 
 // Per-day status for one or more technicians (fsm.person), sourced from
 // fsm.order's own request_early/request_late (Earliest/Latest Request
@@ -22,6 +23,19 @@ const DEFAULT_COLOR = "#adb5bd";
 //: pixels per hour in the Day/Week views' time grid - a block's top/height
 //: are computed straight from request_early/request_late's time-of-day.
 const HOUR_HEIGHT = 48;
+//: Month view's continuous multi-day bars (see assignBarsForWeek) - space
+//: reserved above the first bar row for the day number, and height of each
+//: stacked bar "lane".
+const MONTH_HEADER_HEIGHT = 24;
+const MONTH_LANE_HEIGHT = 22;
+
+//: Quick-view popover shown when clicking a Calendar entry (see
+//: onEntryClick) - a short summary (Order/Assigned To/Customer/Date-time)
+//: with a single Edit action, instead of jumping straight to the full form.
+export class OrderQuickView extends Component {
+    static template = "bs_fieldservice.OrderQuickView";
+    static props = ["order", "onEdit", "onClose"];
+}
 
 export class WorkerCalendar extends Component {
     static template = "bs_fieldservice.WorkerCalendar";
@@ -30,6 +44,7 @@ export class WorkerCalendar extends Component {
     setup() {
         this.orm = useService("orm");
         this.action = useService("action");
+        this.popover = usePopover(OrderQuickView, { position: "bottom" });
         this.state = useState({
             persons: [],
             personSearch: "",
@@ -115,7 +130,16 @@ export class WorkerCalendar extends Component {
     }
 
     get weeks() {
-        return buildMonthWeeks(this.state.month, (iso) => this.state.daysByDate[iso] || []);
+        const weeks = buildMonthWeeks(this.state.month, (iso) => this.state.daysByDate[iso] || []);
+        return weeks.map((days) => {
+            const bars = assignBarsForWeek(days, this.state.daysByDate);
+            const maxLane = bars.reduce((max, bar) => Math.max(max, bar.lane), -1) + 1;
+            return {
+                days,
+                bars,
+                height: MONTH_HEADER_HEIGHT + Math.max(maxLane, 1) * MONTH_LANE_HEIGHT + 8,
+            };
+        });
     }
 
     //: Same 6-week Sunday-start grid, but for the small picker next to the
@@ -324,7 +348,7 @@ export class WorkerCalendar extends Component {
                 ["request_late", ">=", toOdooDatetime(rangeStart)],
                 ["request_late", "=", false],
             ],
-            ["request_early", "request_late", "name", "person_id"]
+            ["request_early", "request_late", "name", "person_id", "location_id"]
         );
     }
 
@@ -333,6 +357,38 @@ export class WorkerCalendar extends Component {
     //: rare case a color wasn't pre-assigned (e.g. persons list changed).
     colorForPerson(personId) {
         return this.state.personColorById[personId] || DEFAULT_COLOR;
+    }
+
+    //: Shared fields every Calendar entry (Month bar, Week/Day block) needs -
+    //: both for its own rendering AND for the quick-view popover shown on
+    //: click (onEntryClick), so the popover never needs its own extra RPC.
+    buildEntryMeta(order) {
+        const [personId, personName] = order.person_id || [];
+        const [, locationName] = order.location_id || [];
+        const early = parseOdooDatetime(order.request_early);
+        const late = order.request_late ? parseOdooDatetime(order.request_late) : early;
+        return {
+            orderId: order.id,
+            orderName: order.name,
+            personName: personName || "",
+            locationName: locationName || "",
+            rangeLabel: `${early.toFormat("dd/MM/yyyy HH:mm")} - ${late.toFormat("dd/MM/yyyy HH:mm")}`,
+            color: this.colorForPerson(personId),
+        };
+    }
+
+    //: Clicking a Calendar entry shows a short quick-view popover (Order/
+    //: Assigned To/Customer/Date-time) with an Edit action, rather than
+    //: jumping straight into the full form.
+    onEntryClick(ev, entry) {
+        this.popover.open(ev.currentTarget, {
+            order: entry,
+            onEdit: () => {
+                this.popover.close();
+                this.openOrder(entry.orderId);
+            },
+            onClose: () => this.popover.close(),
+        });
     }
 
     //: "ว่าง" (idle) Schedule Sub-slots for the given orders - these mark
@@ -404,7 +460,7 @@ export class WorkerCalendar extends Component {
         const idleByOrder = await this.searchIdleSlots(orders.map((order) => order.id));
         const daysByDate = {};
         for (const order of orders) {
-            const [personId] = order.person_id || [];
+            const meta = this.buildEntryMeta(order);
             for (const [segStart, segEnd] of this.getOrderSegments(order, idleByOrder)) {
                 let current = segStart.startOf("day");
                 let lastDay = segEnd.startOf("day");
@@ -423,11 +479,7 @@ export class WorkerCalendar extends Component {
                     // the same day (e.g. idle splits it mid-day) - only one
                     // entry per order per day, not a visual duplicate.
                     if (!daysByDate[iso].some((entry) => entry.orderId === order.id)) {
-                        daysByDate[iso].push({
-                            color: this.colorForPerson(personId),
-                            label: order.name,
-                            orderId: order.id,
-                        });
+                        daysByDate[iso].push({ ...meta, label: meta.orderName });
                     }
                     current = current.plus({ days: 1 });
                 }
@@ -496,11 +548,10 @@ export class WorkerCalendar extends Component {
     buildBlock(order, segStart, segEnd, dayStart, dayEnd) {
         const from = segStart < dayStart ? 0 : segStart.hour + segStart.minute / 60;
         const to = segEnd > dayEnd ? 24 : segEnd.hour + segEnd.minute / 60;
-        const [personId, personName] = order.person_id || [];
+        const meta = this.buildEntryMeta(order);
         return {
-            orderId: order.id,
-            label: personName ? `${personName} - ${order.name}` : order.name,
-            color: this.colorForPerson(personId),
+            ...meta,
+            label: meta.personName ? `${meta.personName} - ${meta.orderName}` : meta.orderName,
             timeLabel: `${segStart.toFormat("HH:mm")}-${segEnd.toFormat("HH:mm")}`,
             top: from * HOUR_HEIGHT,
             height: Math.max((to - from) * HOUR_HEIGHT, 18),
@@ -547,6 +598,80 @@ function buildMonthWeeks(month, entryFn) {
         weeks.pop();
     }
     return weeks;
+}
+
+//: Continuous multi-day bars for one Month-view week row (7 day objects,
+//: each with an `entries` array) - a single order spanning several
+//: consecutive days becomes ONE bar (startCol/span), not one box per day,
+//: matching the native Odoo Calendar's look. Greedily assigns each bar a
+//: vertical "lane" (0, 1, 2...) so several orders active on overlapping
+//: days stack predictably instead of colliding, and reuses a lane once its
+//: bar ends. roundLeft/roundRight are false on the side where the SAME
+//: order also occupies the adjacent day just outside this week (peeked via
+//: the full daysByDate map) - keeps a bar crossing a week boundary looking
+//: like one unbroken run instead of two separate rounded pills.
+function assignBarsForWeek(days, daysByDate) {
+    const active = new Map();
+    const laneInUse = new Set();
+    const bars = [];
+
+    const closeBar = (orderId) => {
+        const info = active.get(orderId);
+        if (!info) {
+            return;
+        }
+        bars.push(info.bar);
+        laneInUse.delete(info.lane);
+        active.delete(orderId);
+    };
+
+    for (let col = 0; col < 7; col++) {
+        const todaysIds = new Set(days[col].entries.map((entry) => entry.orderId));
+        for (const orderId of [...active.keys()]) {
+            if (!todaysIds.has(orderId)) {
+                closeBar(orderId);
+            }
+        }
+        for (const entry of days[col].entries) {
+            if (active.has(entry.orderId)) {
+                active.get(entry.orderId).bar.span += 1;
+            } else {
+                let lane = 0;
+                while (laneInUse.has(lane)) {
+                    lane++;
+                }
+                laneInUse.add(lane);
+                active.set(entry.orderId, {
+                    lane,
+                    bar: { ...entry, startCol: col, span: 1, lane },
+                });
+            }
+        }
+    }
+    for (const orderId of [...active.keys()]) {
+        closeBar(orderId);
+    }
+
+    for (const bar of bars) {
+        const beforeIso = luxon.DateTime.fromISO(days[bar.startCol].iso)
+            .minus({ days: 1 })
+            .toISODate();
+        const afterIso = luxon.DateTime.fromISO(days[bar.startCol + bar.span - 1].iso)
+            .plus({ days: 1 })
+            .toISODate();
+        const beforeHasOrder = (daysByDate[beforeIso] || []).some(
+            (entry) => entry.orderId === bar.orderId
+        );
+        const afterHasOrder = (daysByDate[afterIso] || []).some(
+            (entry) => entry.orderId === bar.orderId
+        );
+        bar.roundLeft = !(bar.startCol === 0 && beforeHasOrder);
+        bar.roundRight = !(bar.startCol + bar.span - 1 === 6 && afterHasOrder);
+        bar.leftPct = (bar.startCol / 7) * 100;
+        bar.widthPct = (bar.span / 7) * 100;
+        bar.top = MONTH_HEADER_HEIGHT + bar.lane * MONTH_LANE_HEIGHT;
+    }
+    return bars;
 }
 
 //: request_early/request_late come back from searchRead as Odoo's own

@@ -28,22 +28,32 @@
                         </t>
                     </div>
                     <t t-foreach="weeks" t-as="week" t-key="week_index">
-                        <div class="o_bs_wc_week d-grid">
-                            <t t-foreach="week" t-as="day" t-key="day.iso">
-                                <div
-                                    t-attf-class="o_bs_wc_day {{ !day.inMonth ? 'o_bs_wc_day_out' : '' }} {{ day.isToday ? 'o_bs_wc_day_today' : '' }}"
-                                >
-                                    <div class="o_bs_wc_day_number" t-esc="day.day" />
-                                    <t t-foreach="day.entries" t-as="entry" t-key="entry_index">
-                                        <div
-                                            t-attf-class="o_bs_wc_entry {{ entry.orderId ? 'o_bs_wc_entry_clickable' : '' }}"
-                                            t-attf-style="background-color: {{ entry.color }};"
-                                            t-on-click="() => this.openOrder(entry.orderId)"
-                                            t-esc="entry.label"
-                                        />
-                                    </t>
-                                </div>
-                            </t>
+                        <div
+                            class="o_bs_wc_week_wrap position-relative"
+                            t-attf-style="min-height: {{ week.height }}px;"
+                        >
+                            <div
+                                class="o_bs_wc_week d-grid"
+                                t-attf-style="min-height: {{ week.height }}px;"
+                            >
+                                <t t-foreach="week.days" t-as="day" t-key="day.iso">
+                                    <div
+                                        t-attf-class="o_bs_wc_day {{ !day.inMonth ? 'o_bs_wc_day_out' : '' }} {{ day.isToday ? 'o_bs_wc_day_today' : '' }}"
+                                    >
+                                        <div class="o_bs_wc_day_number" t-esc="day.day" />
+                                    </div>
+                                </t>
+                            </div>
+                            <div class="o_bs_wc_bars_overlay">
+                                <t t-foreach="week.bars" t-as="bar" t-key="bar.orderId + '-' + bar.startCol">
+                                    <div
+                                        t-attf-class="o_bs_wc_bar {{ bar.roundLeft ? 'o_bs_wc_bar_round_left' : '' }} {{ bar.roundRight ? 'o_bs_wc_bar_round_right' : '' }}"
+                                        t-attf-style="left: {{ bar.leftPct }}%; width: {{ bar.widthPct }}%; top: {{ bar.top }}px; background-color: {{ bar.color }};"
+                                        t-on-click="(ev) => this.onEntryClick(ev, bar)"
+                                        t-esc="bar.label"
+                                    />
+                                </t>
+                            </div>
                         </div>
                     </t>
                 </div>
@@ -81,7 +91,7 @@
                                     <div
                                         t-attf-class="o_bs_wc_slot_block {{ slot.orderId ? 'o_bs_wc_entry_clickable' : '' }}"
                                         t-attf-style="top: {{ slot.top }}px; height: {{ slot.height }}px; background-color: {{ slot.color }};"
-                                        t-on-click="() => this.openOrder(slot.orderId)"
+                                        t-on-click="(ev) => this.onEntryClick(ev, slot)"
                                         t-esc="slot.label"
                                     />
                                 </t>
@@ -120,7 +130,7 @@
                                 <div
                                     t-attf-class="o_bs_wc_slot_block {{ slot.orderId ? 'o_bs_wc_entry_clickable' : '' }}"
                                     t-attf-style="top: {{ slot.top }}px; height: {{ slot.height }}px; background-color: {{ slot.color }};"
-                                    t-on-click="() => this.openOrder(slot.orderId)"
+                                    t-on-click="(ev) => this.onEntryClick(ev, slot)"
                                 >
                                     <span t-esc="slot.label" />
                                     <span t-if="slot.timeLabel" class="ms-1 o_bs_wc_slot_time" t-esc="slot.timeLabel" />
@@ -210,6 +220,37 @@
                         </button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="bs_fieldservice.OrderQuickView" owl="1">
+        <div class="o_bs_wc_quickview">
+            <div class="o_bs_wc_quickview_header d-flex align-items-center justify-content-between">
+                <strong t-esc="props.order.orderName" />
+                <i
+                    class="fa fa-times o_bs_wc_quickview_close"
+                    t-on-click="() => this.props.onClose()"
+                />
+            </div>
+            <div class="o_bs_wc_quickview_body">
+                <div class="o_bs_wc_quickview_row">
+                    <span class="o_bs_wc_quickview_label">Assigned To</span>
+                    <span t-esc="props.order.personName" />
+                </div>
+                <div class="o_bs_wc_quickview_row">
+                    <span class="o_bs_wc_quickview_label">Customer</span>
+                    <span t-esc="props.order.locationName" />
+                </div>
+                <div class="o_bs_wc_quickview_row">
+                    <span class="o_bs_wc_quickview_label">Date/Time</span>
+                    <span t-esc="props.order.rangeLabel" />
+                </div>
+            </div>
+            <div class="o_bs_wc_quickview_footer">
+                <button class="btn btn-primary btn-sm" t-on-click="() => this.props.onEdit()">
+                    Edit
+                </button>
             </div>
         </div>
     </t>
