@@ -38,9 +38,8 @@
         line-height: 22px;
     }
 
-    // Entry/legend dot colors come from SLOT_TYPE_COLORS in worker_calendar.js
-    // (inline style), mirroring bs.fsm.order.schedule.slot's slot_type
-    // Selection directly - only structural styling lives here.
+    // Entry/legend/technician dot colors come from PERSON_COLOR_PALETTE in
+    // worker_calendar.js (inline style) - only structural styling lives here.
     .o_bs_wc_entry {
         margin-top: 4px;
         padding: 2px 4px;
@@ -59,14 +58,6 @@
         }
     }
 
-    // Duration = Full day - the slot occupies the whole day, so it's shown
-    // with a solid dark border on top of its normal slot_type color, to
-    // read as "unavailable all day" at a glance versus a partial-time slot.
-    .o_bs_wc_entry_full_day {
-        border: 2px solid #842029;
-        font-weight: 600;
-    }
-
     .o_bs_wc_legend_item {
         display: flex;
         align-items: center;
@@ -79,10 +70,131 @@
         width: 12px;
         height: 12px;
         border-radius: 3px;
+        flex-shrink: 0;
     }
 
-    .o_bs_wc_dot_full_day {
-        background-color: transparent;
-        border: 2px solid #842029;
+    // Technician sidebar - searchable, multi-select checkbox list (see
+    // filteredPersons/togglePerson/onToggleAllSelected in worker_calendar.js).
+    .o_bs_wc_person_list {
+        max-height: 220px;
+        overflow-y: auto;
+    }
+
+    .o_bs_wc_person_item {
+        padding: 3px 0;
+        cursor: pointer;
+        font-weight: normal;
+        margin-bottom: 0;
+
+        input[type="checkbox"] {
+            cursor: pointer;
+        }
+    }
+
+    .o_bs_wc_person_all {
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 6px;
+        margin-bottom: 4px;
+    }
+
+    // Day view - hourly time grid, slot blocks positioned by
+    // top/height (px) computed straight from time_from/time_to in
+    // worker_calendar.js (HOUR_HEIGHT = 48px/hour).
+    .o_bs_wc_day_view_gutter {
+        width: 64px;
+        min-width: 64px;
+    }
+
+    .o_bs_wc_day_view_title {
+        padding: 4px 0 12px;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .o_bs_wc_hour_label {
+        height: 48px;
+        font-size: 11px;
+        color: #6c757d;
+        transform: translateY(-6px);
+    }
+
+    .o_bs_wc_hour_line {
+        position: absolute;
+        left: 0;
+        right: 0;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .o_bs_wc_day_view_track {
+        border-left: 1px solid #e9ecef;
+    }
+
+    .o_bs_wc_slot_block {
+        position: absolute;
+        left: 4px;
+        right: 4px;
+        border-radius: 4px;
+        padding: 2px 6px;
+        font-size: 12px;
+        color: #212529;
+        overflow: hidden;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+    }
+
+    .o_bs_wc_slot_time {
+        color: #495057;
+    }
+
+    // Mini date-picker next to the Day view - browsable on its own,
+    // independent of the currently selected day (see miniMonth in JS).
+    .o_bs_wc_mini_weekdays,
+    .o_bs_wc_mini_week {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+    }
+
+    .o_bs_wc_mini_weekday {
+        font-size: 11px;
+        color: #6c757d;
+        padding: 2px 0;
+    }
+
+    .o_bs_wc_mini_day {
+        font-size: 12px;
+        padding: 4px 0;
+        border-radius: 50%;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #f1f0ee;
+        }
+    }
+
+    .o_bs_wc_mini_day_out {
+        color: #adb5bd;
+    }
+
+    .o_bs_wc_mini_day_today {
+        color: #714b67;
+        font-weight: 700;
+    }
+
+    .o_bs_wc_mini_day_selected {
+        background-color: #714b67;
+        color: #fff;
+    }
+
+    // Week view - same hourly grid as Day view, but one column per day
+    // instead of a single track (see o_bs_wc_week_view_col).
+    .o_bs_wc_week_view_header,
+    .o_bs_wc_day_view_body {
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .o_bs_wc_week_view_col_header {
+        padding: 4px 0 12px;
+    }
+
+    .o_bs_wc_week_view_col {
+        border-left: 1px solid #e9ecef;
     }
 }

@@ -22,6 +22,8 @@
 //   still selectable.
 // - fully-booked days (a "Full day" slot on another order) are hard
 //   blocked (isDateValid) and shown in a stronger red.
+// - days outside the order's own requested window (Earliest/Latest
+//   Request Date) are hard blocked (isDateValid) and greyed out.
 .o_bs_slot_busy_day {
     background-color: #f8d7da;
 }
@@ -29,6 +31,12 @@
 .o_bs_slot_busy_day_full {
     background-color: #f1aeb5;
     color: #58151c;
+    pointer-events: none;
+}
+
+.o_bs_slot_outside_window {
+    background-color: #e9ecef;
+    color: #adb5bd;
     pointer-events: none;
 }
 

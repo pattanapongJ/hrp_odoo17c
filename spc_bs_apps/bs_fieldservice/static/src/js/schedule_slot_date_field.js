@@ -11,17 +11,22 @@ import {
     dateField,
 } from "@web/views/fields/datetime/datetime_field";
 
-// Schedule Sub-slot's date_from/date_to, for the SAME worker (person_id)
-// on ANOTHER order:
-// - A "Full day" sub-slot occupies the entire day (00:00-24:00), so ANY
-//   other booking that date is guaranteed to conflict - those dates are
-//   hard-blocked (isDateValid) and shown in red.
-// - A "Custom" (partial-time) sub-slot only occupies part of the day (e.g.
-//   order 1 books 08:00-12:00, order 2 can still pick the same date for
-//   13:00-18:00) - those dates are only soft-highlighted, not blocked;
-//   only the actual chosen time can tell whether it truly conflicts, which
-//   is what the model's _check_no_overlap constraint decides for real
-//   (see fsm_order_schedule_slot.py).
+// Schedule Sub-slot's date_from/date_to:
+// - For the SAME worker (person_id) on ANOTHER order:
+//   - A "Full day" sub-slot occupies the entire day (00:00-24:00), so ANY
+//     other booking that date is guaranteed to conflict - those dates are
+//     hard-blocked (isDateValid) and shown in red.
+//   - A "Custom" (partial-time) sub-slot only occupies part of the day
+//     (e.g. order 1 books 08:00-12:00, order 2 can still pick the same
+//     date for 13:00-18:00) - those dates are only soft-highlighted, not
+//     blocked; only the actual chosen time can tell whether it truly
+//     conflicts, which is what the model's _check_no_overlap constraint
+//     decides for real (see fsm_order_schedule_slot.py).
+// - For THIS SAME order: only days within the order's own requested window
+//   (order_request_early - order_request_late, i.e. the Planning tab's
+//   Earliest/Latest Request Date) are selectable at all - days outside it
+//   are hard-blocked (isDateValid) the same way full-day bookings are,
+//   mirroring _check_within_request_window's server-side enforcement.
 //
 // DateTimeField's own setup() computes picker props in a closure that
 // isn't otherwise overridable, so this re-implements it with isDateValid/
@@ -35,15 +40,30 @@ export class ScheduleSlotDateField extends DateTimeField {
 
         const getPickerProps = () => {
             const value = this.getRecordValue();
+            const requestEarly = this.props.record.data.order_request_early;
+            const requestLate = this.props.record.data.order_request_late;
+            const isWithinRequestWindow = (day) => {
+                if (requestEarly && day < requestEarly.startOf("day")) {
+                    return false;
+                }
+                if (requestLate && day > requestLate.startOf("day")) {
+                    return false;
+                }
+                return true;
+            };
             const pickerProps = {
                 value,
                 type: this.field.type,
                 range: this.isRange(value),
-                isDateValid: (day) => !this.fullyBookedDates.has(day.toISODate()),
+                isDateValid: (day) =>
+                    !this.fullyBookedDates.has(day.toISODate()) && isWithinRequestWindow(day),
                 dayCellClass: (day) => {
                     const iso = day.toISODate();
                     if (this.fullyBookedDates.has(iso)) {
                         return "o_bs_slot_busy_day_full";
+                    }
+                    if (!isWithinRequestWindow(day)) {
+                        return "o_bs_slot_outside_window";
                     }
                     return this.partiallyBookedDates.has(iso) ? "o_bs_slot_busy_day" : "";
                 },

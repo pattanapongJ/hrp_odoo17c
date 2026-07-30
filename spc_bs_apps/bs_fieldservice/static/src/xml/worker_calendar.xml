@@ -4,17 +4,24 @@
     <t t-name="bs_fieldservice.WorkerCalendar" owl="1">
         <div class="o_bs_worker_calendar d-flex flex-column h-100">
             <div class="o_bs_wc_header d-flex align-items-center gap-2 p-3 border-bottom">
-                <button class="btn btn-secondary" t-on-click="prevMonth">
+                <button class="btn btn-secondary" t-on-click="prev">
                     <i class="fa fa-chevron-left" />
                 </button>
-                <button class="btn btn-secondary" t-on-click="nextMonth">
+                <button class="btn btn-secondary" t-on-click="next">
                     <i class="fa fa-chevron-right" />
                 </button>
+                <select class="form-select w-auto" t-on-change="onViewModeChange">
+                    <option value="month" t-att-selected="state.viewMode === 'month'">Month</option>
+                    <option value="week" t-att-selected="state.viewMode === 'week'">Week</option>
+                    <option value="day" t-att-selected="state.viewMode === 'day'">Day</option>
+                </select>
                 <button class="btn btn-secondary" t-on-click="goToday">Today</button>
-                <h4 class="mb-0 ms-2" t-esc="monthLabel" />
+                <h4 class="mb-0 ms-2" t-if="state.viewMode === 'month'" t-esc="monthLabel" />
+                <h4 class="mb-0 ms-2" t-elif="state.viewMode === 'week'" t-esc="weekLabel" />
+                <h4 class="mb-0 ms-2" t-else="" t-esc="dayLabel" />
             </div>
             <div class="o_bs_wc_body d-flex flex-grow-1 overflow-auto">
-                <div class="o_bs_wc_grid flex-grow-1 p-3">
+                <div t-if="state.viewMode === 'month'" class="o_bs_wc_grid flex-grow-1 p-3">
                     <div class="o_bs_wc_weekdays d-grid">
                         <t t-foreach="['Sun','Mon','Tue','Wed','Thu','Fri','Sat']" t-as="wd" t-key="wd">
                             <div class="o_bs_wc_weekday text-center fw-bold" t-esc="wd" />
@@ -27,22 +34,133 @@
                                     t-attf-class="o_bs_wc_day {{ !day.inMonth ? 'o_bs_wc_day_out' : '' }} {{ day.isToday ? 'o_bs_wc_day_today' : '' }}"
                                 >
                                     <div class="o_bs_wc_day_number" t-esc="day.day" />
-                                    <div
-                                        t-if="day.entry"
-                                        t-attf-class="o_bs_wc_entry {{ day.entry.orderId ? 'o_bs_wc_entry_clickable' : '' }} {{ day.entry.fullDay ? 'o_bs_wc_entry_full_day' : '' }}"
-                                        t-attf-style="background-color: {{ day.entry.color }};"
-                                        t-att-title="day.entry.fullDay ? 'ไม่ว่างทั้งวัน' : ''"
-                                        t-on-click="() => this.openOrder(day.entry.orderId)"
-                                        t-esc="day.entry.label"
-                                    />
+                                    <t t-foreach="day.entries" t-as="entry" t-key="entry_index">
+                                        <div
+                                            t-attf-class="o_bs_wc_entry {{ entry.orderId ? 'o_bs_wc_entry_clickable' : '' }}"
+                                            t-attf-style="background-color: {{ entry.color }};"
+                                            t-on-click="() => this.openOrder(entry.orderId)"
+                                            t-esc="entry.label"
+                                        />
+                                    </t>
                                 </div>
                             </t>
                         </div>
                     </t>
                 </div>
+                <div t-elif="state.viewMode === 'week'" class="o_bs_wc_week_view flex-grow-1 p-3">
+                    <div class="o_bs_wc_week_view_header d-flex">
+                        <div class="o_bs_wc_day_view_gutter" />
+                        <t t-foreach="weekDays" t-as="wd" t-key="wd.iso">
+                            <div class="o_bs_wc_week_view_col_header flex-grow-1 text-center">
+                                <div t-esc="wd.weekday" />
+                                <span
+                                    t-attf-class="o_bs_wc_day_number {{ wd.isToday ? 'o_bs_wc_day_today' : '' }}"
+                                    t-esc="wd.day"
+                                />
+                            </div>
+                        </t>
+                    </div>
+                    <div class="o_bs_wc_day_view_body d-flex position-relative">
+                        <div class="o_bs_wc_day_view_gutter">
+                            <t t-foreach="hours" t-as="h" t-key="h.hour">
+                                <div class="o_bs_wc_hour_label" t-esc="h.label" />
+                            </t>
+                        </div>
+                        <t t-foreach="weekDays" t-as="wd" t-key="wd.iso">
+                            <div
+                                class="o_bs_wc_day_view_track o_bs_wc_week_view_col flex-grow-1 position-relative"
+                                t-attf-style="height: {{ dayGridHeight }}px;"
+                            >
+                                <t t-foreach="hours" t-as="h" t-key="h.hour">
+                                    <div
+                                        class="o_bs_wc_hour_line"
+                                        t-attf-style="top: {{ h.hour * 48 }}px;"
+                                    />
+                                </t>
+                                <t t-foreach="wd.slots" t-as="slot" t-key="slot_index">
+                                    <div
+                                        t-attf-class="o_bs_wc_slot_block {{ slot.orderId ? 'o_bs_wc_entry_clickable' : '' }}"
+                                        t-attf-style="top: {{ slot.top }}px; height: {{ slot.height }}px; background-color: {{ slot.color }};"
+                                        t-on-click="() => this.openOrder(slot.orderId)"
+                                        t-esc="slot.label"
+                                    />
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+                <div t-else="" class="o_bs_wc_day_view flex-grow-1 p-3">
+                    <div class="o_bs_wc_day_view_header d-flex">
+                        <div class="o_bs_wc_day_view_gutter" />
+                        <div class="o_bs_wc_day_view_title flex-grow-1">
+                            <span t-esc="state.day.setLocale('th').toFormat('cccc')" />
+                            <span
+                                t-attf-class="o_bs_wc_day_number ms-1 {{ isToday ? 'o_bs_wc_day_today' : '' }}"
+                                t-esc="state.day.day"
+                            />
+                        </div>
+                    </div>
+                    <div class="o_bs_wc_day_view_body d-flex position-relative">
+                        <div class="o_bs_wc_day_view_gutter">
+                            <t t-foreach="hours" t-as="h" t-key="h.hour">
+                                <div class="o_bs_wc_hour_label" t-esc="h.label" />
+                            </t>
+                        </div>
+                        <div
+                            class="o_bs_wc_day_view_track flex-grow-1 position-relative"
+                            t-attf-style="height: {{ dayGridHeight }}px;"
+                        >
+                            <t t-foreach="hours" t-as="h" t-key="h.hour">
+                                <div
+                                    class="o_bs_wc_hour_line"
+                                    t-attf-style="top: {{ h.hour * 48 }}px;"
+                                />
+                            </t>
+                            <t t-foreach="state.daySlots" t-as="slot" t-key="slot_index">
+                                <div
+                                    t-attf-class="o_bs_wc_slot_block {{ slot.orderId ? 'o_bs_wc_entry_clickable' : '' }}"
+                                    t-attf-style="top: {{ slot.top }}px; height: {{ slot.height }}px; background-color: {{ slot.color }};"
+                                    t-on-click="() => this.openOrder(slot.orderId)"
+                                >
+                                    <span t-esc="slot.label" />
+                                    <span t-if="slot.timeLabel" class="ms-1 o_bs_wc_slot_time" t-esc="slot.timeLabel" />
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
                 <div class="o_bs_wc_sidebar p-3 border-start">
+                    <div t-if="state.viewMode === 'day' || state.viewMode === 'week'" class="o_bs_wc_mini mb-4">
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <span class="fw-bold" t-esc="miniMonthLabel" />
+                            <span>
+                                <button class="btn btn-sm btn-link p-0 me-1" t-on-click="prevMiniMonth">
+                                    <i class="fa fa-chevron-left" />
+                                </button>
+                                <button class="btn btn-sm btn-link p-0" t-on-click="nextMiniMonth">
+                                    <i class="fa fa-chevron-right" />
+                                </button>
+                            </span>
+                        </div>
+                        <div class="o_bs_wc_mini_weekdays d-grid">
+                            <t t-foreach="['S','M','T','W','T','F','S']" t-as="wd" t-key="wd_index">
+                                <div class="o_bs_wc_mini_weekday text-center" t-esc="wd" />
+                            </t>
+                        </div>
+                        <t t-foreach="miniWeeks" t-as="week" t-key="week_index">
+                            <div class="o_bs_wc_mini_week d-grid">
+                                <t t-foreach="week" t-as="day" t-key="day.iso">
+                                    <div
+                                        t-attf-class="o_bs_wc_mini_day text-center {{ !day.inMonth ? 'o_bs_wc_mini_day_out' : '' }} {{ this.isMiniDaySelected(day.iso) ? 'o_bs_wc_mini_day_selected' : (day.isToday ? 'o_bs_wc_mini_day_today' : '') }}"
+                                        t-on-click="() => this.selectMiniDay(day.iso)"
+                                        t-esc="day.day"
+                                    />
+                                </t>
+                            </div>
+                        </t>
+                    </div>
                     <h5>Legend</h5>
-                    <t t-foreach="state.legend" t-as="entry" t-key="entry.value">
+                    <t t-foreach="legend" t-as="entry" t-key="entry.label">
                         <div class="o_bs_wc_legend_item">
                             <span
                                 class="o_bs_wc_dot"
@@ -51,20 +169,46 @@
                             <span t-esc="entry.label" />
                         </div>
                     </t>
-                    <div class="o_bs_wc_legend_item">
-                        <span class="o_bs_wc_dot o_bs_wc_dot_full_day" />
-                        ไม่ว่างทั้งวัน (Full day)
-                    </div>
                     <h5 class="mt-4">Technician</h5>
-                    <select class="form-select" t-on-change="onPersonChange">
-                        <t t-foreach="state.persons" t-as="person" t-key="person.id">
-                            <option
-                                t-att-value="person.id"
-                                t-att-selected="person.id === state.personId"
-                                t-esc="person.name"
+                    <input
+                        type="text"
+                        class="form-control form-control-sm mb-2"
+                        placeholder="ค้นหาช่าง..."
+                        t-att-value="state.personSearch"
+                        t-on-input="onPersonSearchInput"
+                    />
+                    <div class="o_bs_wc_person_list mb-2">
+                        <label class="o_bs_wc_person_item o_bs_wc_person_all d-flex align-items-center gap-2">
+                            <input
+                                type="checkbox"
+                                t-att-checked="state.allSelected"
+                                t-on-change="onToggleAllSelected"
                             />
+                            <strong>เลือกทั้งหมด (All)</strong>
+                        </label>
+                        <t t-foreach="filteredPersons" t-as="person" t-key="person.id">
+                            <label class="o_bs_wc_person_item d-flex align-items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    t-att-checked="isPersonSelected(person.id)"
+                                    t-on-change="() => this.togglePerson(person.id)"
+                                />
+                                <span
+                                    class="o_bs_wc_dot"
+                                    t-attf-style="background-color: {{ state.personColorById[person.id] }};"
+                                />
+                                <span t-esc="person.name" />
+                            </label>
                         </t>
-                    </select>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-secondary flex-grow-1" t-on-click="onSelectAllClick">
+                            เลือกทั้งหมด
+                        </button>
+                        <button class="btn btn-sm btn-secondary flex-grow-1" t-on-click="onClearClick">
+                            ล้าง
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
