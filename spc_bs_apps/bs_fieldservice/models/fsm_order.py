@@ -28,9 +28,10 @@ class FSMOrder(models.Model):
     )
 
     # Service Request SR - header
-    # Auto-derived from QT No. (sale_id.name) on create()/write() below -
-    # never typed in by the user, hence readonly here (see
-    # _job_no_from_qt_no/_onchange_sale_id_set_job_no).
+    # Auto-assigned from its own sequence (bs.fsm.order.job_no) the first
+    # time QT No. (sale_id) is set on create()/write() below - never typed
+    # in by the user, hence readonly here. Once assigned it is never
+    # reassigned or cleared, even if QT No. later changes or is unset.
     job_no = fields.Char(string="Job No.", readonly=True, copy=False)
     customer_po = fields.Char(string="Customer PO")
     sr_date = fields.Date(string="Date", default=fields.Date.context_today)
@@ -229,16 +230,6 @@ class FSMOrder(models.Model):
                 for line in lines.filtered(lambda ln: ln.status == "overdue")
             )
 
-    @api.model
-    def _job_no_from_qt_no(self, qt_no):
-        """Derive Job No. from the linked Quotation's QT No. by swapping
-        the leading "QT" for "JOB" (e.g. QT-2026-0015 -> JOB-2026-0015)."""
-        if not qt_no:
-            return False
-        if qt_no[:2].upper() == "QT":
-            return "JOB" + qt_no[2:]
-        return qt_no
-
     @api.constrains("job_no")
     def _check_job_no_unique(self):
         for order in self:
@@ -255,12 +246,6 @@ class FSMOrder(models.Model):
                         job_no=order.job_no,
                     )
                 )
-
-    @api.onchange("sale_id")
-    def _onchange_sale_id_set_job_no(self):
-        self.job_no = (
-            self._job_no_from_qt_no(self.sale_id.name) if self.sale_id else False
-        )
 
     @api.onchange("technician_profile")
     def _onchange_technician_profile(self):
@@ -300,10 +285,13 @@ class FSMOrder(models.Model):
                 line.work_finish = self.request_late or False
 
     def write(self, vals):
-        if "sale_id" in vals:
-            sale = self.env["sale.order"].browse(vals["sale_id"])
-            vals["job_no"] = self._job_no_from_qt_no(sale.name)
         res = super().write(vals)
+        if vals.get("sale_id"):
+            for order in self:
+                if not order.job_no:
+                    order.job_no = self.env["ir.sequence"].next_by_code(
+                        "bs.fsm.order.job_no"
+                    )
         if "request_early" in vals or "request_late" in vals:
             for order in self:
                 order._sync_check_sheet_work_dates()
@@ -478,8 +466,9 @@ class FSMOrder(models.Model):
                     "bs.fsm.order.service_report"
                 )
             if not vals.get("job_no") and vals.get("sale_id"):
-                sale = self.env["sale.order"].browse(vals["sale_id"])
-                vals["job_no"] = self._job_no_from_qt_no(sale.name)
+                vals["job_no"] = self.env["ir.sequence"].next_by_code(
+                    "bs.fsm.order.job_no"
+                )
         orders = super().create(vals_list)
         orders._refresh_worker_line_status()
         return orders
