@@ -221,6 +221,33 @@ class FSMOrder(models.Model):
     def _onchange_equipment_lines_sync_check_sheet(self):
         self._sync_check_sheet_lines()
 
+    @api.onchange("request_early", "request_late")
+    def _onchange_request_dates_sync_check_sheet(self):
+        self._sync_check_sheet_work_dates()
+
+    def _sync_check_sheet_work_dates(self):
+        """Keep Check Sheet's Work start/Work finish mirrored to this
+        order's own Planning window (Earliest/Latest Request Date) for as
+        long as a line stays in Draft. A missing request_early/request_late
+        blanks out the matching field rather than leaving a stale value.
+        Once a line is Confirmed it's a frozen snapshot - never touched
+        again by a later Planning edit, even after this method runs."""
+        self.ensure_one()
+        for line in self.check_sheet_line_ids:
+            if line.state == "confirmed":
+                continue
+            if line.work_start != self.request_early:
+                line.work_start = self.request_early or False
+            if line.work_finish != self.request_late:
+                line.work_finish = self.request_late or False
+
+    def write(self, vals):
+        res = super().write(vals)
+        if "request_early" in vals or "request_late" in vals:
+            for order in self:
+                order._sync_check_sheet_work_dates()
+        return res
+
     def _sync_check_sheet_lines(self):
         """Keep check_sheet_line_ids 1:1 with the Assigned Worker equipment
         table (phe_line_ids for PHE orders; Check Sheet doesn't apply to
@@ -245,6 +272,8 @@ class FSMOrder(models.Model):
                         "phe_line_id": line.id,
                         "customer_id": partner_id,
                         "place": place,
+                        "work_start": self.request_early or False,
+                        "work_finish": self.request_late or False,
                     },
                 )
                 for line in self.phe_line_ids[current_count:]

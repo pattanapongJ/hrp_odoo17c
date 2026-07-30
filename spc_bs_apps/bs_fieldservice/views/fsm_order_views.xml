@@ -242,6 +242,8 @@
                     <field name="schedule_slot_ids" nolabel="1" colspan="2">
                         <tree editable="bottom">
                             <field name="order_id" column_invisible="1" />
+                            <field name="order_request_early" column_invisible="1" />
+                            <field name="order_request_late" column_invisible="1" />
                             <field name="sequence" widget="handle" />
                             <field name="person_id" readonly="1" />
                             <field name="slot_type" />
@@ -338,13 +340,14 @@
                                 decoration-success="state == 'confirmed'"
                                 decoration-info="state == 'draft'"
                             />
+                            <field name="confirm_all_accurate" column_invisible="1" />
                             <button
                                 name="action_confirm"
                                 type="object"
                                 string="Confirm"
                                 icon="fa-check-circle"
                                 class="o_bs_confirm_btn"
-                                invisible="state == 'confirmed'"
+                                invisible="state == 'confirmed' or not confirm_all_accurate"
                             />
                             <button
                                 name="action_reset_draft"
@@ -358,20 +361,6 @@
                         </tree>
                         <form string="Check Sheet">
                             <header>
-                                <button
-                                    name="action_confirm"
-                                    type="object"
-                                    string="Confirm"
-                                    class="btn-primary"
-                                    invisible="state == 'confirmed'"
-                                />
-                                <button
-                                    name="action_reset_draft"
-                                    type="object"
-                                    string="Reset to Draft"
-                                    invisible="state == 'draft'"
-                                    groups="fieldservice.group_fsm_manager"
-                                />
                                 <field name="state" widget="statusbar" statusbar_visible="draft,confirmed" />
                             </header>
                             <sheet readonly="state == 'confirmed'">
@@ -389,6 +378,8 @@
                                         <field name="job_pt_test" string="PT test"  readonly="state == 'confirmed'" />
                                     </group>
                                 </group>
+                                <notebook>
+                                <page string="Check before" name="check_before_page">
                                 <group string="Equipment Information">
                                     <group>
                                         <field name="item_no" string="Item no."  readonly="state == 'confirmed'" />
@@ -450,38 +441,123 @@
                                 <group string="Plate inspection">
                                     <group>
                                         <label for="plate_material_ss316" string="Plate material" />
-                                        <div class="d-flex gap-4">
-                                            <div class="d-flex align-items-center gap-1">
-                                                <field name="plate_material_ss316" nolabel="1"  readonly="state == 'confirmed'" />
-                                                <span>SS316</span>
+                                        <div>
+                                            <div class="row">
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="plate_material_ss316" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>SS316</span>
+                                                </div>
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="plate_material_ti" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Ti</span>
+                                                </div>
                                             </div>
-                                            <div class="d-flex align-items-center gap-1">
-                                                <field name="plate_material_ti" nolabel="1"  readonly="state == 'confirmed'" />
-                                                <span>Ti</span>
+                                            <div class="row">
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="material_other" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Other</span>
+                                                </div>
+                                                <div class="col-6" invisible="not material_other">
+                                                    <field
+                                                        name="material_other_note"
+                                                        nolabel="1"
+                                                        placeholder="Specify..."
+                                                        class="w-100"
+                                                        readonly="state == 'confirmed'"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                         <label for="plate_damage" string="Plate" />
-                                        <div class="d-flex align-items-center gap-1">
-                                            <field name="plate_damage" nolabel="1"  readonly="state == 'confirmed'" />
-                                            <span>Damage</span>
+                                        <div>
+                                            <div class="row">
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="plate_acid_alkali_corrosion" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Acid/Alkali Corrosion</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="plate_damage" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Damage</span>
+                                                </div>
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="plate_crevice_corrosion" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Crevice Corrosion</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="plate_pitting" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Pitting</span>
+                                                </div>
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="plate_crack" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Crack</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="plate_deformation" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Deformation</span>
+                                                </div>
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="plate_vibration" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Vibration</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="plate_other" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Other</span>
+                                                </div>
+                                                <div class="col-6" invisible="not plate_other">
+                                                    <field
+                                                        name="plate_other_note"
+                                                        nolabel="1"
+                                                        placeholder="Specify..."
+                                                        class="w-100"
+                                                        readonly="state == 'confirmed'"
+                                                    />
+                                                </div>
+                                            </div>
                                         </div>
                                         <label for="thick_plate_05mm" string="Thick plate" />
-                                        <div class="d-flex gap-4">
-                                            <div class="d-flex align-items-center gap-1">
-                                                <field name="thick_plate_05mm" nolabel="1"  readonly="state == 'confirmed'" />
-                                                <span>0.5 mm.</span>
+                                        <div>
+                                            <div class="row">
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="thick_plate_05mm" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>0.5 mm.</span>
+                                                </div>
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="thick_plate_06mm" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>0.6 mm.</span>
+                                                </div>
                                             </div>
-                                            <div class="d-flex align-items-center gap-1">
-                                                <field name="thick_plate_06mm" nolabel="1"  readonly="state == 'confirmed'" />
-                                                <span>0.6 mm.</span>
+                                            <div class="row">
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="thick_plate_good" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Good</span>
+                                                </div>
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="thick_plate_fair" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Fair</span>
+                                                </div>
                                             </div>
-                                            <div class="d-flex align-items-center gap-1">
-                                                <field name="thick_plate_good" nolabel="1"  readonly="state == 'confirmed'" />
-                                                <span>Good</span>
-                                            </div>
-                                            <div class="d-flex align-items-center gap-1">
-                                                <field name="thick_plate_fair" nolabel="1"  readonly="state == 'confirmed'" />
-                                                <span>Fair</span>
+                                            <div class="row">
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="thick_plate_other" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Other</span>
+                                                </div>
+                                                <div class="col-6" invisible="not thick_plate_other">
+                                                    <field
+                                                        name="thick_plate_other_note"
+                                                        nolabel="1"
+                                                        placeholder="Specify..."
+                                                        class="w-100"
+                                                        readonly="state == 'confirmed'"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                         <label for="angle_high" string="Angle" />
@@ -545,20 +621,42 @@
                                                 <span>EPDM</span>
                                             </div>
                                         </div>
-                                        <label for="gasket_fair" string="Gasket" />
-                                        <div class="d-flex gap-4">
-                                            <div class="d-flex align-items-center gap-1">
-                                                <field name="gasket_fair" nolabel="1"  readonly="state == 'confirmed'" />
-                                                <span>Fair</span>
+                                        <label for="gasket_fair" string="Gasket Condition" />
+                                        <div>
+                                            <div class="row">
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="gasket_fair" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Fair</span>
+                                                </div>
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="gasket_damage" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Damage</span>
+                                                </div>
                                             </div>
-                                            <div class="d-flex align-items-center gap-1">
-                                                <field name="gasket_damage" nolabel="1"  readonly="state == 'confirmed'" />
-                                                <span>Damage</span>
+                                            <div class="row">
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="gasket_deterioration" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Deterioration</span>
+                                                </div>
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="gasket_blow_out" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Blow-out</span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="gasket_dislocation" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Dislocation</span>
+                                                </div>
+                                                <div class="col-6 d-flex align-items-center gap-1">
+                                                    <field name="gasket_vibration" nolabel="1"  readonly="state == 'confirmed'" />
+                                                    <span>Vibration</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </group>
                                     <group>
-                                        <field name="gasket_new_qty" string="New"  readonly="state == 'confirmed'" />
+                                        <field name="gasket_new_qty" string="New Replaced"  readonly="state == 'confirmed'" />
                                         <label for="gasket_type_glue" string="Gasket type" />
                                         <div class="d-flex gap-4">
                                             <div class="d-flex align-items-center gap-1">
@@ -577,6 +675,18 @@
                                         </div>
                                     </group>
                                 </group>
+                                <group string="Attach Photo">
+                                    <field
+                                        name="check_before_image_ids"
+                                        nolabel="1"
+                                        colspan="2"
+                                        widget="many2many_binary"
+                                        options="{'accepted_file_extensions': 'image/*'}"
+                                        readonly="state == 'confirmed'"
+                                    />
+                                </group>
+                                </page>
+                                <page string="Check after" name="check_after_page">
                                 <group string="PT test">
                                     <group>
                                         <label for="pt_test_yes" string="PT test" />
@@ -664,6 +774,28 @@
                                         </div>
                                     </group>
                                 </group>
+                                <group string="Attach Photo">
+                                    <field
+                                        name="check_after_image_ids"
+                                        nolabel="1"
+                                        colspan="2"
+                                        widget="many2many_binary"
+                                        options="{'accepted_file_extensions': 'image/*'}"
+                                        readonly="state == 'confirmed'"
+                                    />
+                                </group>
+                                <group string="Confirmation">
+                                    <div class="d-flex align-items-center justify-content-center gap-1 w-100" colspan="2">
+                                        <field
+                                            name="confirm_all_accurate"
+                                            nolabel="1"
+                                            readonly="state == 'confirmed'"
+                                        />
+                                        <span>confirm that all the information recorded above (Check before and Check after) is accurate and complete.</span>
+                                    </div>
+                                </group>
+                                </page>
+                                </notebook>
                             </sheet>
                         </form>
                     </field>

@@ -75,11 +75,23 @@ class FSMOrderCheckSheetLine(models.Model):
     # Plate inspection
     plate_material_ss316 = fields.Boolean(string="SS316")
     plate_material_ti = fields.Boolean(string="Ti")
+    material_other = fields.Boolean(string="Other")
+    material_other_note = fields.Char(string="Other, specify")
     plate_damage = fields.Boolean(string="Damage")
+    plate_crevice_corrosion = fields.Boolean(string="Crevice Corrosion")
+    plate_acid_alkali_corrosion = fields.Boolean(string="Acid/Alkali Corrosion")
+    plate_pitting = fields.Boolean(string="Pitting")
+    plate_crack = fields.Boolean(string="Crack")
+    plate_deformation = fields.Boolean(string="Deformation")
+    plate_vibration = fields.Boolean(string="Vibration")
+    plate_other = fields.Boolean(string="Other")
+    plate_other_note = fields.Char(string="Other, specify")
     thick_plate_05mm = fields.Boolean(string="0.5 mm.")
     thick_plate_06mm = fields.Boolean(string="0.6 mm.")
     thick_plate_good = fields.Boolean(string="Good")
     thick_plate_fair = fields.Boolean(string="Fair")
+    thick_plate_other = fields.Boolean(string="Other")
+    thick_plate_other_note = fields.Char(string="Other, specify")
     angle_high = fields.Boolean(string="High")
     angle_low = fields.Boolean(string="Low")
     immerse_plate_naoh = fields.Boolean(string="NaOH")
@@ -94,7 +106,11 @@ class FSMOrderCheckSheetLine(models.Model):
     gasket_material_epdm = fields.Boolean(string="EPDM")
     gasket_fair = fields.Boolean(string="Fair")
     gasket_damage = fields.Boolean(string="Damage")
-    gasket_new_qty = fields.Integer(string="New")
+    gasket_deterioration = fields.Boolean(string="Deterioration")
+    gasket_blow_out = fields.Boolean(string="Blow-out")
+    gasket_dislocation = fields.Boolean(string="Dislocation")
+    gasket_vibration = fields.Boolean(string="Vibration")
+    gasket_new_qty = fields.Integer(string="New Replaced")
     gasket_type_glue = fields.Boolean(string="Glue")
     gasket_type_clip_on = fields.Boolean(string="Clip on")
     gasket_photo_taken = fields.Boolean(string="ถ่ายภาพแล้ว")
@@ -125,6 +141,27 @@ class FSMOrderCheckSheetLine(models.Model):
     hydro_cold_barg = fields.Char(string="barg")
     hydro_cold_min = fields.Char(string="min")
     hydro_cold_passed = fields.Boolean(string="Passed")
+
+    # Attach Photo
+    check_before_image_ids = fields.Many2many(
+        "ir.attachment",
+        "bs_fsm_check_sheet_line_before_image_rel",
+        "check_sheet_line_id",
+        "attachment_id",
+        string="Attach Photo (Before)",
+    )
+    check_after_image_ids = fields.Many2many(
+        "ir.attachment",
+        "bs_fsm_check_sheet_line_after_image_rel",
+        "check_sheet_line_id",
+        "attachment_id",
+        string="Attach Photo (After)",
+    )
+
+    # Confirmation - gates the line-level Confirm button
+    confirm_all_accurate = fields.Boolean(
+        string="Confirm all accurate", copy=False
+    )
 
     @api.onchange("plate_material_ss316")
     def _onchange_plate_material_ss316(self):
@@ -183,6 +220,17 @@ class FSMOrderCheckSheetLine(models.Model):
                 vals["report_no"] = self.env["ir.sequence"].next_by_code(
                     "bs.fsm.order.check_sheet"
                 )
+            # Work start/finish default straight from the order's own
+            # Planning window (Earliest/Latest Request Date) - kept in sync
+            # afterwards by fsm.order's write() override for as long as this
+            # line stays in Draft (see FSMOrder._sync_check_sheet_work_dates).
+            # Only defaulted when the caller didn't already pass a value.
+            if "work_start" not in vals or "work_finish" not in vals:
+                order = self.env["fsm.order"].browse(vals.get("order_id"))
+                if "work_start" not in vals:
+                    vals["work_start"] = order.request_early or False
+                if "work_finish" not in vals:
+                    vals["work_finish"] = order.request_late or False
         return super().create(vals_list)
 
     def action_confirm(self):

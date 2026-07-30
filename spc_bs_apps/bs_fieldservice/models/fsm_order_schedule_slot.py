@@ -19,6 +19,17 @@ class FSMOrderScheduleSlot(models.Model):
         help="Mirrors the order's Assigned To - an order only ever has one "
         "worker, so slots don't need an independent worker selection.",
     )
+    order_request_early = fields.Datetime(
+        related="order_id.request_early",
+        string="Order Earliest Request Date",
+        help="Mirrored purely so the date picker widget (bs_schedule_slot_date) "
+        "can hard-block days outside the order's requested window without an "
+        "extra RPC - not meant to be shown/edited on this line.",
+    )
+    order_request_late = fields.Datetime(
+        related="order_id.request_late",
+        string="Order Latest Request Date",
+    )
     sequence = fields.Integer(default=10)
     slot_type = fields.Selection(
         [
@@ -84,6 +95,58 @@ class FSMOrderScheduleSlot(models.Model):
             hours=self.time_to or 0.0
         )
         return start, end
+
+    def _local_request_window_dates(self):
+        """order_id.request_early/request_late's CALENDAR DATE (not time),
+        in the current user's timezone - request_early/request_late mark
+        which DAYS the job may happen on, not an hour-level boundary within
+        those days, so only the date component matters here (converting to
+        local first, since these are Datetime fields stored as naive UTC,
+        before taking .date())."""
+        self.ensure_one()
+        early = self.order_id.request_early
+        late = self.order_id.request_late
+        if early:
+            early = fields.Datetime.context_timestamp(self, early).date()
+        if late:
+            late = fields.Datetime.context_timestamp(self, late).date()
+        return early, late
+
+    def _find_out_of_window(self):
+        """Return (request_early, request_late) if this slot's date_from/
+        date_to falls outside its order's requested window, else None -
+        checked by DATE only, any time-of-day on an in-window day is fine.
+        A specific date/time already claimed by another order is a
+        separate, second-layer check (_check_no_overlap) - this only
+        enforces which DAYS are open to begin with. A missing
+        request_late means no upper bound (fieldservice normally always
+        computes one, but don't assume)."""
+        self.ensure_one()
+        if not self.date_from or not self.date_to:
+            return None
+        early, late = self.order_id.request_early, self.order_id.request_late
+        if not early:
+            return None
+        early_date, late_date = self._local_request_window_dates()
+        if self.date_from >= early_date and (not late_date or self.date_to <= late_date):
+            return None
+        return early, late
+
+    @api.constrains("date_from", "date_to")
+    def _check_within_request_window(self):
+        for slot in self:
+            found = slot._find_out_of_window()
+            if not found:
+                continue
+            early, late = found
+            raise ValidationError(
+                _(
+                    "This slot's dates must stay within the order's "
+                    "requested window (%(early)s - %(late)s).",
+                    early=early,
+                    late=late or _("no limit"),
+                )
+            )
 
     def _find_overlap(self):
         """Return (other_slot, is_same_order, other_start, other_end) for
@@ -153,9 +216,28 @@ class FSMOrderScheduleSlot(models.Model):
     @api.onchange("duration_type", "date_from", "date_to", "time_from", "time_to")
     def _onchange_check_no_overlap_warning(self):
         # @api.constrains only runs on actual Save (write/create) - this
-        # gives the same "already booked" feedback immediately while still
-        # editing in the browser, as a non-blocking heads up. The real
-        # enforcement remains _check_no_overlap above.
+        # gives the same feedback immediately while still editing in the
+        # browser, as a non-blocking heads up. The real enforcement remains
+        # _check_within_request_window/_check_no_overlap above. Checked
+        # first since staying in the requested window is the more
+        # fundamental constraint (only one warning can show at a time -
+        # multiple onchange methods on the same trigger would just
+        # overwrite each other's, so both checks live in one method).
+        out_of_window = self._find_out_of_window()
+        if out_of_window:
+            early, late = out_of_window
+            return {
+                "warning": {
+                    "title": _("Outside Requested Window"),
+                    "message": _(
+                        "This slot's dates must stay within the order's "
+                        "requested window (%(early)s - %(late)s). "
+                        "This will be blocked when you Save.",
+                        early=early,
+                        late=late or _("no limit"),
+                    ),
+                }
+            }
         found = self._find_overlap()
         if not found:
             return
