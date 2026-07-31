@@ -7,12 +7,13 @@
                 <div style="display: table; width: 100%; border-bottom: 1px solid #000; background-color: #CBE6FA;">
                     <div style="display: table-cell; vertical-align: middle; text-align: center; width: 16.6667%;">
                         <img t-if="g_plus_company.logo" t-att-src="image_data_uri(g_plus_company.logo)" style="
-                     max-width: 95%;     /* Limit the maximum width */
-                     max-height: 86px;   /* Limit the maximum height */
-                     width: auto;        /* Scale width while maintaining aspect ratio */
-                     height: auto;       /* Scale height while maintaining aspect ratio */
-                     object-fit: contain; /* Ensures the image fits inside the boundary */
-                 " alt="Logo"/>
+                            max-width: 100%;
+                            max-height: 140px;
+                            width: auto;
+                            height: auto;
+                            object-fit: contain;
+                            display: inline-block;
+                        " alt="Logo"/>
                     </div>
                     <div style="display: table-cell; vertical-align: middle; text-align: left; width: 83.3333%; font-weight: bold; font-size: 14.08px;">
                         <div class="row">
