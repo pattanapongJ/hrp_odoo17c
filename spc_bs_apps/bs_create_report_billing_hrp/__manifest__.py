@@ -1,6 +1,6 @@
 {
     'name': 'BS Create Report Billing HRP',
-    'version': '17.0.0.4',
+    'version': '17.0.0.5',
     'author': 'Basic-Solution Co., Ltd.',
     'website': 'https://www.basic-solution.com/',
     "category": "Accounting",
