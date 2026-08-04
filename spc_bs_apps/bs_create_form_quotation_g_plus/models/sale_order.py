@@ -3,6 +3,9 @@ import textwrap
 from odoo import models
 from odoo.tools import html2plaintext
 
+# Names of the terms_template_ids records that feed the two REMARK columns.
+REMARK_TERMS_NAMES = ("Scope Of Supply", "Site Requirement")
+
 # Approx characters that fit on one REMARK column line, and how many such
 # lines fit in the space left under the first page's 15-row item table.
 # Calibrated against real wkhtmltopdf output: a ~14-line column already
@@ -30,24 +33,29 @@ ARTICLE_LINE_SLOTS_PER_PAGE = 18
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    def _get_quotation_terms_template_text(self, index):
-        """Return the full rendered text (plain text) of the template at
-        ``index`` (0-based) in ``terms_template_ids``, or an empty string
-        if there is no template at that position.
+    def _get_quotation_terms_template(self, name):
+        """The terms_template_ids record whose name matches ``name``
+        exactly, or an empty recordset if there is none.
         """
         self.ensure_one()
-        templates = self.terms_template_ids
-        if index >= len(templates):
-            return ""
-        rendered_html = templates[index].get_value(self)
-        return html2plaintext(rendered_html or "")
+        return self.terms_template_ids.filtered(lambda t: t.name == name)[:1]
 
-    def _get_quotation_remark_lines(self, index):
-        """Wrap the terms-template text at ``index`` into printed lines,
+    def _get_quotation_terms_template_text(self, name):
+        """Return the full rendered text (plain text) of the template
+        named ``name``, or an empty string if there is no such template.
+        """
+        self.ensure_one()
+        template = self._get_quotation_terms_template(name)
+        if not template:
+            return ""
+        return html2plaintext(template.get_value(self) or "")
+
+    def _get_quotation_remark_lines(self, name):
+        """Wrap the terms-template text named ``name`` into printed lines,
         so the first-page/overflow split can be sliced precisely.
         """
         self.ensure_one()
-        text = self._get_quotation_terms_template_text(index).strip()
+        text = self._get_quotation_terms_template_text(name).strip()
         lines = []
         for raw_line in text.splitlines() or [""]:
             lines.extend(textwrap.wrap(raw_line, width=REMARK_CHARS_PER_LINE) or [""])
@@ -61,13 +69,13 @@ class SaleOrder(models.Model):
         """
         self.ensure_one()
         max_lines = max(
-            len(self._get_quotation_remark_lines(0)),
-            len(self._get_quotation_remark_lines(1)),
+            (len(self._get_quotation_remark_lines(name)) for name in REMARK_TERMS_NAMES),
+            default=0,
         )
         return max(1, -(-max_lines // REMARK_PAGE1_MAX_LINES))
 
-    def _get_quotation_remark_text(self, index, page_index):
-        """Portion of the terms-template text at ``index`` (0 or 1) that
+    def _get_quotation_remark_text(self, name, page_index):
+        """Portion of the terms-template text named ``name`` that
         belongs on ``page_index`` (0-based): each page gets its own
         ``REMARK_PAGE1_MAX_LINES``-line slice, so the text keeps flowing
         onto as many pages as it needs instead of being cut off.
@@ -77,7 +85,7 @@ class SaleOrder(models.Model):
         the same height regardless of how much real text there is.
         """
         self.ensure_one()
-        lines = self._get_quotation_remark_lines(index)
+        lines = self._get_quotation_remark_lines(name)
         start = page_index * REMARK_PAGE1_MAX_LINES
         page_lines = lines[start:start + REMARK_PAGE1_MAX_LINES]
         page_lines += [" "] * (REMARK_PAGE1_MAX_LINES - len(page_lines))
