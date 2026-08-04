@@ -14,10 +14,10 @@
                             </div>
                             <div style="width: 100%; margin-top: 0;">
                                 <div style="float: left; width: 50%; font-weight: regular; white-space: pre-line;">
-                                    <span t-esc="o._get_quotation_remark_text(0, remark_page_index)"/>
+                                    <span t-esc="o._get_quotation_remark_text('Scope Of Supply', remark_page_index)"/>
                                 </div>
                                 <div style="float: left; width: 50%; font-weight: regular; white-space: pre-line;">
-                                    <span t-esc="o._get_quotation_remark_text(1, remark_page_index)"/>
+                                    <span t-esc="o._get_quotation_remark_text('Site Requirement', remark_page_index)"/>
                                 </div>
                                 <div style="clear: both;"/>
                             </div>
