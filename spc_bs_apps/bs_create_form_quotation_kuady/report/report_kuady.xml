@@ -5,7 +5,7 @@
         <record id="paper_format_bs_create_quotation_kuady_report" model="report.paperformat">
             <field name="name">Quotation Kuady</field>
             <field name="default" eval="False"/>
-            <field name="format">Letter</field>
+            <field name="format">A4</field>
             <field name="page_height">0</field>
             <field name="page_width">0</field>
             <field name="orientation">Portrait</field>

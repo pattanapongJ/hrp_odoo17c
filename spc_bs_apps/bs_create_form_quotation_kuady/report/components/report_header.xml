@@ -175,20 +175,20 @@
                     </div>
                     <div class="col-6">
                         <div class="row" style="padding: 0;">
-                            <div class="col-3" style="font-weight: bold;">
+                            <div class="col-2" style="font-weight: bold;">
                                 <span>Date</span>
                             </div>
-                            <div class="col-8" style="border-bottom: 1px solid #000;">
+                            <div class="col-9" style="border-bottom: 1px solid #000;">
                                 <span t-if="o.date_order" t-field="o.date_order" t-options="{'widget': 'date', 'format': 'dd/MM/yyyy'}"/>
                                 <span t-if="not o.date_order">-</span>
                             </div>
                             <div class="col-1"></div>
                         </div>
                         <div class="row" style="padding: 0;">
-                            <div class="col-3" style="font-weight: bold;">
+                            <div class="col-2" style="font-weight: bold;">
                                 <span>Sales</span>
                             </div>
-                            <div class="col-8" style="border-bottom: 1px solid #000;">
+                            <div class="col-9" style="border-bottom: 1px solid #000;">
                                 <t t-if="o.user_id.name">
                                     <span t-field="o.user_id.name"/>
                                 </t>
@@ -199,10 +199,10 @@
                             <div class="col-1"></div>
                         </div>
                         <div class="row" style="padding: 0;">
-                            <div class="col-3" style="font-weight: bold;">
+                            <div class="col-2" style="font-weight: bold;">
                                 <span>Mobile No.</span>
                             </div>
-                            <div class="col-8" style="border-bottom: 1px solid #000;">
+                            <div class="col-9" style="border-bottom: 1px solid #000;">
                                 <t t-if="o.user_id.mobile">
                                     <span t-field="o.user_id.mobile"/>
                                 </t>
@@ -213,10 +213,10 @@
                             <div class="col-1"></div>
                         </div>
                         <div class="row" style="padding: 0;">
-                            <div class="col-3" style="font-weight: bold;">
+                            <div class="col-2" style="font-weight: bold;">
                                 <span>E-mail</span>
                             </div>
-                            <div class="col-8" style="border-bottom: 1px solid #000;">
+                            <div class="col-9" style="border-bottom: 1px solid #000;">
                                 <t t-if="o.user_id.email">
                                     <span t-field="o.user_id.email"/>
                                 </t>
@@ -227,10 +227,10 @@
                             <div class="col-1"></div>
                         </div>
                         <div class="row" style="padding: 0;">
-                            <div class="col-3" style="font-weight: bold;">
+                            <div class="col-2" style="font-weight: bold;">
                                 <span>Payment</span>
                             </div>
-                            <div class="col-8" style="border-bottom: 1px solid #000;">
+                            <div class="col-9" style="border-bottom: 1px solid #000;">
                                 <span t-if="o.payment_term_id" t-field="o.payment_term_id"/>
                                 <span t-if="not o.payment_term_id">-</span>
                             </div>
