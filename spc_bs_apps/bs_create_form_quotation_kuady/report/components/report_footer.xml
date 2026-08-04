@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_footer_kuady">
+        <div class="row" style="font-family: 'AngsanaNew'; font-size: 24px; line-height: 1.1;">
+            <div class="col-12">
+                <div class="row ">
+                    <div class="col-12">
+                        <table class="table-borderless" style="width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed;">
+                            <tr>
+                                <td style="width: 85%; text-align: right; font-weight: bold; padding: 2px 4px; border: 1px solid #000;">
+                                    <span>TOTAL PRICE BAHT EXCLUDE VAT 7%</span>
+                                </td>
+                                <td style="width: 15%; text-align: right; font-weight: bold; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">
+                                    <span class="last-page" style="display: none;" t-esc="'{:,.2f}'.format(sum(o.order_line.filtered(lambda l: not l.display_type).mapped('price_before_tax')))"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <span>Above price are Thai Baht Excluded Vat (7%) Cancellation fee 25% based on order value</span>
+                    </div>
+                </div>
+                <t t-foreach="range(o._get_kuady_total_page_count())" t-as="kuady_terms_page_index">
+                    <div class="js-kuady-terms-page" t-att-data-kuady-page="kuady_terms_page_index + 1" style="display: none; width: 100%;">
+                        <div style="float: left; width: 33.33%; box-sizing: border-box; white-space: pre-line; ">
+                            <span t-esc="o._get_kuady_terms_text('Scope Of Supply', kuady_terms_page_index)"/>
+                        </div>
+                        <div style="float: left; width: 33.33%; box-sizing: border-box; white-space: pre-line; ">
+                            <span t-esc="o._get_kuady_terms_text('Site Requirement', kuady_terms_page_index)"/>
+                        </div>
+                        <div style="float: left; width: 33.34%; box-sizing: border-box; white-space: pre-line; ">
+                            <span t-esc="o._get_kuady_terms_text('Warranty', kuady_terms_page_index)"/>
+                        </div>
+                        <div style="clear: both;"></div>
+                    </div>
+                </t>
+                <div class="last-page" style="display: none;">
+                    <div class="row">
+                        <div class="col-12">
+                            <span>Yours Sincerely</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5">
+                            <span>Kaudy Incorporation (Asia) Co., Ltd.</span>
+                        </div>
+                        <div class="col-7">
+                            <span>Offer Approver</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5" style="text-align:center;">
+                            <div style="width: 80%; margin: 0 auto 4px auto; min-height: 60px; vertical-align: middle; display: flex; justify-content: center; align-items: center;">
+                                <img t-if="o.env.user.user_signature" t-att-src="image_data_uri(o.env.user.user_signature)" style="display: block; margin: 0 auto; max-width: 100%; max-height: 60px;"/>
+                            </div>
+
+                                (                        <span style="font-weight: bold;" t-field="o.env.user.name"></span>)
+                            <br/>
+                            <span style="font-weight: bold;" t-field="o.env.user.job_title"></span>
+                        </div>
+                        <div class="col-5" style="text-align:center;">
+                            <div style="width: 80%; margin: 0 auto 4px auto; min-height: 60px; vertical-align: middle; display: flex; justify-content: center; align-items: center;">
+                            </div>
+
+                                (                        <span style="font-weight: bold;"></span>)
+                            <br/>
+                            <span></span>
+                        </div>
+                        <div class="col-2" style="text-align:right;">
+                            <div style="height: 30px;"></div>
+                            <span>F-MK-01</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            (function () {
+                var params = (window.location.search || '').substring(1).split('&amp;');
+                var page = null;
+                var topage = null;
+                for (var i = 0; i &lt; params.length; i++) {
+                    var pair = params[i].split('=');
+                    if (pair[0] === 'page') { page = pair[1]; }
+                    if (pair[0] === 'topage') { topage = pair[1]; }
+                }
+                if (page) {
+                    var termsEls = document.getElementsByClassName('js-kuady-terms-page');
+                    for (var j = 0; j &lt; termsEls.length; j++) {
+                        if (termsEls[j].getAttribute('data-kuady-page') === page) {
+                            termsEls[j].style.display = 'block';
+                        }
+                    }
+                }
+                if (page &amp;&amp; topage &amp;&amp; page === topage) {
+                    var lastPageEls = document.getElementsByClassName('last-page');
+                    for (var k = 0; k &lt; lastPageEls.length; k++) {
+                        lastPageEls[k].style.display = 'block';
+                    }
+                }
+            })();
+        </script>
+    </template>
+</odoo>

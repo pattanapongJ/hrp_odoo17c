@@ -1,0 +1,261 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_header_info_kuady">
+        <t t-set="kuady_company" t-value="env['res.company'].search([('name', '=', 'บริษัท คออดี้ อินคอร์เปอเรชั่น (เอเชีย) จำกัด')], limit=1)"/>
+        <div class="row">
+            <div class="col-12" style="font-family: 'AngsanaNew'; font-size: 24px; line-height: 1.1;">
+                <div style="display: table; width: 100%; ">
+                    <div style="display: table-cell; vertical-align: top; text-align: left; width: 70%;">
+                        <div style="font-weight: bold; font-size: 40px;">
+                            <span>Quotation</span>
+                        </div>
+                        <div style="font-weight: bold; font-size: 26.67px;">
+                            <span t-field="kuady_company.name"/>
+                        </div>
+                        <div>
+                            <span t-if="kuady_company.street_en" t-field="kuady_company.street_en"/>
+                            <span t-if="kuady_company.street2_en" t-field="kuady_company.street2_en"/>
+                            <span t-if="kuady_company.city_en" t-field="kuady_company.city_en"/>
+                            <span t-if="kuady_company.state_id_en" t-field="kuady_company.state_id_en"/>
+                            <span t-if="kuady_company.zip_en" t-field="kuady_company.zip_en"/>
+                        </div>
+                        <div>
+                            <span>Tel : </span>
+                            <t t-if="kuady_company.phone">
+                                <span t-field="kuady_company.phone"/>
+                            </t>
+                            <t t-if="not kuady_company.phone">
+                                <span>-</span>
+                            </t>
+                            <span>&#160;&#160;&#160;Fax : </span>
+                            <t t-if="kuady_company.fax">
+                                <span t-field="kuady_company.fax"/>
+                            </t>
+                            <t t-if="not kuady_company.fax">
+                                <span>-</span>
+                            </t>
+                        </div>
+                        <div>
+                            <span>E-Mail : </span>
+                            <t t-if="kuady_company.email">
+                                <span t-field="kuady_company.email"/>
+                            </t>
+                            <t t-if="not kuady_company.email">
+                                <span>-</span>
+                            </t>
+                        </div>
+                        <div>
+                            <span>Tax : </span>
+                            <t t-if="kuady_company.vat">
+                                <span t-field="kuady_company.vat"/>
+                            </t>
+                            <t t-if="not kuady_company.vat">
+                                <span>-</span>
+                            </t>
+                            <span t-if="kuady_company.branch"> (                                <span t-field="kuady_company.branch"/>
+)</span>
+                        </div>
+                    </div>
+                    <div style="display: table-cell; vertical-align: top; text-align: center; width: 30%;">
+                        <div style="min-height: 60px;">
+                            <img t-if="kuady_company.logo" t-att-src="image_data_uri(kuady_company.logo)" style="
+                                max-width: 90%;
+                                max-height: 100px;
+                                width: auto;
+                                height: auto;
+                                object-fit: contain;
+                            " alt="Logo"/>
+                        </div>
+                        <div>
+                            <span>ISO 9001:2015 Quality Management</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <span>Page </span>
+                            <span class="page"/>
+                            <span>/</span>
+                            <span class="topage"/>
+                        </div>
+                        <table class = "table-borderless" style="width: 100%; border-collapse: collapse; margin-top: 4px;">
+                            <tr>
+                                <td style="text-align: center; font-weight: bold; padding: 2px 4px; width: 50%;">
+                                    <span>Quotation no.</span>
+                                </td>
+                                <td style="border: 1px solid #000; text-align: center; padding: 2px 4px;">
+                                    <span t-field="o.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; font-weight: bold; padding: 2px 4px;">
+                                    <span>Validility</span>
+                                </td>
+                                <td style="border: 1px solid #000; text-align: center; padding: 2px 4px;">
+                                    <t t-if="o.validity_date">
+                                        <span t-field="o.validity_date" t-options="{'widget': 'date', 'format': 'dd/MM/yyyy'}"/>
+                                    </t>
+                                    <t t-if="not o.validity_date">
+                                        <span>-</span>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="row" style="font-size:20px;">
+                    <div class="col-6">
+                        <div class="row" style="padding: 0;">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>TO</span>
+                            </div>
+                            <div class="col-8" style="border-bottom: 1px solid #000;">
+                                <t t-if="o.partner_id.name_company">
+                                    <span t-field="o.partner_id.name_company"/>
+                                </t>
+                                <t t-if="not o.partner_id.name_company">
+                                    <span t-field="o.partner_id.name"/>
+                                </t>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                        <div class="row" style="padding: 0;">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>ATTN</span>
+                            </div>
+                            <div class="col-8" style="border-bottom: 1px solid #000;">
+                                <t t-if="o.partner_id.contact_person">
+                                    <span t-field="o.partner_id.contact_person"/>
+                                </t>
+                                <t t-if="not o.partner_id.contact_person">
+                                    <span>-</span>
+                                </t>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                        <div class="row" style="padding: 0;">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>Tel</span>
+                            </div>
+                            <div class="col-8" style="border-bottom: 1px solid #000;">
+                                <t t-if="o.partner_id.phone">
+                                    <span t-field="o.partner_id.phone"/>
+                                </t>
+                                <t t-if="not o.partner_id.phone">
+                                    <span>-</span>
+                                </t>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                        <div class="row" style="padding: 0;">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>E-mail</span>
+                            </div>
+                            <div class="col-8" style="border-bottom: 1px solid #000;">
+                                <t t-if="o.partner_id.email">
+                                    <span t-field="o.partner_id.email"/>
+                                </t>
+                                <t t-if="not o.partner_id.email">
+                                    <span>-</span>
+                                </t>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                        <div class="row" style="padding: 0;">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>Delivery Time</span>
+                            </div>
+                            <div class="col-8" style="border-bottom: 1px solid #000;">
+                                <t t-if="o.delivery_time">
+                                    <span t-field="o.delivery_time"/>
+                                </t>
+                                <t t-if="not o.delivery_time">
+                                    <span>-</span>
+                                </t>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row" style="padding: 0;">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>Date</span>
+                            </div>
+                            <div class="col-8" style="border-bottom: 1px solid #000;">
+                                <span t-if="o.date_order" t-field="o.date_order" t-options="{'widget': 'date', 'format': 'dd/MM/yyyy'}"/>
+                                <span t-if="not o.date_order">-</span>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                        <div class="row" style="padding: 0;">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>Sales</span>
+                            </div>
+                            <div class="col-8" style="border-bottom: 1px solid #000;">
+                                <t t-if="o.user_id.name">
+                                    <span t-field="o.user_id.name"/>
+                                </t>
+                                <t t-if="not o.user_id.name">
+                                    <span>-</span>
+                                </t>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                        <div class="row" style="padding: 0;">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>Mobile No.</span>
+                            </div>
+                            <div class="col-8" style="border-bottom: 1px solid #000;">
+                                <t t-if="o.user_id.mobile">
+                                    <span t-field="o.user_id.mobile"/>
+                                </t>
+                                <t t-if="not o.user_id.mobile">
+                                    <span>-</span>
+                                </t>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                        <div class="row" style="padding: 0;">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>E-mail</span>
+                            </div>
+                            <div class="col-8" style="border-bottom: 1px solid #000;">
+                                <t t-if="o.user_id.email">
+                                    <span t-field="o.user_id.email"/>
+                                </t>
+                                <t t-if="not o.user_id.email">
+                                    <span>-</span>
+                                </t>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                        <div class="row" style="padding: 0;">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>Payment</span>
+                            </div>
+                            <div class="col-8" style="border-bottom: 1px solid #000;">
+                                <span t-if="o.payment_term_id" t-field="o.payment_term_id"/>
+                                <span t-if="not o.payment_term_id">-</span>
+                            </div>
+                            <div class="col-1"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <t t-set="kuady_subject_template" t-value="o.terms_template_ids.filtered(lambda t: t.name == 'Subject')[:1]"/>
+                        <style>
+                        .kuady_subject_field, .kuady_subject_field p, .kuady_subject_field div {
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            line-height: 1.1em !important;
+                        }
+                        </style>
+                        <div style="overflow: hidden; height: 2.4em; line-height:1.1em;">
+                            <t t-if="kuady_subject_template">
+                                <span class="d-inline kuady_subject_field" t-field="kuady_subject_template.text"/>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>
