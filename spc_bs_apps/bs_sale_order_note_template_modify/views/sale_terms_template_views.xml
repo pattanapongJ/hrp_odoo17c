@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sale_order_note_template.menu_sale_terms_template" model="ir.ui.menu">
+        <field name="name">SO Template</field>
+    </record>
+
+    <record id="view_sale_terms_template_form_inherit_modify" model="ir.ui.view">
+        <field name="name">sale.terms_template.form.inherit.modify</field>
+        <field name="model">sale.terms_template</field>
+        <field name="inherit_id" ref="sale_order_note_template.view_sale_terms_template_form" />
+        <field name="arch" type="xml">
+            <div class="oe_title" position="after">
+                <group>
+                    <field name="template_type" />
+                </group>
+            </div>
+        </field>
+    </record>
+
+    <record id="view_sale_terms_template_tree_inherit_modify" model="ir.ui.view">
+        <field name="name">sale.terms_template.list.inherit.modify</field>
+        <field name="model">sale.terms_template</field>
+        <field name="inherit_id" ref="sale_order_note_template.view_sale_terms_template_tree" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="template_type" />
+            </field>
+        </field>
+    </record>
+
+    <record id="action_sale_terms_template_subject" model="ir.actions.act_window">
+        <field name="name">Subject Template</field>
+        <field name="res_model">sale.terms_template</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[("template_type", "=", "subject")]</field>
+        <field name="context">{"default_template_type": "subject"}</field>
+    </record>
+
+    <record id="action_sale_terms_template_other" model="ir.actions.act_window">
+        <field name="name">Other Template</field>
+        <field name="res_model">sale.terms_template</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[("template_type", "=", "other")]</field>
+        <field name="context">{"default_template_type": "other"}</field>
+    </record>
+
+    <menuitem
+        id="menu_sale_terms_template_subject"
+        name="Subject Template"
+        parent="sale_order_note_template.menu_sale_terms_template"
+        action="action_sale_terms_template_subject"
+        sequence="10"
+    />
+
+    <menuitem
+        id="menu_sale_terms_template_other"
+        name="Other Template"
+        parent="sale_order_note_template.menu_sale_terms_template"
+        action="action_sale_terms_template_other"
+        sequence="20"
+    />
+
+</odoo>
