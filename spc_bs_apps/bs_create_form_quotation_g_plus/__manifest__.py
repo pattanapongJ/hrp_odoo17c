@@ -1,6 +1,6 @@
 {
     "name": "BS Create Form Quotation G Plus",
-    "version": "17.0.0.12",
+    "version": "17.0.0.15",
     "author": "Basic-Solution Co., Ltd.",
     "maintainer": "varit",
     "website": "https://www.basic-solution.com/",
@@ -8,6 +8,7 @@
     "depends": [
         "sale",
         "sale_order_note_template",
+        "bs_sale_order_note_template_modify",
         "bs_sale_order_hrp",
         "partner_contact_person",
         "l10n_th_partner",
