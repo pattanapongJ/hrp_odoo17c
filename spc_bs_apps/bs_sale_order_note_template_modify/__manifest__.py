@@ -1,6 +1,6 @@
 {
     "name": "BS Sale Order Note Template Modify",
-    "version": "17.0.1.0.0",
+    "version": "17.0.1.0.1",
     "summary": "Split Terms and conditions Templates into Subject Template "
     "and Other Template menus",
     "author": "Basic Solution Co.,Ltd.",
