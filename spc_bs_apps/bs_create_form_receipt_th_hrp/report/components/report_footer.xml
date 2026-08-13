@@ -113,7 +113,7 @@
             <!-- Bottom Notice Section -->
             <div class="row border-bottom border-dark pb-2 text-left set_center_header_details">
                 <div class="col-8">
-                    <span>เมื่อชำระด้วยเช็ค ดร๊าฟ โปรดสั่งจ่ายในนาม บริษัท เฮอริง พลัส จำกัด </span>
+                    <span>เมื่อชำระด้วยเช็ค ดร๊าฟ โปรดสั่งจ่ายในนาม </span> <span t-field="o.company_id.name"/> 
                     <br/>
                     <span>ขีดฆ่าคำว่า "หรือผู้ถือหุ้น" ออก และขีดคร่อมเช็คด้วย</span>
                     <br/>
