@@ -1,59 +1,64 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
+    <template id="report_main_content_kuady_table_head">
+        <thead style="font-weight: bold;">
+            <tr>
+                <th style="width: 10%; text-align: center; vertical-align: middle; border: 1px solid #000;">
+                    <span>Item</span>
+                </th>
+                <th style="width: 40%; text-align: center; vertical-align: middle; border: 1px solid #000;">
+                    <span>Description</span>
+                </th>
+                <th style="width: 10%; text-align: center; vertical-align: middle; border: 1px solid #000;">
+                    <span>Qty</span>
+                </th>
+                <th style="width: 10%; text-align: center; vertical-align: middle; border: 1px solid #000;">
+                    <span>Unit</span>
+                </th>
+                <th style="width: 15%; text-align: center; vertical-align: middle; border: 1px solid #000;">
+                    <span>Price/EA</span>
+                </th>
+                <th style="width: 15%; text-align: center; vertical-align: middle; border: 1px solid #000;">
+                    <span>Amount</span>
+                </th>
+            </tr>
+        </thead>
+    </template>
+
     <template id="report_main_content_kuady">
         <div style="font-family: 'AngsanaNew'; font-size: 24px;" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id">
-            <t t-foreach="o._get_kuady_report_pages()" t-as="page_lines">
-                <div t-attf-style="box-sizing: border-box; #{'' if page_lines_first else 'page-break-before: always;'}">
-                    <table class="table-borderless" style="width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed;">
-                        <thead style="font-weight: bold;">
-                            <tr>
-                                <th style="width: 10%; text-align: center; vertical-align: middle; border: 1px solid #000;">
-                                    <span>Item</span>
-                                </th>
-                                <th style="width: 40%; text-align: center; vertical-align: middle; border: 1px solid #000;">
-                                    <span>Description</span>
-                                </th>
-                                <th style="width: 10%; text-align: center; vertical-align: middle; border: 1px solid #000;">
-                                    <span>Qty</span>
-                                </th>
-                                <th style="width: 10%; text-align: center; vertical-align: middle; border: 1px solid #000;">
-                                    <span>Unit</span>
-                                </th>
-                                <th style="width: 15%; text-align: center; vertical-align: middle; border: 1px solid #000;">
-                                    <span>Price/EA</span>
-                                </th>
-                                <th style="width: 15%; text-align: center; vertical-align: middle; border: 1px solid #000;">
-                                    <span>Amount</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr t-foreach="page_lines" t-as="entry">
-                                <t t-set="row_number" t-value="entry[0]"/>
-                                <t t-set="line" t-value="entry[1]"/>
-                                <td style="text-align: center; padding: 1px 4px; line-height: 1.2;">
-                                    <span t-if="line" t-esc="'{:,}'.format(row_number)"/>
-                                </td>
-                                <td style="text-align: left; padding: 1px 4px; line-height: 1.2;">
-                                    <span t-if="line" t-field="line.name"/>
-                                </td>
-                                <td style="text-align: center; padding: 1px 4px; line-height: 1.2;">
-                                    <span t-if="line" t-esc="'{:,.2f}'.format(line.product_uom_qty)"/>
-                                </td>
-                                <td style="text-align: center; padding: 1px 4px; line-height: 1.2;">
-                                    <span t-if="line" t-field="line.product_uom"/>
-                                </td>
-                                <td style="text-align: right; padding: 1px 4px; line-height: 1.2;">
-                                    <span t-if="line" t-esc="'{:,.2f}'.format(line.gross_unit_price)"/>
-                                </td>
-                                <td style="text-align: right; padding: 1px 4px; line-height: 1.2;">
-                                    <span t-if="line" t-esc="'{:,.2f}'.format(line.price_before_tax)"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </t>
+            <table class="table-borderless" style="width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed;">
+                <t t-call="bs_create_form_quotation_kuady.report_main_content_kuady_table_head"/>
+                <tbody>
+                    <tr t-foreach="o.order_line.filtered(lambda l: not l.display_type)" t-as="line">
+                        <td style="text-align: center;  ">
+                            <span t-esc="line_index + 1"/>
+                        </td>
+                        <td style="text-align: left;  ">
+                            <span t-field="line.name"/>
+                        </td>
+                        <td style="text-align: center; ">
+                            <span t-field="line.product_uom_qty"/>
+                        </td>
+                        <td style="text-align: center; ">
+                            <span t-field="line.product_uom"/>
+                        </td>
+                        <td style="text-align: right; ">
+                            <span t-field="line.gross_unit_price"/>
+                        </td>
+                        <td style="text-align: right; ">
+                            <span t-field="line.price_before_tax"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+        <t t-foreach="range(o._get_kuady_article_page_count(), o._get_kuady_total_page_count())" t-as="kuady_extra_page_index">
+            <div style="box-sizing: border-box; page-break-before: always;">
+                <table class="table-borderless" style="width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed;">
+                    <t t-call="bs_create_form_quotation_kuady.report_main_content_kuady_table_head"/>
+                </table>
+            </div>
+        </t>
     </template>
 </odoo>
