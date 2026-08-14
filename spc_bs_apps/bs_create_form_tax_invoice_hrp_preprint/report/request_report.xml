@@ -3,7 +3,7 @@
     <data>
 
         <record id="paper_format_bs_create_tax_invoice_preprint_report" model="report.paperformat">
-            <field name="name">Tax Invoice Preprint</field>
+            <field name="name">Tax Invoice SS+Ramer Preprint</field>
             <field name="default" eval="False"/>
             <field name="format">Letter</field>
             <field name="page_height">0</field>
@@ -18,7 +18,7 @@
         </record>
 
         <record id="action_report_bs_create_tax_invoice_preprint_report" model="ir.actions.report">
-            <field name="name">Invoice 1</field>
+            <field name="name">Invoice SS+Ramer</field>
             <field name="model">account.move</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">bs_create_form_tax_invoice_hrp_preprint.bs_form_preprint_report_template</field>
