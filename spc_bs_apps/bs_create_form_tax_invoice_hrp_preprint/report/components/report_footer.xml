@@ -7,7 +7,7 @@
                 </div>
                 <div class="col-1"/>
                 <div class="col-4" style="margin-right: 50px; margin-top: 75px;">
-                    <t t-set="amount_before_discount" t-value="sum(l.price_total for l in o.invoice_line_ids if l.display_type == 'product' and not l.apply_global_discount) if any(tax.price_include for tax in o.invoice_line_ids[:1].tax_ids) else sum(l.price_subtotal for l in o.invoice_line_ids if l.display_type == 'product' and not l.apply_global_discount)"/>
+                    <t t-set="amount_before_discount" t-value="sum(l.price_total for l in o.invoice_line_ids if l.display_type == 'product') if any(tax.price_include for tax in o.invoice_line_ids[:1].tax_ids) else sum(l.price_subtotal for l in o.invoice_line_ids if l.display_type == 'product')"/>
                     <t t-set="total_global_discount" t-value="sum(l.global_discount_amount for l in o.invoice_line_ids if l.display_type == 'product' and l.apply_global_discount)"/>
                     <t t-set="amount_down_payment" t-value="sum(l.price_total for l in o.invoice_line_ids if l.display_type == 'product' and l.apply_down_payment) if any(tax.price_include for tax in o.invoice_line_ids[:1].tax_ids) else sum(l.price_subtotal for l in o.invoice_line_ids if l.display_type == 'product' and l.apply_down_payment)"/>
                     <t t-set="amount_total" t-value="o.amount_total"/>
