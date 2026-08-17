@@ -3,9 +3,107 @@
     <template id="report_header_info">
         <div style="font-family: 'THSarabunNew'; font-size: 18px;">
             <div class="row">
-                <div class="col-6"/>
-                <div class="col-1"/>
-                <div class="col-5" style="margin-left: 20px;">
+                <div class="col-7">
+                    <div class="row">
+                        <div class="col-2">
+                            <span style="text-align: left;">
+                                ชื่อผู้ขาย :
+                            </span>
+                        </div>
+                        <div class="col-10" style="margin-left: -20px;">
+                            <span style="text-align: left;" t-field="o.company_id.name"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            <span style="text-align: left;">
+                                ที่อยู่ :
+                            </span>
+                        </div>
+                        <div class="col-10" style="margin-left: -20px;">
+                            <span t-field="o.company_id.street"/>
+                            <span t-field="o.company_id.street2"/>
+                            <span t-field="o.company_id.city"/>
+                            <br/>
+                            <span t-field="o.company_id.state_id"/>
+                            <span t-field="o.company_id.zip"/>
+                            <span t-field="o.company_id.country_id"/>
+                        </div>
+                    </div>
+                    <div class="row" style="text-align: left;">
+                        <div class="col-2">
+                            <span>
+                                สาขา :
+                            </span>
+                        </div>
+                        <div class="col-3" style="margin-left: -20px;">
+                            <span t-field="o.company_id.branch"/>
+                        </div>
+                        <div class="col-2" style="margin-left: -25px;">
+                            <span>
+                            เลขที่ผู้เสียภาษี
+                            </span>
+                        </div>
+                        <div class="col-3">
+                            <span t-field="o.company_id.vat"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            <span style="text-align: left;">
+                                รหัสลูกค้า :
+                            </span>
+                        </div>
+                        <div class="col-10" style="margin-left: -20px;">
+                            <span t-field="o.partner_id.partner_code"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            <span style="text-align: left;">
+                               นามผู้ซื้อ :
+                            </span>
+                        </div>
+                        <div class="col-10" style="margin-left: -20px;">
+                            <span t-field="o.partner_id.name"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            <span style="text-align: left;">
+                                ที่อยู่ :
+                            </span>
+                        </div>
+                        <div class="col-10" style="margin-left: -20px;">
+                            <span t-field="o.partner_id.street"/>
+                            <span t-field="o.partner_id.street2"/>
+                            <span t-field="o.partner_id.city"/>
+                            <br/>
+                            <span t-field="o.partner_id.state_id"/>
+                            <span t-field="o.partner_id.zip"/>
+                            <span t-field="o.partner_id.country_id"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2">
+                            <span>
+                                สาขา : 
+                            </span>
+                        </div>
+                        <div class="col-3" style="margin-left: -20px;">
+                            <span t-field="o.partner_id.branch"/>
+                        </div>
+                        <div class="col-2" style="margin-left: -25px;">
+                            <span>
+                            เลขที่ผู้เสียภาษี
+                            </span>
+                        </div>
+                        <div class="col-3">
+                            <span t-field="o.partner_id.vat"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5" style="margin-left: 20px; margin-top: 115px;">
                     <div class="row">
                         <div style="padding-left: 60px;">
                             <span style="text-align: left;" t-field="o.name"/>

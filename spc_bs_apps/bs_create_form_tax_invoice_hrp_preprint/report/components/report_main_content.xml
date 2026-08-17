@@ -23,20 +23,15 @@
                             <td style="text-align: left;">
                                 <span t-field="line.name"/>
                             </td>
-                            <td style="text-align: right; padding-right: 37.5px;">
+                            <td style="text-align: right; padding-right: 20.5px;">
                                 <span t-esc="('{:,.2f}').format(abs(line.quantity))"/>
+                                <span style="padding-left:5px;" t-field="line.product_uom_id"/>
                             </td>
                             <td style="text-align: right; padding-right: 37.5px;">
-                                <span t-field="line.product_uom_id"/>
+                                <span t-esc="('{:,.2f}').format(line.gross_price_unit)"/>
                             </td>
                             <td style="text-align: right; padding-left: 7.5px;">
-                                <!-- <t t-if="any(tax.price_include for tax in line.tax_ids)">
-                                    <span t-esc="('{:,.2f}').format(line.price_total)"/>
-                                </t>
-                                <t t-else="">
-                                    <span t-esc="('{:,.2f}').format(line.price_subtotal)"/>
-                                </t> -->
-                                <span t-esc="('{:,.2f}').format(line.gross_price_unit)"/>
+                                <span t-esc="('{:,.2f}').format(abs(line.gross_price_unit * line.quantity))"/>
                             </td>
                         </t>
                     </tr>
