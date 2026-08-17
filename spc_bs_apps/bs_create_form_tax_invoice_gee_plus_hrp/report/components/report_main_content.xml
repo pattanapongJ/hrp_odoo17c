@@ -16,26 +16,29 @@
                 <tbody>
                     <t t-set="line_number" t-value="0"/>
                     <tr t-foreach="o.invoice_line_ids" t-as="line">
-                        <td style="text-align: left;">
-                            <t t-set="line_number" t-value="line_number + 1"/>
-                            <span t-esc="line_number"/>
-                        </td>
-                        <td style="text-align: left;">
-                            <span t-field="line.product_id.name"/>
-                            <span t-field="line.name"/>
-                        </td>
-                        <td style="text-align: right; padding-left:40px;">
-                            <span t-esc="('{:,.2f}').format(line.quantity)"/>
-                        </td>
-                        <td style="text-align: right; padding-right:30px;">
-                            <span t-field="line.product_uom_id"/>
-                        </td>
-                        <td style="text-align: right; padding-right:40px;">
-                            <span t-field="line.discount"/>
-                        </td>
-                        <td style="text-align: right; padding-left:40px;">
-                            <span t-esc="('{:,.2f}').format(line.price_subtotal)"/>
-                        </td>
+                        <t t-if="line.display_type == 'product'">
+
+                            <td style="text-align: left;">
+                                <t t-set="line_number" t-value="line_number + 1"/>
+                                <span t-esc="line_number"/>
+                            </td>
+                            <td style="text-align: left;">
+                                <span t-field="line.product_id.name"/>
+                                <span t-field="line.name"/>
+                            </td>
+                            <td style="text-align: right; padding-left:40px;">
+                                <span t-esc="('{:,.2f}').format(abs(line.quantity))"/>
+                            </td>
+                            <td style="text-align: right; padding-right:30px;">
+                                <span t-field="line.product_uom_id"/>
+                            </td>
+                            <td style="text-align: right; padding-right:40px;">
+                                <span t-esc="('{:,.2f}').format(line.global_discount_amount)"/>
+                            </td>
+                            <td style="text-align: right; padding-left:40px;">
+                                <span t-esc="('{:,.2f}').format(line.price_unit)"/>
+                            </td>
+                        </t>
                     </tr>
                 </tbody>
             </table>
