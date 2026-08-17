@@ -1,0 +1,226 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_header_info_ramer">
+        <t t-set="ramer_company" t-value="env['res.company'].search([('name', '=', 'บริษัท เรเมอร์ (เอเชีย) จำกัด')], limit=1)"/>
+        <div class="row" style="font-family: 'Times New Roman'; font-size: 21px;">
+            <div class="col-12">
+                <div class="row" style="font-weight: Regular;">
+                    <div class="col-3">
+                        <div style="vertical-align: middle; text-align: center; width: 90%;">
+                            <img t-if="ramer_company.logo" t-att-src="image_data_uri(ramer_company.logo)" style="
+                            max-width: 100%;
+                            max-height: 140px;
+                            width: auto;
+                            height: auto;
+                            object-fit: contain;
+                            display: inline-block;
+                        " alt="Logo"/>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <span t-field="ramer_company.name_en"/>
+                        <br/>
+                        <span t-field="ramer_company.street_en"/>
+                        <br/>
+                        <span t-field="ramer_company.street2_en"/>
+                        <span t-field="ramer_company.city_en"/>
+                        <span t-field="ramer_company.state_id_en"/>
+                        <span t-field="ramer_company.zip_en"/>
+                    </div>
+                    <div class="col-3 text-left">
+                        <span>Tel:</span>
+                        <span t-field="ramer_company.phone"/>
+                        <br/>
+                        <span>Hotline Service :</span>
+                        <span t-field="ramer_company.mobile"/>
+                        <br/>
+                        <span>E-mail:</span>
+                        <span t-field="ramer_company.email"/>
+                        <br/>
+                        <br/>
+                        <div style="text-align: right; font-weight: regular;">
+                            <span>Page</span>
+                            <span class="page"/>
+                            <span>/</span>
+                            <span class="topage"/>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row" style="font-weight: bold; border: 1px solid black;">
+                    <div class="col-12 text-center">
+                        <span style="font-size: 35px;">QUOTATION</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7" style="border-right: 1px solid black;">
+                        <div class="row">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>Quotation Date </span>
+                            </div>
+                            <div class="col-1 text-center">
+                                <span>:</span>
+                            </div>
+                            <div class="col-8">
+                                <span t-field="o.date_order"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>Company</span>
+                            </div>
+                            <div class="col-1 text-center">
+                                <span>:</span>
+                            </div>
+                            <div class="col-8">
+                                <span t-field="o.partner_id.name_company"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>ATTN</span>
+                            </div>
+                            <div class="col-1 text-center">
+                                <span>:</span>
+                            </div>
+                            <div class="col-8">
+                                <span t-field="o.partner_id.contact_person"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>Tel</span>
+                            </div>
+                            <div class="col-1 text-center">
+                                <span>:</span>
+                            </div>
+                            <div class="col-8">
+                                <span t-field="o.partner_id.phone"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>E-mail</span>
+                            </div>
+                            <div class="col-1 text-center">
+                                <span>:</span>
+                            </div>
+                            <div class="col-8">
+                                <span t-field="o.partner_id.email"/>
+                            </div>
+                        </div>
+                        <div class="row" style="font-weight: bold; border-top: 1px solid black;">
+                            <span>Sales Conditions</span>
+                        </div>
+                        <div class="row">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>Validate</span>
+                            </div>
+                            <div class="col-1 text-center">
+                                <span>:</span>
+                            </div>
+                            <div class="col-8">
+                                <span t-field="o.validity_date"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>Delivery time</span>
+                            </div>
+                            <div class="col-1 text-center">
+                                <span>:</span>
+                            </div>
+                            <div class="col-8">
+                                <span t-field="o.delivery_time"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3" style="font-weight: bold;">
+                                <span>Payment</span>
+                            </div>
+                            <div class="col-1 text-center">
+                                <span>:</span>
+                            </div>
+                            <div class="col-8">
+                                <span t-field="o.payment_term_id"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="row">
+                            <div class="col-7 text-center" style="font-weight: bold;">
+                                Quotation No.
+                            </div>
+                            <div class="col-5 text-center" style="font-weight: bold;">
+                                <span t-field="o.name"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3" style="padding-left: 5px;font-weight: bold;">
+                                <span>Sales</span>
+                            </div>
+                            <div class="col-1 text-center">
+                                <span>:</span>
+                            </div>
+                            <div class="col-8">
+                                <span t-field="o.env.user.name"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3" style="padding-left: 5px; font-weight: bold;">
+                                <span>Mobile</span>
+                            </div>
+                            <div class="col-1 text-center">
+                                <span>:</span>
+                            </div>
+                            <div class="col-8">
+                                <span t-field="o.env.user.mobile"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3" style="padding-left: 5px; font-weight: bold;">
+                                <span>E-mail</span>
+                            </div>
+                            <div class="col-1 text-center">
+                                <span>:</span>
+                            </div>
+                            <div class="col-8">
+                                <span t-field="o.env.user.email"/>
+                            </div>
+                        </div>
+                        <div class="row" style="border-top: 1px solid black;">
+                            <div class="col-12 text-center" style="font-weight: bold;">
+                                <div style="vertical-align: middle; text-align: center; width: 90   %;">
+                                    <img t-if="ramer_company.logo" t-att-src="image_data_uri(ramer_company.logo)" style="
+                            max-width: 100%;
+                            max-height: 100px;
+                            width: auto;
+                            height: auto;
+                            object-fit: contain;
+                            display: inline-block;
+                        " alt="Logo"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-center" style="font-weight: bold;">
+                                <!-- <span t-field="o.env.user.email"/> -->
+                                <span>Authorized  Signature  / Date  Authorized</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-center" style="font-weight: bold;">
+                                <span>Authorized  Signature  / Date  Authorized</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="border-top: 1px solid black; padding-top: 5px; padding-bottom: 5px;">
+                    <div class="col-12" style="font-weight: Regular; overflow: hidden; height: 3.0em; line-height: 0.9em;">
+                        <span t-field="o.subject_template_text"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>
