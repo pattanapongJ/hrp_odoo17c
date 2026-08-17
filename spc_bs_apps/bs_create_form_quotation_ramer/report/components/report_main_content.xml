@@ -54,7 +54,7 @@
             </table>
         </div>
         <t t-foreach="range(1, o._get_ramer_total_page_count())" t-as="ramer_extra_page_index">
-            <div style="box-sizing: border-box; page-break-before: always;">
+            <div style="box-sizing: border-box; page-break-before: always; font-family: 'Times New Roman'; font-size: 21px;">
                 <table class="table-borderless" style="width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed;">
                     <t t-call="bs_create_form_quotation_ramer.report_main_content_ramer_table_head"/>
                 </table>
