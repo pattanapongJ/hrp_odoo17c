@@ -13,7 +13,7 @@
             <field name="margin_bottom">105</field>
             <field name="margin_left">10</field>
             <field name="margin_right">10</field>
-            <field name="header_spacing">64</field>
+            <field name="header_spacing">90</field>
             <field name="dpi">90</field>
         </record>
 

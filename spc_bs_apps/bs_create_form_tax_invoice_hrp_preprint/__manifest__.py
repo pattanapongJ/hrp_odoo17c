@@ -1,6 +1,6 @@
 {
     "name": "BS Create Form Tax Invoice HRP Preprint",
-    "version": "17.0.0.4",
+    "version": "17.0.0.5",
     "author": "Basic-Solution Co., Ltd.",
     "maintainer": "varit",
     "website": "https://www.basic-solution.com/",
