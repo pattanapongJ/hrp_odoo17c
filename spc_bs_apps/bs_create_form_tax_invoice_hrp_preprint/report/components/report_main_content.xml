@@ -15,27 +15,30 @@
                 <tbody>
                     <t t-set="line_number" t-value="0"/>
                     <tr t-foreach="o.invoice_line_ids" t-as="line">
-                        <td>
-                            <t t-set="line_number" t-value="line_number + 1"/>
-                            <span t-esc="line_number"/>
-                        </td>
-                        <td style="text-align: left;">
-                            <span t-field="line.name"/>
-                        </td>
-                        <td style="text-align: right; padding-right: 37.5px;">
-                            <span t-field="line.quantity"/>
-                        </td>
-                        <td style="text-align: right; padding-right: 37.5px;">
-                            <span t-field="line.product_uom_id"/>
-                        </td>
-                        <td style="text-align: right; padding-left: 7.5px;">
-                            <t t-if="any(tax.price_include for tax in line.tax_ids)">
-                                <span t-esc="('{:,.2f}').format(line.price_total)"/>
-                            </t>
-                            <t t-else="">
-                                <span t-esc="('{:,.2f}').format(line.price_subtotal)"/>
-                            </t>
-                        </td>
+                        <t t-if="line.display_type == 'product'">
+                            <td>
+                                <t t-set="line_number" t-value="line_number + 1"/>
+                                <span t-esc="line_number"/>
+                            </td>
+                            <td style="text-align: left;">
+                                <span t-field="line.name"/>
+                            </td>
+                            <td style="text-align: right; padding-right: 37.5px;">
+                                <span t-esc="('{:,.2f}').format(abs(line.quantity))"/>
+                            </td>
+                            <td style="text-align: right; padding-right: 37.5px;">
+                                <span t-field="line.product_uom_id"/>
+                            </td>
+                            <td style="text-align: right; padding-left: 7.5px;">
+                                <!-- <t t-if="any(tax.price_include for tax in line.tax_ids)">
+                                    <span t-esc="('{:,.2f}').format(line.price_total)"/>
+                                </t>
+                                <t t-else="">
+                                    <span t-esc="('{:,.2f}').format(line.price_subtotal)"/>
+                                </t> -->
+                                <span t-esc="('{:,.2f}').format(line.gross_price_unit)"/>
+                            </td>
+                        </t>
                     </tr>
                 </tbody>
             </table>
