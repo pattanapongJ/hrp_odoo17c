@@ -26,17 +26,18 @@
                                 <span t-field="line.product_id.name"/>
                                 <span t-field="line.name"/>
                             </td>
-                            <td style="text-align: right; padding-left:40px;">
+                            <td style="text-align: right; padding-left:20px;">
                                 <span t-esc="('{:,.2f}').format(abs(line.quantity))"/>
+                                <span style="padding-left:5px;" t-field="line.product_uom_id"/>
                             </td>
                             <td style="text-align: right; padding-right:30px;">
-                                <span t-field="line.product_uom_id"/>
+                                <span t-esc="('{:,.2f}').format(line.gross_price_unit)"/>
                             </td>
                             <td style="text-align: right; padding-right:40px;">
                                 <span t-esc="('{:,.2f}').format(line.global_discount_amount)"/>
                             </td>
                             <td style="text-align: right; padding-left:40px;">
-                                <span t-esc="('{:,.2f}').format(line.price_unit)"/>
+                                <span t-esc="('{:,.2f}').format(abs(line.price_subtotal))"/>
                             </td>
                         </t>
                     </tr>
