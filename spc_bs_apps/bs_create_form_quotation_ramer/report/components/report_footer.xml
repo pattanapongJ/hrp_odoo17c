@@ -8,27 +8,27 @@
                         <div class="row">
                             <table class="table-borderless" style="width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed;">
                                 <tr>
-                                    <td style="width: 80%; text-align: right; padding: 2px 4px; border: 1px solid #000;">
+                                    <td style="width: 80%; text-align: right; padding: 2px 4px; border: 1px solid #000; font-weight: bold;">
                                         <span>TOTAL PRICE BAHT EXCLUDE VAT</span>
                                     </td>
                                     <td style="width: 20%; text-align: right; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">
-                                        <span class="last-page" style="display: none;" t-field="o.amount_untaxed"/>
+                                        <span class="last-page" style="display: none;" t-esc="'%.2f' % o.amount_untaxed"/>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="width: 80%; text-align: right; padding: 2px 4px; border: 1px solid #000;">
+                                    <td style="width: 80%; text-align: right; padding: 2px 4px; border: 1px solid #000; font-weight: bold;">
                                         <span>VAT 7%</span>
                                     </td>
                                     <td style="width: 20%; text-align: right; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">
-                                        <span class="last-page" style="display: none;" t-field="o.amount_tax"/>
+                                        <span class="last-page" style="display: none;" t-esc="'%.2f' % o.amount_tax"/>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="width: 80%; text-align: right; padding: 2px 4px; border: 1px solid #000;">
+                                    <td style="width: 80%; text-align: right; padding: 2px 4px; border: 1px solid #000; font-weight: bold;">
                                         <span>TOTAL PRICE BAHT INCLUDE VAT</span>
                                     </td>
                                     <td style="width: 20%; text-align: right; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">
-                                        <span class="last-page" style="display: none;" t-field="o.amount_total"/>
+                                        <span class="last-page" style="display: none;" t-esc="'%.2f' % o.amount_total"/>
                                     </td>
                                 </tr>
                             </table>
@@ -45,9 +45,9 @@
                 </div>
                 <div class="row" style="">
                     <div class="col-12">
-                        <t t-foreach="range(o._get_ramer_total_page_count())" t-as="ramer_other_page_index">
+                        <t t-foreach="range(o.sudo()._get_ramer_total_page_count())" t-as="ramer_other_page_index">
                             <div class="js-ramer-other-page" t-att-data-ramer-other-page="ramer_other_page_index + 1" style="display: none; width: 100%; white-space: pre-line; margin: 0 !important; padding: 0 !important;">
-                                <span t-esc="o._get_ramer_other_text(ramer_other_page_index)"/>
+                                <span t-esc="o.sudo()._get_ramer_other_text(ramer_other_page_index)"/>
                             </div>
                         </t>
                     </div>

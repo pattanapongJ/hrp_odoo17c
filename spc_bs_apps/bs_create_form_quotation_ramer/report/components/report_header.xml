@@ -1,10 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <template id="report_header_info_ramer">
-        <t t-set="ramer_company" t-value="env['res.company'].search([('name', '=', 'บริษัท เรเมอร์ (เอเชีย) จำกัด')], limit=1)"/>
         <div class="row" style="font-family: 'Times New Roman'; font-size: 21px;">
             <div class="col-12">
-                <div class="row" style="font-weight: Regular;">
+                <div class="row" style="font-weight: bold;">
                     <div class="col-3">
                         <div style="vertical-align: middle; text-align: center; width: 90%;">
                             <img t-if="o.brand_logo_id.logo" t-att-src="image_data_uri(o.brand_logo_id.logo)" style="
@@ -15,7 +14,7 @@
                             object-fit: contain;
                             display: inline-block;
                         " alt="Logo"/>
-                            <img t-elif="ramer_company.logo" t-att-src="image_data_uri(ramer_company.logo)" style="
+                            <img t-elif="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="
                             max-width: 100%;
                             max-height: 140px;
                             width: auto;
@@ -26,24 +25,24 @@
                         </div>
                     </div>
                     <div class="col-6">
-                        <span t-field="ramer_company.name_en"/>
+                        <span t-field="o.company_id.name_en"/>
                         <br/>
-                        <span t-field="ramer_company.street_en"/>
+                        <span t-field="o.company_id.street_en"/>
                         <br/>
-                        <span t-field="ramer_company.street2_en"/>
-                        <span t-field="ramer_company.city_en"/>
-                        <span t-field="ramer_company.state_id_en"/>
-                        <span t-field="ramer_company.zip_en"/>
+                        <span t-field="o.company_id.street2_en"/>
+                        <span t-field="o.company_id.city_en"/>
+                        <span t-field="o.company_id.state_id_en"/>
+                        <span t-field="o.company_id.zip_en"/>
                     </div>
                     <div class="col-3 text-left">
                         <span>Tel:</span>
-                        <span t-field="ramer_company.phone"/>
+                        <span t-field="o.company_id.phone"/>
                         <br/>
                         <span>Hotline Service :</span>
-                        <span t-field="ramer_company.mobile"/>
+                        <span t-field="o.company_id.mobile"/>
                         <br/>
                         <span>E-mail:</span>
-                        <span t-field="ramer_company.email"/>
+                        <span t-field="o.company_id.email"/>
                         <br/>
                         <br/>
                         <div style="text-align: right; font-weight: regular;">
@@ -70,7 +69,7 @@
                                 <span>:</span>
                             </div>
                             <div class="col-8">
-                                <span t-field="o.date_order"/>
+                                <span t-field="o.date_order" t-options="{'widget': 'date', 'format': 'dd/MM/yyyy'}"/>
                             </div>
                         </div>
                         <div class="row">
@@ -199,7 +198,7 @@
                         <div class="row" style="border-top: 1px solid black;">
                             <div class="col-12 text-center" style="font-weight: bold;">
                                 <div style="vertical-align: middle; text-align: center; width: 90   %;">
-                                    <img t-if="ramer_company.logo" t-att-src="image_data_uri(ramer_company.logo)" style="
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="
                             max-width: 100%;
                             max-height: 100px;
                             width: auto;
