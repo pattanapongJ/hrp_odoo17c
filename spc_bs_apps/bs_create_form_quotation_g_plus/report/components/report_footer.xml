@@ -13,9 +13,9 @@
                                 <span>REMARK :</span>
                             </div>
                         </div>
-                        <t t-foreach="range(o._get_quotation_total_page_count())" t-as="remark_page_index">
+                        <t t-foreach="range(o.sudo()._get_quotation_total_page_count())" t-as="remark_page_index">
                             <div class="js-remark-page" t-att-data-remark-page="remark_page_index + 1" style="display: none; width: 100%; margin-top: 0; font-weight: regular; white-space: pre-line;">
-                                <span t-esc="o._get_quotation_remark_text(remark_page_index)"/>
+                                <span t-esc="o.sudo()._get_quotation_remark_text(remark_page_index)"/>
                             </div>
                         </t>
                     </div>
@@ -24,7 +24,7 @@
                             <tr>
                                 <td style="width: 50%; text-align: left; height: 22px; padding: 2px 4px; vertical-align: middle;">Subtotal</td>
                                 <td style="width: 50%; text-align: right; height: 22px; padding: 2px 4px; vertical-align: middle;">
-                                    <span class="last-page" style="display: none;" t-esc="'{:,.2f}'.format(o.total_amt_wo_global_disc)"/>
+                                    <span class="last-page" style="display: none;" t-esc="'{:,.2f}'.format(sum(o.order_line.filtered(lambda l: not l.display_type).mapped('total_amt_wo_global_disc')))"/>
                                 </td>
                             </tr>
                             <tr>

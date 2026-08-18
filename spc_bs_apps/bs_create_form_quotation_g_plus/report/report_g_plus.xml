@@ -16,7 +16,7 @@
             <field name="header_spacing">75</field>
             <field name="dpi">96</field>
         </record>
-
+        
         <record id="action_report_bs_create_quotation_g_plus_report" model="ir.actions.report">
             <field name="name">Quotation G Plus</field>
             <field name="model">sale.order</field>

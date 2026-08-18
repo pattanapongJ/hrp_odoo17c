@@ -1,12 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <template id="report_header_info_g_plus">
-        <t t-set="g_plus_company" t-value="env['res.company'].search([('name', '=', 'บริษัท จี พลัส (ประเทศไทย) จำกัด')], limit=1)"/>
         <div class="row">
             <div class="col-12" style="font-family: 'AngsanaUPC'; ">
                 <div style="display: table; width: 100%; border-bottom: 1px solid #000; background-color: #CBE6FA;">
                     <div style="display: table-cell; vertical-align: middle; text-align: center; width: 16.6667%;">
-                        <img t-if="g_plus_company.logo" t-att-src="image_data_uri(g_plus_company.logo)" style="
+                        <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="
                             max-width: 100%;
                             max-height: 140px;
                             width: auto;
@@ -18,7 +17,7 @@
                     <div style="display: table-cell; vertical-align: middle; text-align: left; width: 83.3333%; font-weight: bold; font-size: 14.08px;">
                         <div class="row">
                             <div class = "col-12" style="white-space: nowrap; overflow: hidden;">
-                                <span style="font-size: 17.6px; font-weight: bold;" t-field="g_plus_company.name_en"/>
+                                <span style="font-size: 17.6px; font-weight: bold;" t-field="o.company_id.name_en"/>
                             </div>
                         </div>
                         <div class="row">
@@ -26,30 +25,30 @@
                                 <span>Address : </span>
                             </div>
                             <div class="col-10" style="margin-left:-53px;">
-                                <span t-field="g_plus_company.street_en"/>
-                                <span t-field="g_plus_company.street2_en"/>
+                                <span t-field="o.company_id.street_en"/>
+                                <span t-field="o.company_id.street2_en"/>
                                 <br/>
-                                <span t-field="g_plus_company.city_en"/>
-                                <span t-field="g_plus_company.state_id_en"/>
-                                <span t-field="g_plus_company.zip_en"/>
+                                <span t-field="o.company_id.city_en"/>
+                                <span t-field="o.company_id.state_id_en"/>
+                                <span t-field="o.company_id.zip_en"/>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-3">
                                 <span>Tel : </span>
-                                <t t-if="g_plus_company.phone">
-                                    <span t-esc="g_plus_company.phone"/>
+                                <t t-if="o.company_id.phone">
+                                    <span t-esc="o.company_id.phone"/>
                                 </t>
-                                <t t-if="not g_plus_company.phone">
+                                <t t-if="not o.company_id.phone">
                                     <span> - </span>
                                 </t>
                             </div>
                             <div class="col-3">
                                 <span>Fax : </span>
-                                <t t-if="g_plus_company.fax">
-                                    <span t-esc="g_plus_company.fax"/>
+                                <t t-if="o.company_id.fax">
+                                    <span t-esc="o.company_id.fax"/>
                                 </t>
-                                <t t-if="not g_plus_company.fax">
+                                <t t-if="not o.company_id.fax">
                                     <span> - </span>
                                 </t>
                             </div>
@@ -69,10 +68,10 @@
                         <div class="row">
                             <div class="col-12">
                                 <span>Website : </span>
-                                <t t-if="g_plus_company.website">
-                                    <span t-esc="g_plus_company.website"/>
+                                <t t-if="o.company_id.website">
+                                    <span t-esc="o.company_id.website"/>
                                 </t>
-                                <t t-if="not g_plus_company.website">
+                                <t t-if="not o.company_id.website">
                                     <span> - </span>
                                 </t>
                             </div>
