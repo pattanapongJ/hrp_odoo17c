@@ -204,7 +204,8 @@
                             width: auto;
                             height: auto;
                             object-fit: contain;
-                            display: inline-block;
+                            display: inline-block;  
+                            opacity: 0;
                         " alt="Logo"/>
                                 </div>
                             </div>
@@ -212,7 +213,7 @@
                         <div class="row">
                             <div class="col-12 text-center" style="font-weight: bold;">
                                 <!-- <span t-field="o.env.user.email"/> -->
-                                <span>Authorized  Signature  / Date  Authorized</span>
+                                <span style="color: transparent; opacity: 0; user-select: none;" >Authorized  Signature  / Date  Authorized</span>
                             </div>
                         </div>
                         <div class="row">
