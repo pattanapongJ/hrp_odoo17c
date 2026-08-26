@@ -38,16 +38,16 @@
                             <span t-field="line.name"/>
                         </td>
                         <td style="text-align: center; ">
-                            <span t-field="line.product_uom_qty"/>
+                            <span t-esc="'%.2f' % line.product_uom_qty"/>
                         </td>
                         <td style="text-align: center; ">
                             <span t-field="line.product_uom"/>
                         </td>
                         <td style="text-align: right; ">
-                            <span t-field="line.gross_unit_price"/>
+                            <span t-esc="'%.2f' % line.gross_unit_price"/>
                         </td>
                         <td style="text-align: right; ">
-                            <span t-field="line.price_before_tax"/>
+                            <span t-esc="'%.2f' % line.price_before_tax"/>
                         </td>
                     </tr>
                 </tbody>

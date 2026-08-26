@@ -11,7 +11,7 @@
                                     <span>TOTAL PRICE BAHT EXCLUDE VAT 7%</span>
                                 </td>
                                 <td style="width: 15%; text-align: right; font-weight: bold; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">
-                                    <span class="last-page" style="display: none;" t-field="o.amount_untaxed"/>
+                                    <span class="last-page" style="display: none;"  t-esc="'%.2f' % o.amount_untaxed"/>
                                 </td>
                             </tr>
                         </table>
