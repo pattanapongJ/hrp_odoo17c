@@ -32,7 +32,7 @@ class SaleOrder(models.Model):
         split can be sliced precisely.
         """
         self.ensure_one()
-        text = html2plaintext(self.subject_template_text or "").strip()
+        text = html2plaintext(self.other_template_text or "").strip()
         lines = []
         for raw_line in text.splitlines() or [""]:
             lines.extend(textwrap.wrap(raw_line, width=REMARK_CHARS_PER_LINE) or [""])
