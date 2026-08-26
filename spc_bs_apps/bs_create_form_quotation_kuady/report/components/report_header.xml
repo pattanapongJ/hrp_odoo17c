@@ -9,7 +9,7 @@
                             <span>Quotation</span>
                         </div>
                         <div style="font-weight: bold; font-size: 26.67px;">
-                            <span t-field="o.company_id.name"/>
+                            <span t-field="o.company_id.name_en"/>
                         </div>
                         <div>
                             <span t-if="o.company_id.street_en" t-field="o.company_id.street_en"/>
