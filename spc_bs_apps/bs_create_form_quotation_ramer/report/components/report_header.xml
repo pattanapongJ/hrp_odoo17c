@@ -24,7 +24,7 @@
                         " alt="Logo"/>
                         </div>
                     </div>
-                    <div class="col-6">
+                    <div class="col-5">
                         <span t-field="o.company_id.name_en"/>
                         <br/>
                         <span t-field="o.company_id.street_en"/>
@@ -34,7 +34,7 @@
                         <span t-field="o.company_id.state_id_en"/>
                         <span t-field="o.company_id.zip_en"/>
                     </div>
-                    <div class="col-3 text-left">
+                    <div class="col-4 text-left">
                         <span>Tel:</span>
                         <span t-field="o.company_id.phone"/>
                         <br/>
