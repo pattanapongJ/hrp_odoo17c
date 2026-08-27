@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_footer">
+        <div class="row" style="font-family: 'THSarabunNew'; font-size: 18px;">
+            <div class="row">
+                <div class="col-7">
+                </div>
+                <div class="col-3"/>
+                <div class="col-2 text-end">
+                    <div class="row">
+                        <div class="col-12">
+                            <span t-esc="('{:,.2f}').format(o.amount_untaxed)"/>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="col-12">
+                            <span t-esc="('{:,.2f}').format(o.amount_tax)"/>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 20px;">
+                        <div class="col-12">
+                            <span t-esc="('{:,.2f}').format(o.amount_total)"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>
