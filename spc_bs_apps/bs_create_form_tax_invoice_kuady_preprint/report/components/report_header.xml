@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_header_info">
+        <div class="row" style="font-family: 'THSarabunNew'; font-size: 18px;">
+            <div class="col-12" style="margin-top: 60px;">
+                <div class="row">
+                    <div class="col-6" style="margin-top: 30px; padding-left: 140px;">
+                        <span t-field="o.partner_id"/>
+                    </div>
+                    <div class="col-3 text-end" style="margin-top: 20px; padding-left: 15px;">
+                        <span t-field="o.invoice_date"/>
+                    </div>
+                    <div class="col-3 text-end" style="margin-top: 20px; margin-left:15px;">
+                        <span t-field="o.invoice_payment_term_id"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 " style="margin-top: 20px; padding-left: 60px;">
+                        <span t-field="o.partner_id.street"/>
+                        <span t-field="o.partner_id.street2"/>
+                        <br/>
+                        <span t-field="o.partner_id.city"/>
+                        <span t-field="o.partner_id.state_id"/>
+                        <span t-field="o.partner_id.zip"/>
+                        <span t-field="o.partner_id.country_id"/>
+                    </div>
+                    <div class="col-3 text-end" style="margin-top: 50px; margin-left: 10px;">
+                        <span t-field="o.invoice_origin"/>
+                    </div>
+                    <div class="col-3 text-end" style="margin-top: 30px; padding-right: 20px;">
+                        <span t-field="o.invoice_date_due"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6" style="margin-top: 15px;">
+                        <span>สาขา</span>
+                        <span t-field="o.partner_id.branch"/>
+                        <span>เลขประจำตัวผู้เสียภาษี</span>
+                        <span t-field="o.partner_id.vat"/>
+                    </div>
+                    <div class="col-3 text-end" style="margin-top: 20px; margin-left: 20px;">
+                        <span t-field="o.name"/>
+                    </div>
+                    <div class="col-3 text-end" style="margin-top: 50px; padding-right: 30px;">
+                        <span t-field="o.invoice_user_id"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>
