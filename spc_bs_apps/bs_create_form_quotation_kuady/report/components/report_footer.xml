@@ -24,9 +24,9 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <t t-foreach="range(o._get_kuady_total_page_count())" t-as="kuady_other_page_index">
+                        <t t-foreach="range(o.sudo()._get_kuady_total_page_count())" t-as="kuady_other_page_index">
                             <div class="js-kuady-other-page" t-att-data-kuady-other-page="kuady_other_page_index + 1" style="display: none; width: 100%; white-space: pre-line; margin: 0 !important; padding: 0 !important; line-height: 0.9em;">
-                                <span t-esc="o._get_kuady_other_text(kuady_other_page_index)"/>
+                                <span t-esc="o.sudo()._get_kuady_other_text(kuady_other_page_index)"/>
                             </div>
                         </t>
                     </div>
