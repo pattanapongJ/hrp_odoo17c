@@ -4,7 +4,7 @@
         <div class="row" style="font-family: 'THSarabunNew'; font-size: 18px;">
             <div class="col-12" style="margin-top: 10px;">
                 <div class="row">
-                    <div class="col-12 text-left" style="margin-top: 7px; padding-left: 120px;">
+                    <div class="col-12 text-left" style="margin-top: 5px; padding-left: 120px;">
                         <span t-field="o.partner_id.partner_code"/>
                     </div>
                 </div>
