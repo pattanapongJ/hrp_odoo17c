@@ -1,0 +1,24 @@
+{
+    "name": "BS Create Form Quotation Herring Plus Service",
+    "version": "17.0.0.1",
+    "author": "Basic-Solution Co., Ltd.",
+    "maintainer": "varit",
+    "website": "https://www.basic-solution.com/",
+    "category": "Sales",
+    "depends": [
+        "sale",
+        "salesperson_signature",
+        "bs_sale_order_note_template_modify",
+        "bs_companies_iso",
+    ],
+    "data": [
+        "report/components/report_footer.xml",
+        "report/components/report_header.xml",
+        "report/components/report_main_content.xml",
+        "report/report_herring_plus_service.xml",
+        "report/request_report.xml",
+    ],
+    "installable": True,
+    "application": True,
+    "license": "LGPL-3",
+}
