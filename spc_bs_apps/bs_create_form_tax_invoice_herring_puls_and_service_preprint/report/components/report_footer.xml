@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_footer_herring_puls_and_service_preprint">
+        <div style="font-family: 'THSarabunNew'; font-size: 18px;">
+             <div class="row" style="">
+                <div class="col-7">
+                </div>
+                <div class="col-1"/>
+                <div class="col-4" style="margin-right: 50px;">
+                    <t t-set="amount_before_discount" t-value="sum(l.gross_price_unit * l.quantity for l in o.invoice_line_ids if l.display_type == 'product' and not l.apply_down_payment) if any(tax.price_include for tax in o.invoice_line_ids[:1].tax_ids) else sum(l.gross_price_unit * l.quantity  for l in o.invoice_line_ids if l.display_type == 'product' and not l.apply_down_payment)"/>
+                    <t t-set="total_global_discount" t-value="sum(l.global_discount_amount for l in o.invoice_line_ids if l.display_type == 'product' and l.apply_global_discount)"/>
+                    <t t-set="amount_down_payment" t-value="sum(l.gross_price_unit for l in o.invoice_line_ids if l.display_type == 'product' and l.apply_down_payment) if any(tax.price_include for tax in o.invoice_line_ids[:1].tax_ids) else sum(l.gross_price_unit for l in o.invoice_line_ids if l.display_type == 'product' and l.apply_down_payment)"/>
+                    <t t-set="amount_total" t-value="o.amount_total"/>
+                    <t t-set="amount_tax" t-value="o.amount_tax"/>
+                    <div class="row">
+                        <div class="text-right">
+                            <span t-esc="('{:,.2f}').format(amount_before_discount)"/>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 2.5px;">
+                        <div class="text-right">
+                            <span t-esc="('{:,.2f}').format(total_global_discount)"/>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 2.5px;">
+                        <div class="text-right">
+                            <span t-esc="('{:,.2f}').format(amount_before_discount - total_global_discount)"/>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 2.5px;">
+                        <div class="text-right">
+                            <span t-esc="('{:,.2f}').format(amount_down_payment)"/>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 2.5px;">
+                        <div class="text-right">
+                            <span style="text-align: right;" t-esc="('{:,.2f}').format(o.amount_untaxed)"/>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 2.5px;">
+                        <div class="text-right">
+                            <span style="text-align: right;" t-esc="('{:,.2f}').format(amount_tax)"/>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 2.5px;">
+                        <div class="text-right">
+                            <span style="text-align: right;" t-esc="('{:,.2f}').format(amount_total)"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_header_info_herring_puls_and_service_preprint">
+        <div class="row" style="font-family: 'THSarabunNew'; font-size: 18px;">
+            <div class="col-12" style="margin-top: 50px;">
+                <div class="row">
+                    <div class="col-12 text-left" style="padding-left: 130px;">
+                        <span t-field="o.partner_id.partner_code"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-7">
+                        <div class="row">
+                            <div class="col-12" style="margin-top: 25px; padding-left: 130px;">
+                                <span t-field="o.partner_id"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12" style="margin-top: 10px; padding-left: 80px;">
+                                <span t-field="o.partner_id.street"/>
+                                <span t-field="o.partner_id.street2"/>
+                                <br/>
+                                <span t-field="o.partner_id.city"/>
+                                <span t-field="o.partner_id.state_id"/>
+                                <span t-field="o.partner_id.zip"/>
+                                <span t-field="o.partner_id.country_id"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12" style="margin-top: 15px;">
+                                <span>สาขา</span>
+                                <span t-field="o.partner_id.branch"/>
+                                <span>เลขประจำตัวผู้เสียภาษี</span>
+                                <span t-field="o.partner_id.vat"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-5 text-center" style="margin-top: 20px;">
+                        <div class="row">
+                            <div class="col-12" style="padding-right: 60px;">
+                                <span t-field="o.invoice_date"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12" style="margin-top: 40px;">
+                                <span t-field="o.name"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 100px;">
+                    <div class="col-3 text-center">
+                        <span t-field="o.invoice_origin"/>
+                    </div>
+                    <div class="col-3 text-center">
+                        <span t-field="o.invoice_payment_term_id"/>
+                    </div>
+                    <div class="col-3 text-center">
+                        <span t-field="o.invoice_date_due"/>
+                    </div>
+                    <div class="col-3 text-center">
+                        <span t-field="o.invoice_user_id"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</odoo>

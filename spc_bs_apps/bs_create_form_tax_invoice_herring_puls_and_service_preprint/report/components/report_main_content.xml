@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_main_content_herring_puls_and_service_preprint">
+        <div style="font-family: 'THSarabunNew'; font-size: 18px;" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id">
+            <table class="table table-borderless">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;"/>
+                        <th style="width: 48%;"/>
+                        <th style="width: 15%;"/>
+                        <th style="width: 10%;"/>
+                        <th style="width: 7%;"/>
+                        <th style="width: 15%;"/>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-set="line_number" t-value="0"/>
+                    <tr t-foreach="o.invoice_line_ids" t-as="line">
+                        <t t-if="line.display_type == 'product'">
+                            <td style="text-align: left;">
+                                <t t-set="line_number" t-value="line_number + 1"/>
+                                <span t-esc="line_number"/>
+                            </td>
+                            <td style="text-align: left;">
+                                <span t-field="line.name"/>
+                            </td>
+                            <td style="text-align: center;">
+                                <span t-esc="('{:,.2f}').format(abs(line.quantity))"/>
+                                <span style="padding-left:5px;" t-field="line.product_uom_id"/>
+                            </td>
+                            <td style="text-align: right;">
+                                <span t-esc="('{:,.2f}').format(line.gross_price_unit)"/>
+                            </td>
+                            <td style="text-align: right;">
+                                <!-- <span t-esc="('{:,.2f}').format(line.global_discount_amount)"/> -->
+                            </td>
+                            <td style="text-align: right;">
+                                <span t-esc="('{:,.2f}').format(abs(line.price_subtotal))"/>
+                            </td>
+                        </t>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </template>
+</odoo>
