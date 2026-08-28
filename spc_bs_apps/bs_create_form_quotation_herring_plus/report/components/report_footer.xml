@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_footer_herring_plus">
+        <div class="row" style="font-size: 13.33px; font-family: 'AngsanaUPC';">
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table-borderless" style="width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed;">
+                            <tr>
+                                <td style="width: 85%; text-align: center; font-weight: bold; padding: 2px 4px; border: 1px solid #000;">
+                                    <span>Net Total price Baht Excluded VAT</span>
+                                </td>
+                                <td style="width: 15%; text-align: right; font-weight: bold; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">
+                                    <span class="last-page" style="display: none;" t-esc="'{:,.2f}'.format(o.total_amt_wo_global_disc)"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="row first-page" style="display: none; margin: 0 !important; padding: 0 !important;">
+                    <div class="col-12">
+                        <span>According to general conditions ORGALIME S2000-M2000</span>
+                        <br/>
+                        <span>Cancellation : Cancellation of order is subject to charge 25% based on order value</span>
+                    </div>
+                </div>
+                <div class="row first-page" style="display: none; margin: 0 !important; padding: 0 !important;">
+                    <div class="col-12" style="font-weight: bold; font-size: 13.33px;">
+                        <span>Remark</span>
+                    </div>
+                </div>
+                <div class="row" style="display: table; width: 100%; table-layout: fixed;">
+                    <div class="col-9" style="display: table-cell; vertical-align: top;">
+                        <t t-foreach="range(o.sudo()._get_herring_plus_total_page_count())" t-as="herring_plus_other_page_index">
+                            <div class="js-herring-plus-other-page" t-att-data-herring-plus-other-page="herring_plus_other_page_index + 1" style="display: none; width: 100%; white-space: pre-line; margin: 0 !important; padding: 0 !important;">
+                                <span t-esc="o.sudo()._get_herring_plus_other_text(herring_plus_other_page_index)"/>
+                            </div>
+                        </t>
+                    </div>
+                    <div class="col-3" style="font-weight: bold; font-size: 13.33px; display: table-cell; vertical-align: bottom;">
+                        <span>Yours Sincerely</span>
+                        <br/>
+                        <span>Herring Plus Co., Ltd.</span>
+                        <div class="last-page" style="vertical-align: middle; text-align: center; width: 90%;">
+                            <img t-if="o.user_id.user_signature" t-att-src="image_data_uri(o.user_id.user_signature)" style="
+                            max-width: 100%;
+                            max-height: 120px;
+                            width: auto;
+                            height: auto;
+                            object-fit: contain;
+                            display: inline-block;
+                        " alt="Logo"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-9">
+                        <span>Rayong (Service Workshop) : 49/7 Samnakaingon Rd., Mabkha, Nikompattana, Rayong 21180</span>
+                        <br/>
+                        <span>Hot line: 081 832 7320  E-Mail: sales@herringplus.com</span>
+                    </div>
+                    <div class="col-3 text-center" style="font-weight: bold; font-size: 13.33px;">
+                        <span t-field="o.user_id.name" />
+                        <br/>
+                        <span t-field="o.user_id.job_title" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript"><![CDATA[
+            (function () {
+                var params = (window.location.search || '').substring(1).split('&');
+                var page = null;
+                var topage = null;
+                for (var i = 0; i < params.length; i++) {
+                    var pair = params[i].split('=');
+                    if (pair[0] === 'page') { page = pair[1]; }
+                    if (pair[0] === 'topage') { topage = pair[1]; }
+                }
+                function showAll(className) {
+                    var els = document.getElementsByClassName(className);
+                    for (var i = 0; i < els.length; i++) {
+                        els[i].style.display = 'block';
+                    }
+                }
+                if (page === '1') {
+                    showAll('first-page');
+                }
+                var otherEls = document.getElementsByClassName('js-herring-plus-other-page');
+                for (var j = 0; j < otherEls.length; j++) {
+                    if (page && otherEls[j].getAttribute('data-herring-plus-other-page') === page) {
+                        otherEls[j].style.display = 'block';
+                    }
+                }
+                if (page && topage && page === topage) {
+                    showAll('last-page');
+                }
+            })();
+        ]]>        </script>
+    </template>
+</odoo>

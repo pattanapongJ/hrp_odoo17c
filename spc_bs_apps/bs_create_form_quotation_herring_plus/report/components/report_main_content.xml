@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="report_main_content_herring_plus_table_head">
+        <thead style="font-weight: bold;">
+            <tr>
+                <th style="width: 10%; text-align: center; vertical-align: middle; border: 1px solid #000;">
+                    <span>Item</span>
+                </th>
+                <th style="width: 40%; text-align: center; vertical-align: middle; border: 1px solid #000;">
+                    <span>Description</span>
+                </th>
+                <th style="width: 10%; text-align: center; vertical-align: middle; border: 1px solid #000;">
+                    <span>Qty</span>
+                </th>
+                <th style="width: 10%; text-align: center; vertical-align: middle; border: 1px solid #000;">
+                    <span>Unit</span>
+                </th>
+                <th style="width: 15%; text-align: center; vertical-align: middle; border: 1px solid #000;">
+                    <span>Unit Price</span>
+                </th>
+                <th style="width: 15%; text-align: center; vertical-align: middle; border: 1px solid #000;">
+                    <span>Total</span>
+                </th>
+            </tr>
+        </thead>
+    </template>
+
+    <template id="report_main_content_herring_plus">
+        <div style="font-family: 'AngsanaUPC'; font-size: 13.33px;" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id">
+            <table class="table-borderless" style="width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed;">
+                <t t-call="bs_create_form_quotation_herring_plus.report_main_content_herring_plus_table_head"/>
+                <tbody>
+                    <tr t-foreach="o.sudo().order_line.filtered(lambda l: not l.display_type)" t-as="line">
+                        <td style="text-align: center;">
+                            <span t-esc="line_index + 1"/>
+                        </td>
+                        <td style="text-align: left;">
+                            <span t-field="line.name"/>
+                        </td>
+                        <td style="text-align: center;">
+                            <span t-esc="'{:,.2f}'.format(line.product_uom_qty)"/>
+                        </td>
+                        <td style="text-align: center;">
+                            <span t-field="line.product_uom"/>
+                        </td>
+                        <td style="text-align: right;">
+                            <span t-esc="'{:,.2f}'.format(line.price_unit)"/>
+                        </td>
+                        <td style="text-align: right;">
+                            <span t-esc="'{:,.2f}'.format(line.price_subtotal)"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <t t-foreach="range(1, o.sudo()._get_herring_plus_total_page_count())" t-as="herring_plus_extra_page_index">
+            <div style="font-family: 'AngsanaUPC'; font-size: 13.33px; font-weight: bold; box-sizing: border-box; page-break-before: always;">
+                <table class="table-borderless" style="width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed;">
+                    <t t-call="bs_create_form_quotation_herring_plus.report_main_content_herring_plus_table_head"/>
+                </table>
+            </div>
+        </t>
+    </template>
+</odoo>
