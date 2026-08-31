@@ -16,6 +16,7 @@
         "bs_multi_discount_sale",
         "sale_order_note_template",
         "bs_sale_order_note_template_modify",
+        "bs_report_pagination_helper",
     ],
     "data": [
         "report/components/report_footer.xml",

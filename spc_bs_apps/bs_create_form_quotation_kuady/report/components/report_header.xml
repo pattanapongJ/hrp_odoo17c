@@ -2,63 +2,75 @@
 <odoo>
     <template id="report_header_info_kuady">
         <div class="row">
-            <div class="col-12" style="font-family: 'AngsanaNew'; font-size: 24px;">
+            <div class="col-12" style="font-family: 'AngsanaNew'; font-size: 22.5px;">
                 <div class="row">
                     <div class="col-8" style="text-align: left;">
-                        <div style="font-weight: bold; font-size: 40px;">
-                            <span>Quotation</span>
+                        <div class="row" style="font-weight: bold; font-size: 37.5px;">
+                            <div class="col-12">
+                                <span>Quotation</span>
+                            </div>
                         </div>
-                        <div style="font-weight: bold; font-size: 26.67px;">
-                            <span t-field="o.company_id.name_en"/>
+                        <div class="row" style="font-weight: bold; font-size: 25px;">
+                            <div class="col-12">
+                                <span t-field="o.company_id.name_en"/>
+                            </div>
                         </div>
-                        <div>
-                            <span t-if="o.company_id.street_en" t-field="o.company_id.street_en"/>
-                            <span t-if="o.company_id.street2_en" t-field="o.company_id.street2_en"/>
-                            <span t-if="o.company_id.city_en" t-field="o.company_id.city_en"/>
-                            <span t-if="o.company_id.state_id_en" t-field="o.company_id.state_id_en"/>
-                            <span t-if="o.company_id.zip_en" t-field="o.company_id.zip_en"/>
+                        <div class="row">
+                            <div class="col-12">
+                                <span t-if="o.company_id.street_en" t-field="o.company_id.street_en"/>
+                                <span t-if="o.company_id.street2_en" t-field="o.company_id.street2_en"/>
+                                <span t-if="o.company_id.city_en" t-field="o.company_id.city_en"/>
+                                <span t-if="o.company_id.state_id_en" t-field="o.company_id.state_id_en"/>
+                                <span t-if="o.company_id.zip_en" t-field="o.company_id.zip_en"/>
+                            </div>
                         </div>
-                        <div >
-                            <span>Tel : </span>
-                            <t t-if="o.company_id.phone">
-                                <span t-field="o.company_id.phone"/>
-                            </t>
-                            <t t-if="not o.company_id.phone">
-                                <span>-</span>
-                            </t>
-                            <span>&#160;&#160;&#160;Fax : </span>
-                            <t t-if="o.company_id.fax">
-                                <span t-field="o.company_id.fax"/>
-                            </t>
-                            <t t-if="not o.company_id.fax">
-                                <span>-</span>
-                            </t>
+                        <div class="row">
+                            <div class="col-12">
+                                <span>Tel : </span>
+                                <t t-if="o.company_id.phone">
+                                    <span t-field="o.company_id.phone"/>
+                                </t>
+                                <t t-if="not o.company_id.phone">
+                                    <span>-</span>
+                                </t>
+                                <span>&#160;&#160;&#160;Fax : </span>
+                                <t t-if="o.company_id.fax">
+                                    <span t-field="o.company_id.fax"/>
+                                </t>
+                                <t t-if="not o.company_id.fax">
+                                    <span>-</span>
+                                </t>
+                            </div>
                         </div>
-                        <div>
-                            <span>E-Mail : </span>
-                            <t t-if="o.company_id.email">
-                                <span t-field="o.company_id.email"/>
-                            </t>
-                            <t t-if="not o.company_id.email">
-                                <span>-</span>
-                            </t>
+                        <div class="row">
+                            <div class="col-12">
+                                <span>E-Mail : </span>
+                                <t t-if="o.company_id.email">
+                                    <span t-field="o.company_id.email"/>
+                                </t>
+                                <t t-if="not o.company_id.email">
+                                    <span>-</span>
+                                </t>
+                            </div>
                         </div>
-                        <div>
-                            <span>Tax : </span>
-                            <t t-if="o.company_id.vat">
-                                <span t-field="o.company_id.vat"/>
-                            </t>
-                            <t t-if="not o.company_id.vat">
-                                <span>-</span>
-                            </t>
-                            <span t-if="o.company_id.branch"> (<span t-field="o.company_id.branch"/>)</span>
+                        <div class="row">
+                            <div class="col-12">
+                                <span>Tax : </span>
+                                <t t-if="o.company_id.vat">
+                                    <span t-field="o.company_id.vat"/>
+                                </t>
+                                <t t-if="not o.company_id.vat">
+                                    <span>-</span>
+                                </t>
+                                <span t-if="o.company_id.branch"> (<span t-field="o.company_id.branch"/>)</span>
+                            </div>
                         </div>
                     </div>
                     <div class="col-4" style="text-align: center;">
-                        <div style="min-height: 60px;">
+                        <div style="min-height: 56.25px;">
                             <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="
                                 max-width: 90%;
-                                max-height: 100px;
+                                max-height: 93.75px;
                                 width: auto;
                                 height: auto;
                                 object-fit: contain;
@@ -98,7 +110,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="row" style="font-size:20px;">
+                <div class="row" style="font-size:18.75px;">
                     <div class="col-6">
                         <div class="row" style="padding: 0;">
                             <div class="col-3" style="font-weight: bold;">
@@ -246,7 +258,7 @@
                         }
                         </style>
                         <div class="kuady_subject_field" style="overflow: hidden; height: 2.2em;">
-                            <span t-field="o.subject_template_text"/>
+                            <span style="line-height: 0.9em;" t-field="o.subject_template_text"/>
                         </div>
                     </div>
                 </div>

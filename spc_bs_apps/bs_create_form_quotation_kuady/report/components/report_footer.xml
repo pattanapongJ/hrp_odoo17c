@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <template id="report_footer_kuady">
-        <div class="row" style="font-family: 'AngsanaNew'; font-size: 24px;">
+        <div class="row" style="font-family: 'AngsanaNew'; font-size: 22.5px; line-height: 0.9em;">
             <div class="col-12">
                 <div class="row ">
                     <div class="col-12">
@@ -11,13 +11,13 @@
                                     <span>TOTAL PRICE BAHT EXCLUDE VAT 7%</span>
                                 </td>
                                 <td style="width: 15%; text-align: right; font-weight: bold; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">
-                                    <span class="last-page" style="display: none;"  t-esc="'%.2f' % o.amount_untaxed"/>
+                                    <span class="o_report_last_page" style="display: none;" t-esc="'%.2f' % o.amount_untaxed"/>
                                 </td>
                             </tr>
                         </table>
                     </div>
                 </div>
-                <div class="row first-page" style="display: none; margin: 0 !important; padding: 0 !important;">
+                <div class="row o_report_first_page" style="display: none; margin: 0 !important; padding: 0 !important;">
                     <div class="col-12">
                         <span>Above price are Thai Baht Excluded Vat (7%) Cancellation fee 25% based on order value</span>
                     </div>
@@ -25,30 +25,40 @@
                 <div class="row">
                     <div class="col-12">
                         <t t-foreach="range(o.sudo()._get_kuady_total_page_count())" t-as="kuady_other_page_index">
-                            <div class="js-kuady-other-page" t-att-data-kuady-other-page="kuady_other_page_index + 1" style="display: none; width: 100%; white-space: pre-line; margin: 0 !important; padding: 0 !important; line-height: 0.9em;">
-                                <span t-esc="o.sudo()._get_kuady_other_text(kuady_other_page_index)"/>
+                            <!-- line-height must sit on each <span>, not on this
+                                 wrapping div: wkhtmltopdf does not apply a
+                                 block-level line-height to line boxes formed
+                                 by inline content + <br/> here - verified
+                                 empirically, it has zero effect at this level. -->
+                            <div class="o_report_page_item" t-att-data-report-page="kuady_other_page_index + 1" style="display: none; width: 100%; margin: 0 !important; padding: 0 !important;">
+                                <t t-foreach="o.sudo()._get_kuady_other_page_lines(kuady_other_page_index)" t-as="line">
+                                    <span t-esc="line" style="line-height: 0.9em;"/>
+                                    <t t-if="not line_last">
+                                        <br/>
+                                    </t>
+                                </t>
                             </div>
                         </t>
                     </div>
                 </div>
-                <div class="last-page" style="display: none;">
+                <div class="o_report_last_page" style="display: none;">
                     <div class="row">
                         <div class="col-12">
-                            <span>Yours Sincerely</span>
+                            <span style="line-height: 0.9em;">Yours Sincerely</span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-5">
-                            <span>Kaudy Incorporation (Asia) Co., Ltd.</span>
+                            <span style="line-height: 0.9em;">Kaudy Incorporation (Asia) Co., Ltd.</span>
                         </div>
                         <div class="col-7">
-                            <span>Offer Approver</span>
+                            <span style="line-height: 0.9em;">Offer Approver</span>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-5" style="text-align:center;">
-                            <div style="width: 80%; margin: 0 auto 4px auto; min-height: 60px; vertical-align: middle; display: flex; justify-content: center; align-items: center;">
-                                <img t-if="o.env.user.user_signature" t-att-src="image_data_uri(o.env.user.user_signature)" style="display: block; margin: 0 auto; max-width: 100%; max-height: 60px;"/>
+                            <div style="width: 80%; margin: 0 auto 4px auto; min-height: 56.25px; vertical-align: middle; display: flex; justify-content: center; align-items: center;">
+                                <img t-if="o.env.user.user_signature" t-att-src="image_data_uri(o.env.user.user_signature)" style="display: block; margin: 0 auto; max-width: 100%; max-height: 56.25px;"/>
                             </div>
                             <div style="line-height: 1; margin: 0;">(                                <span style="font-weight: bold;" t-field="o.env.user.name"></span>)
                             </div>
@@ -60,49 +70,20 @@
                         </div>
 
                         <div class="col-3" style="text-align:center;">
-                            <div style=" width: 80%; margin: 0 auto 4px 0; min-height: 60px; vertical-align: middle; display: flex; justify-content: center; align-items: center;">
+                            <div style=" width: 80%; margin: 0 auto 4px 0; min-height: 56.25px; vertical-align: middle; display: flex; justify-content: center; align-items: center;">
                             </div>
 
                                 (                            <span style="font-weight: bold;"></span>)
                             <span></span>
                         </div>
                         <div class="col-4" style="text-align:right;">
-                            <div style="height: 60px;"></div>
+                            <div style="height: 56.25px;"></div>
                             <span>F-MK-01</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <script type="text/javascript"><![CDATA[
-            (function () {
-                var params = (window.location.search || '').substring(1).split('&');
-                var page = null;
-                var topage = null;
-                for (var i = 0; i < params.length; i++) {
-                    var pair = params[i].split('=');
-                    if (pair[0] === 'page') { page = pair[1]; }
-                    if (pair[0] === 'topage') { topage = pair[1]; }
-                }
-                function showAll(className) {
-                    var els = document.getElementsByClassName(className);
-                    for (var i = 0; i < els.length; i++) {
-                        els[i].style.display = 'block';
-                    }
-                }
-                if (page === '1') {
-                    showAll('first-page');
-                }
-                var otherEls = document.getElementsByClassName('js-kuady-other-page');
-                for (var j = 0; j < otherEls.length; j++) {
-                    if (page && otherEls[j].getAttribute('data-kuady-other-page') === page) {
-                        otherEls[j].style.display = 'block';
-                    }
-                }
-                if (page && topage && page === topage) {
-                    showAll('last-page');
-                }
-            })();
-        ]]></script>
+        <t t-call="bs_report_pagination_helper.page_visibility_script"/>
     </template>
 </odoo>
