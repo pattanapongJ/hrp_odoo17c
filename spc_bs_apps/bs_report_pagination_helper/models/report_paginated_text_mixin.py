@@ -62,16 +62,14 @@ class ReportPaginatedTextMixin(models.AbstractModel):
         """
         text = html2plaintext(html_value or "").strip()
         lines = []
-        for raw_line in text.splitlines() or [""]:
+        for raw_line in text.splitlines():
+            # html2plaintext inserts a blank line between paragraphs/list
+            # items - keeping it would show up as a stray extra line of
+            # vertical gap next to every other line once wrapped and
+            # printed, doubling the visual spacing throughout the block.
+            if not raw_line.strip():
+                continue
             lines.extend(textwrap.wrap(raw_line, width=chars_per_line) or [""])
-        # A leading/trailing blank paragraph in the source HTML (common
-        # with Odoo's rich-text editor) would otherwise survive as its own
-        # blank wrapped line, showing as a stray gap next to whatever
-        # static content surrounds it in the report.
-        while lines and not lines[0].strip():
-            lines.pop(0)
-        while lines and not lines[-1].strip():
-            lines.pop()
         return lines
 
     def _report_paginate_lines(self, lines, lines_per_page, first_page_reserved=0, last_page_reserved=0):
