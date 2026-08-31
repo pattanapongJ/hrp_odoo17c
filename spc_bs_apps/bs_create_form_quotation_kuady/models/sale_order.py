@@ -43,16 +43,12 @@ class SaleOrder(models.Model):
     _inherit = ["sale.order", "bs.report.paginated.text.mixin"]
 
     def _get_kuady_other_lines(self):
-        """Wrapped lines of ``other_template_text``, with blank lines
-        dropped. ``other_template_text`` is typically one ``<p>`` per item
-        (e.g. a "Scope of Supply" list) - html2plaintext (used internally
-        by ``_report_wrap_html_lines``) inserts a blank line between each
-        ``<p>``, which would otherwise render as its own empty line and
-        double the visual gap between items.
+        """Wrapped lines of ``other_template_text`` (see
+        ``bs_report_pagination_helper`` for the generic wrap/blank-line
+        handling).
         """
         self.ensure_one()
-        lines = self._report_wrap_html_lines(self.other_template_text, KUADY_OTHER_CHARS_PER_LINE)
-        return [line for line in lines if line.strip()]
+        return self._report_wrap_html_lines(self.other_template_text, KUADY_OTHER_CHARS_PER_LINE)
 
     def _get_kuady_footer_page_budget(self, page_index, total_pages):
         """Real-text line budget for ``page_index`` (0-based) out of
