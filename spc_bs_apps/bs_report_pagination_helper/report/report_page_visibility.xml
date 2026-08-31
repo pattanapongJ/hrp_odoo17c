@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- wkhtmltopdf re-renders the header/footer HTML once per physical
+         page, passing the current page number and total page count as
+         `page`/`topage` query-string args (see Odoo's own
+         web.internal_layout use of these). This script reads them and
+         reveals whichever block of content belongs on that page, using a
+         fixed, report-agnostic class/attribute convention:
+           - o_report_first_page              shown only on page 1
+           - o_report_last_page               shown only on the last page
+           - o_report_page_item[data-report-page="N"]  shown only on page N
+         t-call this template once per footer/header instead of pasting
+         the script in every report. -->
+    <template id="page_visibility_script">
+        <script type="text/javascript"><![CDATA[
+            (function () {
+                var params = (window.location.search || '').substring(1).split('&');
+                var page = null;
+                var topage = null;
+                for (var i = 0; i < params.length; i++) {
+                    var pair = params[i].split('=');
+                    if (pair[0] === 'page') { page = pair[1]; }
+                    if (pair[0] === 'topage') { topage = pair[1]; }
+                }
+                function showAll(className) {
+                    var els = document.getElementsByClassName(className);
+                    for (var i = 0; i < els.length; i++) {
+                        els[i].style.display = 'block';
+                    }
+                }
+                if (page === '1') {
+                    showAll('o_report_first_page');
+                }
+                var pageItems = document.getElementsByClassName('o_report_page_item');
+                for (var j = 0; j < pageItems.length; j++) {
+                    if (page && pageItems[j].getAttribute('data-report-page') === page) {
+                        pageItems[j].style.display = 'block';
+                    }
+                }
+                if (page && topage && page === topage) {
+                    showAll('o_report_last_page');
+                }
+            })();
+        ]]></script>
+    </template>
+</odoo>

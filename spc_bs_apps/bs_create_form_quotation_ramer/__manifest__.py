@@ -1,6 +1,6 @@
 {
     "name": "BS Create Form Quotation Ramer",
-    "version": "17.0.0.4",
+    "version": "17.0.0.5",
     "author": "Basic-Solution Co., Ltd.",
     "maintainer": "varit",
     "website": "https://www.basic-solution.com/",
@@ -15,6 +15,7 @@
         "bs_sale_order_hrp",
         "bs_multi_discount_sale",
         "bs_sale_order_note_template_modify",
+        "bs_report_pagination_helper",
     ],
     "data": [
         "report/components/report_footer.xml",
