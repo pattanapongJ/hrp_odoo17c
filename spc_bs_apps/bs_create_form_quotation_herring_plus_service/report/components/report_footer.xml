@@ -11,20 +11,20 @@
                                     <span>Net Total price Baht Excluded VAT</span>
                                 </td>
                                 <td style="width: 15%; text-align: right; font-weight: bold; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">
-                                    <span class="last-page" style="display: none;" t-esc="'{:,.2f}'.format(o.total_amt_wo_global_disc)"/>
+                                    <span class="o_report_last_page" style="display: none;" t-esc="'{:,.2f}'.format(o.total_amt_wo_global_disc)"/>
                                 </td>
                             </tr>
                         </table>
                     </div>
                 </div>
-                <div class="row first-page" style="display: none; margin: 0 !important; padding: 0 !important;">
+                <div class="row o_report_first_page" style="display: none; margin: 0 !important; padding: 0 !important;">
                     <div class="col-12">
                         <span>According to general conditions ORGALIME S2000-M2000</span>
                         <br/>
                         <span>Cancellation : Cancellation of order is subject to charge 25% based on order value</span>
                     </div>
                 </div>
-                <div class="row first-page" style="display: none; margin: 0 !important; padding: 0 !important;">
+                <div class="row o_report_first_page" style="display: none; margin: 0 !important; padding: 0 !important;">
                     <div class="col-12" style="font-weight: bold; font-size: 13.33px;">
                         <span>Remark</span>
                     </div>
@@ -32,8 +32,10 @@
                 <div class="row" style="display: table; width: 100%; table-layout: fixed;">
                     <div class="col-9" style="display: table-cell; vertical-align: top;">
                         <t t-foreach="range(o.sudo()._get_herring_plus_service_total_page_count())" t-as="herring_plus_service_other_page_index">
-                            <div class="js-herring-plus-service-other-page" t-att-data-herring-plus-service-other-page="herring_plus_service_other_page_index + 1" style="display: none; width: 100%; white-space: pre-line; margin: 0 !important; padding: 0 !important;">
-                                <span t-esc="o.sudo()._get_herring_plus_service_other_text(herring_plus_service_other_page_index)"/>
+                            <div class="o_report_page_item" t-att-data-report-page="herring_plus_service_other_page_index + 1" style="display: none; width: 100%; margin: 0 !important; padding: 0 !important;">
+                                <t t-foreach="o.sudo()._get_herring_plus_service_other_page_lines(herring_plus_service_other_page_index)" t-as="line">
+                                    <span t-esc="line"/><t t-if="not line_last"><br/></t>
+                                </t>
                             </div>
                         </t>
                     </div>
@@ -41,7 +43,7 @@
                         <span>Yours Sincerely</span>
                         <br/>
                         <span>Herring Plus Co., Ltd.</span>
-                        <div class="last-page" style="vertical-align: middle; text-align: center; width: 90%;">
+                        <div class="o_report_last_page" style="vertical-align: middle; text-align: center; width: 90%;">
                             <img t-if="o.user_id.user_signature" t-att-src="image_data_uri(o.user_id.user_signature)" style="
                             max-width: 100%;
                             max-height: 120px;
@@ -69,35 +71,6 @@
                 </div>
             </div>
         </div>
-        <script type="text/javascript"><![CDATA[
-            (function () {
-                var params = (window.location.search || '').substring(1).split('&');
-                var page = null;
-                var topage = null;
-                for (var i = 0; i < params.length; i++) {
-                    var pair = params[i].split('=');
-                    if (pair[0] === 'page') { page = pair[1]; }
-                    if (pair[0] === 'topage') { topage = pair[1]; }
-                }
-                function showAll(className) {
-                    var els = document.getElementsByClassName(className);
-                    for (var i = 0; i < els.length; i++) {
-                        els[i].style.display = 'block';
-                    }
-                }
-                if (page === '1') {
-                    showAll('first-page');
-                }
-                var otherEls = document.getElementsByClassName('js-herring-plus-service-other-page');
-                for (var j = 0; j < otherEls.length; j++) {
-                    if (page && otherEls[j].getAttribute('data-herring-plus-service-other-page') === page) {
-                        otherEls[j].style.display = 'block';
-                    }
-                }
-                if (page && topage && page === topage) {
-                    showAll('last-page');
-                }
-            })();
-        ]]>        </script>
+        <t t-call="bs_report_pagination_helper.page_visibility_script"/>
     </template>
 </odoo>
