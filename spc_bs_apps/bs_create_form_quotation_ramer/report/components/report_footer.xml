@@ -46,13 +46,11 @@
                 <div class="row" style="margin: 0 !important; padding: 0 !important;">
                     <div class="col-12">
                         <t t-foreach="range(o.sudo()._get_ramer_total_page_count())" t-as="ramer_other_page_index">
-                            <!-- The span must sit flush against the div's tags (no
-                                 whitespace/newline before or after it): with
-                                 white-space:pre-line on the div, an indentation
-                                 newline between the tags would render as a real
-                                 leading/trailing blank line - showing up as extra
-                                 gap in the printed PDF. -->
-                            <div class="o_report_page_item" t-att-data-report-page="ramer_other_page_index + 1" style="display: none; width: 100%; white-space: pre-line; margin: 0 !important; padding: 0 !important;"><span t-esc="o.sudo()._get_ramer_other_text(ramer_other_page_index)"/></div>
+                            <div class="o_report_page_item" t-att-data-report-page="ramer_other_page_index + 1" style="display: none; width: 100%; margin: 0 !important; padding: 0 !important;">
+                                <t t-foreach="o.sudo()._get_ramer_other_page_lines(ramer_other_page_index)" t-as="line">
+                                    <span t-esc="line"/><t t-if="not line_last"><br/></t>
+                                </t>
+                            </div>
                         </t>
                     </div>
                 </div>
