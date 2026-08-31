@@ -9,6 +9,7 @@
         "sale",
         "salesperson_signature",
         "bs_sale_order_note_template_modify",
+        "bs_report_pagination_helper",
     ],
     "data": [
         "report/components/report_footer.xml",
