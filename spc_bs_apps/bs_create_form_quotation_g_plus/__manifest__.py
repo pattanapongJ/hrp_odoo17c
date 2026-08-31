@@ -14,6 +14,7 @@
         "l10n_th_partner",
         "salesperson_signature",
         "hr",
+        "bs_report_pagination_helper",
     ],
     "data": [
         "report/components/report_footer.xml",

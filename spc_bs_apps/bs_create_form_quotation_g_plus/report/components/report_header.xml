@@ -7,24 +7,24 @@
                     <div style="display: table-cell; vertical-align: middle; text-align: center; width: 16.6667%;">
                         <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="
                             max-width: 100%;
-                            max-height: 140px;
+                            max-height: 131.25px;
                             width: auto;
                             height: auto;
                             object-fit: contain;
                             display: inline-block;
                         " alt="Logo"/>
                     </div>
-                    <div style="display: table-cell; vertical-align: middle; text-align: left; width: 83.3333%; font-weight: bold; font-size: 14.08px;">
+                    <div style="display: table-cell; vertical-align: middle; text-align: left; width: 83.3333%; font-weight: bold; font-size: 13.2px;">
                         <div class="row">
                             <div class = "col-12" style="white-space: nowrap; overflow: hidden;">
-                                <span style="font-size: 17.6px; font-weight: bold;" t-field="o.company_id.name_en"/>
+                                <span style="font-size: 16.5px; font-weight: bold;" t-field="o.company_id.name_en"/>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-2">
                                 <span>Address : </span>
                             </div>
-                            <div class="col-10" style="margin-left:-53px;">
+                            <div class="col-10" style="margin-left:-49.69px;">
                                 <span t-field="o.company_id.street_en"/>
                                 <span t-field="o.company_id.street2_en"/>
                                 <br/>
@@ -78,7 +78,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row pt-2" style="font-weight: Regular; font-size: 12.90px;">
+                <div class="row pt-2" style="font-weight: Regular; font-size: 12.09px;">
                     <div class="col-11"/>
                     <div class="col-1 text-center">
                         <span>Page</span>
@@ -87,14 +87,14 @@
                         <span class="topage"/>
                     </div>
                 </div>
-                <div class="row pb-2 pt-3" style="font-weight: bold; font-size: 17.6px;">
+                <div class="row pb-2 pt-3" style="font-weight: bold; font-size: 16.5px;">
                     <div class="col-4"/>
                     <div class="col-4 text-center">
                         <span>Quotation</span>
                     </div>
                     <div class="col-4 "/>
                 </div>
-                <div class="row py-1" style="font-size: 12.90px; padding-left:3px;">
+                <div class="row py-1" style="font-size: 12.09px; padding-left:2.81px;">
                     <div class="col-6">
                         <div class="row">
                             <div class="col-3 text-left" style="font-weight: bold;">
@@ -132,7 +132,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row py-1" style="font-size: 12.90px; padding-left:3px;">
+                <div class="row py-1" style="font-size: 12.09px; padding-left:2.81px;">
                     <div class="col-6">
                         <div class="row">
                             <div class="col-3 text-left" style="font-weight: bold;">
@@ -170,7 +170,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row py-1" style="font-size: 12.90px; padding-left:3px;">
+                <div class="row py-1" style="font-size: 12.09px; padding-left:2.81px;">
                     <div class="col-6">
                         <div class="row">
                             <div class="col-3 text-left" style="font-weight: bold;">
@@ -208,7 +208,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row py-1" style="font-size: 12.90px; padding-left:3px;">
+                <div class="row py-1" style="font-size: 12.09px; padding-left:2.81px;">
                     <div class="col-6">
                         <div class="row">
                             <div class="col-3 text-left" style="font-weight: bold;">
@@ -246,7 +246,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row py-1" style="font-size: 12.90px; padding-left:3px;">
+                <div class="row py-1" style="font-size: 12.09px; padding-left:2.81px;">
                     <div class="col-6">
                         <div class="row">
                             <div class="col-3 text-left" style="font-weight: bold;">
