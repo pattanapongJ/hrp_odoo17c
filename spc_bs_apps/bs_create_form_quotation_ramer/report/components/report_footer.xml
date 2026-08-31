@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <template id="report_footer_ramer">
-        <div class="row" style="font-family: 'Times New Roman'; font-size: 21px;">
+        <div class="row" style="font-family: 'Times New Roman'; font-size: 14px;">
             <div class="col-12">
                 <div class="row">
                     <div class="col-12">
@@ -12,7 +12,7 @@
                                         <span>TOTAL PRICE BAHT EXCLUDE VAT</span>
                                     </td>
                                     <td style="width: 20%; text-align: right; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">
-                                        <span class="last-page" style="display: none;" t-esc="'%.2f' % o.amount_untaxed"/>
+                                        <span class="o_report_last_page" style="display: none;" t-esc="'%.2f' % o.amount_untaxed"/>
                                     </td>
                                 </tr>
                                 <tr>
@@ -20,7 +20,7 @@
                                         <span>VAT 7%</span>
                                     </td>
                                     <td style="width: 20%; text-align: right; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">
-                                        <span class="last-page" style="display: none;" t-esc="'%.2f' % o.amount_tax"/>
+                                        <span class="o_report_last_page" style="display: none;" t-esc="'%.2f' % o.amount_tax"/>
                                     </td>
                                 </tr>
                                 <tr>
@@ -28,7 +28,7 @@
                                         <span>TOTAL PRICE BAHT INCLUDE VAT</span>
                                     </td>
                                     <td style="width: 20%; text-align: right; padding: 2px 4px; border-top: 1px solid #000; border-bottom: 1px solid #000; border-right: 1px solid #000;">
-                                        <span class="last-page" style="display: none;" t-esc="'%.2f' % o.amount_total"/>
+                                        <span class="o_report_last_page" style="display: none;" t-esc="'%.2f' % o.amount_total"/>
                                     </td>
                                 </tr>
                             </table>
@@ -36,53 +36,28 @@
 
                     </div>
                 </div>
-                <div class="row first-page" style="display: none; margin: 0 !important; padding: 0 !important;">
+                <div class="row o_report_first_page" style="display: none; margin: 0 !important; padding: 0 !important;">
                     <div class="col-12">
                         <span>Cancellation of order is subject to charge 25% based on order value</span>
                         <br/>
                         <span>According to general conditions ORGALIME S2012</span>
                     </div>
                 </div>
-                <div class="row" style="">
+                <div class="row" style="margin: 0 !important; padding: 0 !important;">
                     <div class="col-12">
                         <t t-foreach="range(o.sudo()._get_ramer_total_page_count())" t-as="ramer_other_page_index">
-                            <div class="js-ramer-other-page" t-att-data-ramer-other-page="ramer_other_page_index + 1" style="display: none; width: 100%; white-space: pre-line; margin: 0 !important; padding: 0 !important;">
-                                <span t-esc="o.sudo()._get_ramer_other_text(ramer_other_page_index)"/>
-                            </div>
+                            <!-- The span must sit flush against the div's tags (no
+                                 whitespace/newline before or after it): with
+                                 white-space:pre-line on the div, an indentation
+                                 newline between the tags would render as a real
+                                 leading/trailing blank line - showing up as extra
+                                 gap in the printed PDF. -->
+                            <div class="o_report_page_item" t-att-data-report-page="ramer_other_page_index + 1" style="display: none; width: 100%; white-space: pre-line; margin: 0 !important; padding: 0 !important;"><span t-esc="o.sudo()._get_ramer_other_text(ramer_other_page_index)"/></div>
                         </t>
                     </div>
                 </div>
             </div>
         </div>
-        <script type="text/javascript"><![CDATA[
-            (function () {
-                var params = (window.location.search || '').substring(1).split('&');
-                var page = null;
-                var topage = null;
-                for (var i = 0; i < params.length; i++) {
-                    var pair = params[i].split('=');
-                    if (pair[0] === 'page') { page = pair[1]; }
-                    if (pair[0] === 'topage') { topage = pair[1]; }
-                }
-                function showAll(className) {
-                    var els = document.getElementsByClassName(className);
-                    for (var i = 0; i < els.length; i++) {
-                        els[i].style.display = 'block';
-                    }
-                }
-                if (page === '1') {
-                    showAll('first-page');
-                }
-                var otherEls = document.getElementsByClassName('js-ramer-other-page');
-                for (var j = 0; j < otherEls.length; j++) {
-                    if (page && otherEls[j].getAttribute('data-ramer-other-page') === page) {
-                        otherEls[j].style.display = 'block';
-                    }
-                }
-                if (page && topage && page === topage) {
-                    showAll('last-page');
-                }
-            })();
-        ]]></script>
+        <t t-call="bs_report_pagination_helper.page_visibility_script"/>
     </template>
 </odoo>

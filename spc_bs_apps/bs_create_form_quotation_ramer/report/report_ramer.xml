@@ -14,7 +14,7 @@
             <field name="margin_left">8</field>
             <field name="margin_right">8</field>
             <field name="header_spacing">90</field>
-            <field name="dpi">135</field>
+            <field name="dpi">90</field>
         </record>
 
         <record id="action_report_bs_create_quotation_ramer_report" model="ir.actions.report">

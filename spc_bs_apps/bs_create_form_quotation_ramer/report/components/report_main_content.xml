@@ -26,7 +26,7 @@
     </template>
 
     <template id="report_main_content_ramer">
-        <div style="font-family: 'Times New Roman'; font-size: 21px;" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id">
+        <div style="font-family: 'Times New Roman'; font-size: 14px;" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id">
             <table class="table-borderless" style="width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed;">
                 <t t-call="bs_create_form_quotation_ramer.report_main_content_ramer_table_head"/>
                 <tbody>
@@ -54,7 +54,7 @@
             </table>
         </div>
         <t t-foreach="range(1, o.sudo()._get_ramer_total_page_count())" t-as="ramer_extra_page_index">
-            <div style="box-sizing: border-box; page-break-before: always; font-family: 'Times New Roman'; font-size: 21px;">
+            <div style="box-sizing: border-box; page-break-before: always; font-family: 'Times New Roman'; font-size: 14px;">
                 <table class="table-borderless" style="width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed;">
                     <t t-call="bs_create_form_quotation_ramer.report_main_content_ramer_table_head"/>
                 </table>
