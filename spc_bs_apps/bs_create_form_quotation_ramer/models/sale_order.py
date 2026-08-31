@@ -41,9 +41,10 @@ class SaleOrder(models.Model):
         self.ensure_one()
         return self._get_ramer_footer_splitter().page_count
 
-    def _get_ramer_other_text(self, page_index):
-        """Portion of the other-template text belonging on ``page_index``
-        (0-based), padded to that page's own budget.
+    def _get_ramer_other_page_lines(self, page_index):
+        """Lines of the other-template text belonging on ``page_index``
+        (0-based), padded to that page's own budget - render with one
+        ``<br/>`` per line in the footer template.
         """
         self.ensure_one()
-        return self._get_ramer_footer_splitter().page_text(page_index)
+        return self._get_ramer_footer_splitter().page_text(page_index).split("\n")
