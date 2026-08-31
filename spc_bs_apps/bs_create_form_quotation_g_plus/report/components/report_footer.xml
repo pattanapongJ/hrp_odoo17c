@@ -1,70 +1,72 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <template id="report_footer_g_plus">
-        <div style="font-family: 'AngsanaUPC'; font-size: 12.90px; text-align: center;">
-            <div style="width: 100%; font-weight: regular; font-size: 12.90px; border-top: 1px solid #000;">
+        <div style="font-family: 'AngsanaUPC'; font-size: 12.09px; text-align: center;">
+            <div style="width: 100%; font-weight: regular; font-size: 12.09px; border-top: 1px solid #000;">
                 <div style="display: table; width: 100%; table-layout: fixed;">
-                    <div style="display: table-cell; vertical-align: top; width: 70.1%; padding: 5px; text-align: left;">
-                        <div class="first-page" style="display: none;">
+                    <div style="display: table-cell; vertical-align: top; width: 70.1%; padding: 4.69px; text-align: left;">
+                        <div class="o_report_first_page" style="display: none;">
                             <span>Accordling to general Conditions ORGALIME S2000-M2000</span>
                             <br/>
                             <span>Cancellation : Cancellation of order is subject to charge 25% based on order value</span>
-                            <div style="font-weight: bold; padding-top: 2px; margin: 0; ">
+                            <div style="font-weight: bold; padding-top: 1.88px; margin: 0; ">
                                 <span>REMARK :</span>
                             </div>
                         </div>
                         <t t-foreach="range(o.sudo()._get_quotation_total_page_count())" t-as="remark_page_index">
-                            <div class="js-remark-page" t-att-data-remark-page="remark_page_index + 1" style="display: none; width: 100%; margin-top: 0; font-weight: regular; white-space: pre-line;">
-                                <span t-esc="o.sudo()._get_quotation_remark_text(remark_page_index)"/>
+                            <div class="o_report_page_item" t-att-data-report-page="remark_page_index + 1" style="display: none; width: 100%; margin-top: 0; font-weight: regular;">
+                                <t t-foreach="o.sudo()._get_quotation_remark_page_lines(remark_page_index)" t-as="line">
+                                    <span t-esc="line"/><t t-if="not line_last"><br/></t>
+                                </t>
                             </div>
                         </t>
                     </div>
                     <div style="display: table-cell; vertical-align: top; width: 29.9%; box-sizing: border-box;">
                         <table class="table-borderless" style="width: 100%; border-collapse: collapse; font-weight: bold; table-layout: fixed; background-color: #CBE6FA;">
                             <tr>
-                                <td style="width: 50%; text-align: left; height: 22px; padding: 2px 4px; vertical-align: middle;">Subtotal</td>
-                                <td style="width: 50%; text-align: right; height: 22px; padding: 2px 4px; vertical-align: middle;">
-                                    <span class="last-page" style="display: none;" t-esc="'{:,.2f}'.format(sum(o.order_line.filtered(lambda l: not l.display_type).mapped('total_amt_wo_global_disc')))"/>
+                                <td style="width: 50%; text-align: left; height: 20.62px; padding: 1.88px 3.75px; vertical-align: middle;">Subtotal</td>
+                                <td style="width: 50%; text-align: right; height: 20.62px; padding: 1.88px 3.75px; vertical-align: middle;">
+                                    <span class="o_report_last_page" style="display: none;" t-esc="'{:,.2f}'.format(sum(o.order_line.filtered(lambda l: not l.display_type).mapped('total_amt_wo_global_disc')))"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="text-align: left; height: 22px; padding: 2px 4px; vertical-align: middle;">Discount</td>
-                                <td style="text-align: right; height: 22px; padding: 2px 4px; vertical-align: middle;">
-                                    <span class="last-page" style="display: none;" t-esc="'{:,.2f}'.format(o.total_global_discount)"/>
+                                <td style="text-align: left; height: 20.62px; padding: 1.88px 3.75px; vertical-align: middle;">Discount</td>
+                                <td style="text-align: right; height: 20.62px; padding: 1.88px 3.75px; vertical-align: middle;">
+                                    <span class="o_report_last_page" style="display: none;" t-esc="'{:,.2f}'.format(o.total_global_discount)"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="text-align: left; height: 22px; padding: 2px 4px; vertical-align: middle;">Before VAT</td>
-                                <td style="text-align: right; height: 22px; padding: 2px 4px;   vertical-align: middle;">
-                                    <span class="last-page" style="display: none;" t-esc="'{:,.2f}'.format(o.amount_untaxed)"/>
+                                <td style="text-align: left; height: 20.62px; padding: 1.88px 3.75px; vertical-align: middle;">Before VAT</td>
+                                <td style="text-align: right; height: 20.62px; padding: 1.88px 3.75px;   vertical-align: middle;">
+                                    <span class="o_report_last_page" style="display: none;" t-esc="'{:,.2f}'.format(o.amount_untaxed)"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="text-align: left; height: 22px; padding: 2px 4px; vertical-align: middle;">VAT</td>
-                                <td style="text-align: right; height: 22px; padding: 2px 4px;  vertical-align: middle;">
-                                    <span class="last-page" style="display: none;" t-esc="'{:,.2f}'.format(o.amount_tax)"/>
+                                <td style="text-align: left; height: 20.62px; padding: 1.88px 3.75px; vertical-align: middle;">VAT</td>
+                                <td style="text-align: right; height: 20.62px; padding: 1.88px 3.75px;  vertical-align: middle;">
+                                    <span class="o_report_last_page" style="display: none;" t-esc="'{:,.2f}'.format(o.amount_tax)"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="text-align: left; height: 22px; padding: 2px 4px; vertical-align: middle;">Total</td>
-                                <td style="text-align: right; height: 22px; padding: 2px 4px; vertical-align: middle;">
-                                    <span class="last-page" style="display: none;" t-esc="'{:,.2f}'.format(o.amount_total)"/>
+                                <td style="text-align: left; height: 20.62px; padding: 1.88px 3.75px; vertical-align: middle;">Total</td>
+                                <td style="text-align: right; height: 20.62px; padding: 1.88px 3.75px; vertical-align: middle;">
+                                    <span class="o_report_last_page" style="display: none;" t-esc="'{:,.2f}'.format(o.amount_total)"/>
                                 </td>
                             </tr>
                         </table>
                     </div>
                 </div>
-                <div class="last-page" style="display: none;">
+                <div class="o_report_last_page" style="display: none;">
                     <div class="quotation-signature row">
                         <div class="col-1"></div>
                         <div class="col-5">
                             <span>Confirm to order and accept all terms &amp; condition</span>
-                            <div style="border-bottom: 1px dotted #000; width: 80%; margin: 0 auto 10px auto; min-height: 80px;"></div>
+                            <div style="border-bottom: 1px dotted #000; width: 80%; margin: 0 auto 9.38px auto; min-height: 75px;"></div>
                             <span class="mb-1">Authorized Signature  / Date.</span>
                         </div>
                         <div class="col-3">
-                            <div style="width: 80%; margin: 0 auto 10px auto; min-height: 80px;">
-                                <img t-if="o.env.user.user_signature" t-att-src="image_data_uri(o.env.user.user_signature)" style="max-height: 80px; max-width: 100%;"/>
+                            <div style="width: 80%; margin: 0 auto 9.38px auto; min-height: 75px;">
+                                <img t-if="o.env.user.user_signature" t-att-src="image_data_uri(o.env.user.user_signature)" style="max-height: 75px; max-width: 100%;"/>
                             </div>
 
                             (                        <span style="font-weight: bold;" t-field="o.env.user.name"></span>)
@@ -72,7 +74,7 @@
                             <span t-field="o.env.user.job_title"></span>
                         </div>
                         <div class="col-3">
-                            <div style="width: 80%; margin: 0 auto 10px auto; min-height: 80px;">
+                            <div style="width: 80%; margin: 0 auto 9.38px auto; min-height: 75px;">
                             </div>
 
                             (                        <span style="font-weight: bold;"></span>)
@@ -83,35 +85,6 @@
                 </div>
             </div>
         </div>
-        <script type="text/javascript"><![CDATA[
-            (function () {
-                var params = (window.location.search || '').substring(1).split('&');
-                var page = null;
-                var topage = null;
-                for (var i = 0; i < params.length; i++) {
-                    var pair = params[i].split('=');
-                    if (pair[0] === 'page') { page = pair[1]; }
-                    if (pair[0] === 'topage') { topage = pair[1]; }
-                }
-                function showAll(className) {
-                    var els = document.getElementsByClassName(className);
-                    for (var i = 0; i < els.length; i++) {
-                        els[i].style.display = 'block';
-                    }
-                }
-                if (page === '1') {
-                    showAll('first-page');
-                }
-                var remarkEls = document.getElementsByClassName('js-remark-page');
-                for (var j = 0; j < remarkEls.length; j++) {
-                    if (page && remarkEls[j].getAttribute('data-remark-page') === page) {
-                        remarkEls[j].style.display = 'block';
-                    }
-                }
-                if (page && topage && page === topage) {
-                    showAll('last-page');
-                }
-            })();
-        ]]></script>
+        <t t-call="bs_report_pagination_helper.page_visibility_script"/>
     </template>
 </odoo>

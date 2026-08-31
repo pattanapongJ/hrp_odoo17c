@@ -14,7 +14,7 @@
             <field name="margin_left">5</field>
             <field name="margin_right">5</field>
             <field name="header_spacing">75</field>
-            <field name="dpi">96</field>
+            <field name="dpi">90</field>
         </record>
         
         <record id="action_report_bs_create_quotation_g_plus_report" model="ir.actions.report">
