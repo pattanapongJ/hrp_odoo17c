@@ -26,27 +26,27 @@
     </template>
 
     <template id="report_main_content_kuady">
-        <div style="font-family: 'AngsanaNew'; font-size: 24px;" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id">
+        <div style="font-family: 'AngsanaNew'; font-size: 22.5px; line-height: 0.9em;" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id">
             <table class="table-borderless" style="width: 100%; margin: 0; border-collapse: collapse; table-layout: fixed;">
                 <t t-call="bs_create_form_quotation_kuady.report_main_content_kuady_table_head"/>
-                <tbody>
+                <tbody style="line-height: 0.9em;">
                     <tr t-foreach="o.sudo().order_line.filtered(lambda l: not l.display_type)" t-as="line">
-                        <td style="text-align: center;  ">
-                            <span t-esc="line_index + 1"/>
+                        <td style="text-align: center;">
+                            <span t-esc="line_index + 1" style="line-height: 0.9em;"/>
                         </td>
-                        <td style="text-align: left;  ">
-                            <span t-field="line.name"/>
+                        <td style="text-align: left;">
+                            <span t-field="line.name" style="line-height: 0.9em;"/>
                         </td>
-                        <td style="text-align: center; ">
+                        <td style="text-align: center;">
                             <span t-esc="'%.2f' % line.product_uom_qty"/>
                         </td>
-                        <td style="text-align: center; ">
+                        <td style="text-align: center;">
                             <span t-field="line.product_uom"/>
                         </td>
-                        <td style="text-align: right; ">
+                        <td style="text-align: right;">
                             <span t-esc="'%.2f' % line.gross_unit_price"/>
                         </td>
-                        <td style="text-align: right; ">
+                        <td style="text-align: right;">
                             <span t-esc="'%.2f' % line.price_before_tax"/>
                         </td>
                     </tr>

@@ -14,7 +14,7 @@
             <field name="margin_left">6</field>
             <field name="margin_right">6</field>
             <field name="header_spacing">100</field>
-            <field name="dpi">96</field>
+            <field name="dpi">90</field>
         </record>
 
         <record id="action_report_bs_create_quotation_kuady_report" model="ir.actions.report">
