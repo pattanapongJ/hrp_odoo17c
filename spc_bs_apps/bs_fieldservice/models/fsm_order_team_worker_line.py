@@ -27,7 +27,7 @@ class FSMOrderTeamWorkerLine(models.Model):
     )
     # Set explicitly to "team" only by fsm.order's _sync_team_worker_lines
     # when it auto-populates a row from the order's Team roster
-    # (fsm.person.team_id) - any row created any other way (i.e. the user
+    # (fsm.team.member_ids) - any row created any other way (i.e. the user
     # adding a line through the UI) falls through to the default "manual".
     # This is what lets a Team switch safely delete and re-derive only the
     # "team" rows without ever touching a manually added worker.

@@ -94,6 +94,7 @@ class FSMOrderCheckSheetLine(models.Model):
     thick_plate_other_note = fields.Char(string="Other, specify")
     angle_high = fields.Boolean(string="High")
     angle_low = fields.Boolean(string="Low")
+    angle_mixed = fields.Boolean(string="Mixed")
     immerse_plate_naoh = fields.Boolean(string="NaOH")
     immerse_plate_acid = fields.Boolean(string="Acid")
     photo_before_side1 = fields.Boolean(string="Side 1")
@@ -197,11 +198,19 @@ class FSMOrderCheckSheetLine(models.Model):
     def _onchange_angle_high(self):
         if self.angle_high:
             self.angle_low = False
+            self.angle_mixed = False
 
     @api.onchange("angle_low")
     def _onchange_angle_low(self):
         if self.angle_low:
             self.angle_high = False
+            self.angle_mixed = False
+
+    @api.onchange("angle_mixed")
+    def _onchange_angle_mixed(self):
+        if self.angle_mixed:
+            self.angle_high = False
+            self.angle_low = False
 
     @api.onchange("immerse_plate_naoh")
     def _onchange_immerse_plate_naoh(self):

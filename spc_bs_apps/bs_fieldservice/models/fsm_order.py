@@ -75,6 +75,23 @@ class FSMOrder(models.Model):
     sr_planned_date = fields.Date(string="Planned Date")
     sr_completion_date = fields.Date(string="Completion Date")
 
+    # fieldservice_stock's own default picks a warehouse for
+    # self.env.user.company_id - the user's fixed default company from their
+    # profile, NOT the company this order is actually being created under
+    # (company_id itself defaults from self.env.company, the active
+    # company). Creating an order for any other company than the user's own
+    # default silently drops this mismatched cross-company warehouse (this
+    # model's _check_company_auto catches it) and crashes on the resulting
+    # NOT NULL violation instead of surfacing a normal validation message.
+    # Matching company_id's own default logic here keeps the two consistent.
+    @api.model
+    def _default_warehouse_id(self):
+        return self.env["stock.warehouse"].search(
+            [("company_id", "=", self.env.company.id)], limit=1
+        ).id
+
+    warehouse_id = fields.Many2one(default=_default_warehouse_id)
+
     # Reason for service
     reason_external_leakage = fields.Boolean(string="External Leakage")
     reason_internal_leakage = fields.Boolean(string="Internal Leakage")
@@ -207,33 +224,8 @@ class FSMOrder(models.Model):
         string="Equipment Summary",
         compute="_compute_check_sheet_summary_line_ids",
         store=True,
+        readonly=False,
     )
-
-    # Service Report - Cleaning
-    sr_clean_mech_naoh = fields.Boolean(string="NaOH")
-    sr_clean_mech_acid = fields.Boolean(string="Acid")
-    sr_clean_cip_naoh = fields.Boolean(string="NaOH")
-    sr_clean_cip_acid = fields.Boolean(string="Acid")
-    sr_remark_fouling_hot = fields.Char(string="Remark Fouling — Hot side")
-    sr_remark_fouling_cold = fields.Char(string="Remark Fouling — Cold side")
-
-    # Service Report - PT Test Results
-    sr_pt_tested_plates = fields.Integer(string="Tested plates")
-    sr_pt_leakage_found = fields.Integer(string="Leakage found")
-    sr_pt_replaced_from_customer = fields.Boolean(string="Customer")
-    sr_pt_replaced_from_warehouse = fields.Boolean(string="Warehouse")
-    sr_pt_old_plate_return = fields.Boolean(string="Return")
-    sr_pt_old_plate_dispose = fields.Boolean(string="Dispose")
-
-    # Service Report - Re-gasket
-    sr_gasket_material_type = fields.Char(string="Material / Type")
-    sr_gasket_channel_qty = fields.Integer(string="Channel gasket")
-    sr_gasket_oring_qty = fields.Integer(string="O-ring")
-    sr_gasket_new_from_customer = fields.Boolean(string="Customer")
-    sr_gasket_new_from_warehouse = fields.Boolean(string="Warehouse")
-
-    # Service Report - Supervisor's Comment
-    sr_supervisor_comment = fields.Text(string="Supervisor's Comment")
 
     @api.depends(
         "equipment_line_ids.status",
@@ -276,12 +268,11 @@ class FSMOrder(models.Model):
         self.phe_line_ids = [(5, 0, 0)]
         self.pump_line_ids = [(5, 0, 0)]
         self.assigned_team_ids = [(5, 0, 0)]
-        # Supervisor's Comment is still PHE-only - once the profile changes
-        # (in either direction), its data no longer applies, so wipe it
-        # clean. Cleaning/PT Test Results/Re-gasket are shown for both
-        # profiles now, so their data is kept across a profile switch.
-        if self.sr_supervisor_comment:
-            self.sr_supervisor_comment = False
+        # Cleaning/PT Test Results/Re-gasket/Supervisor's Comment now live on
+        # check_sheet_summary_line_ids (per equipment Model), which
+        # _compute_check_sheet_summary_line_ids already clears entirely the
+        # moment technician_profile isn't "phe" - nothing to wipe here
+        # directly.
         self._sync_check_sheet_lines()
 
     @api.onchange("phe_line_ids", "pump_line_ids")
@@ -389,7 +380,7 @@ class FSMOrder(models.Model):
         worked on it. A worker who happens to be on BOTH the old and new
         Team is untouched - they're still genuinely active on this order."""
         self.ensure_one()
-        current_members = self.team_id.member_ids
+        current_members = self.team_id.member_ids.person_id
         to_release = self.worker_line_ids.filtered(
             lambda line: not line.released and line.person_id not in current_members
         )
@@ -511,10 +502,19 @@ class FSMOrder(models.Model):
     def _compute_check_sheet_summary_line_ids(self):
         """Service Report's Equipment Summary (PHE only): one row per
         distinct Model found in check_sheet_line_ids, with a count of how
-        many share it and Result reflecting Confirm status. Fully derived -
-        never manually added/edited. Pump has no Check Sheet, so its
-        Equipment Summary is shown directly from pump_line_ids in the view
-        instead of going through this grouped model."""
+        many share it and Result reflecting Confirm status. Pump has no
+        Check Sheet, so its Equipment Summary is shown directly from
+        pump_line_ids in the view instead of going through this grouped
+        model.
+
+        Update-in-place, not delete-then-recreate: each row now also carries
+        its own Cleaning/PT Test Results/Re-gasket/Supervisor's Comment
+        (entered via the row's popup), so a stale blanket unlink+recreate on
+        every dependency change (e.g. confirming one check sheet among
+        several) would silently wipe that data on every OTHER row too. An
+        existing row for a Model that's still present is updated in place
+        (keeps its id, keeps its own sr_* data); only a row whose Model no
+        longer appears in check_sheet_line_ids at all gets removed."""
         for order in self:
             if order.technician_profile != "phe":
                 if order.check_sheet_summary_line_ids:
@@ -523,52 +523,25 @@ class FSMOrder(models.Model):
             groups = {}
             for line in order.check_sheet_line_ids:
                 groups.setdefault(line.model_id, []).append(line)
-            commands = [(5, 0, 0)]
+            existing_by_model = {
+                line.model_id: line for line in order.check_sheet_summary_line_ids
+            }
+            stale = existing_by_model.keys() - groups.keys()
+            commands = [(2, existing_by_model[model].id, 0) for model in stale]
             for model, lines in groups.items():
                 all_confirmed = all(line.state == "confirmed" for line in lines)
-                commands.append(
-                    (
-                        0,
-                        0,
-                        {
-                            "model_id": model.id,
-                            "maker": lines[0].maker,
-                            "check_sheet_count": len(lines),
-                            "result": "pass" if all_confirmed else "pending",
-                        },
-                    )
-                )
-            order.check_sheet_summary_line_ids = commands
-
-    @api.onchange("sr_pt_replaced_from_customer")
-    def _onchange_sr_pt_replaced_from_customer(self):
-        if self.sr_pt_replaced_from_customer:
-            self.sr_pt_replaced_from_warehouse = False
-
-    @api.onchange("sr_pt_replaced_from_warehouse")
-    def _onchange_sr_pt_replaced_from_warehouse(self):
-        if self.sr_pt_replaced_from_warehouse:
-            self.sr_pt_replaced_from_customer = False
-
-    @api.onchange("sr_pt_old_plate_return")
-    def _onchange_sr_pt_old_plate_return(self):
-        if self.sr_pt_old_plate_return:
-            self.sr_pt_old_plate_dispose = False
-
-    @api.onchange("sr_pt_old_plate_dispose")
-    def _onchange_sr_pt_old_plate_dispose(self):
-        if self.sr_pt_old_plate_dispose:
-            self.sr_pt_old_plate_return = False
-
-    @api.onchange("sr_gasket_new_from_customer")
-    def _onchange_sr_gasket_new_from_customer(self):
-        if self.sr_gasket_new_from_customer:
-            self.sr_gasket_new_from_warehouse = False
-
-    @api.onchange("sr_gasket_new_from_warehouse")
-    def _onchange_sr_gasket_new_from_warehouse(self):
-        if self.sr_gasket_new_from_warehouse:
-            self.sr_gasket_new_from_customer = False
+                vals = {
+                    "maker": lines[0].maker,
+                    "check_sheet_count": len(lines),
+                    "result": "pass" if all_confirmed else "pending",
+                }
+                existing = existing_by_model.get(model)
+                if existing:
+                    commands.append((1, existing.id, vals))
+                else:
+                    commands.append((0, 0, {**vals, "model_id": model.id}))
+            if commands:
+                order.check_sheet_summary_line_ids = commands
 
     @api.onchange("location_id")
     def _onchange_location_id_check_sheet(self):
@@ -628,7 +601,7 @@ class FSMOrder(models.Model):
         for order in self:
             lines = order.team_worker_line_ids
             team_sourced = lines.filtered(lambda line: line.source == "team")
-            wanted_members = order.team_id.member_ids
+            wanted_members = order.team_id.member_ids.person_id
             stale = team_sourced.filtered(
                 lambda line: line.person_id not in wanted_members
             )
@@ -833,7 +806,13 @@ class FSMOrder(models.Model):
         # window - still counts as the worker being busy that day.
         today_start = datetime.combine(today, time.min)
         today_end = datetime.combine(today, time.max)
-        busy_via_order = self.env["fsm.order"].search_count(
+        # sudo(): fsm.order carries a global multi-company ir.rule scoped to
+        # the current user's active company selection - without sudo, a
+        # booking on a company the user doesn't have active right now would
+        # be invisible here, wrongly showing "available" for a worker who's
+        # actually busy on another company's order (workers are a pool
+        # shared across all companies, see the sub-slot search above).
+        busy_via_order = self.env["fsm.order"].sudo().search_count(
             [
                 ("person_id", "=", person.id),
                 ("schedule_slot_ids", "=", False),

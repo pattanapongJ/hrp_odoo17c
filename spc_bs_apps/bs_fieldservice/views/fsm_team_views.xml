@@ -10,6 +10,23 @@
             <field name="calendar_user_id" position="after">
                 <field name="team_manager_id" />
             </field>
+            <xpath expr="//sheet/group" position="after">
+                <notebook>
+                    <page string="Members" name="members">
+                        <field name="member_ids">
+                            <tree editable="bottom">
+                                <field name="person_id" options="{'no_create': True}" />
+                                <field
+                                    name="category_ids"
+                                    widget="many2many_tags"
+                                    options="{'color_field': 'color'}"
+                                    groups="fieldservice.group_fsm_category"
+                                />
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
         </field>
     </record>
 </odoo>
