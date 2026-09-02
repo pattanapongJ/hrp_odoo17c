@@ -18,6 +18,7 @@
         "views/bs_equipment_model_views.xml",
         "views/fsm_order_views.xml",
         "views/fsm_team_views.xml",
+        "views/fsm_location_views.xml",
         "views/fsm_equipment_views.xml",
         "views/worker_calendar_views.xml",
         "data/ir_sequence_data.xml",

@@ -1,0 +1,18 @@
+<odoo>
+    <!-- "Preferred Workers" (location_id.person_ids / location_id.team_id)
+         is no longer the source of truth for Planning - Team is now
+         picked directly on the order, and its roster comes from
+         fsm.person.team_id (see Team Info / Request Workers in
+         fsm_order_views.xml) - hide the tab so users don't fill in data
+         that nothing reads anymore. -->
+    <record id="view_fsm_location_form_bs_fieldservice" model="ir.ui.view">
+        <field name="name">fsm.location.form.bs.fieldservice</field>
+        <field name="model">fsm.location</field>
+        <field name="inherit_id" ref="fieldservice.fsm_location_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='preferred_workers']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -10,16 +10,11 @@
                 <field name="technician_profile" />
             </field>
 
-            <!-- Team/Assigned To are now fully derived (Team from
-                 Location, Assigned To from the Team's Team Manager - see
-                 _onchange_team_id_set_manager in fsm_order.py) - locked so
-                 they can't be picked directly here anymore. -->
-            <xpath
-                expr="//field[@name='team_id'][@groups='fieldservice.group_fsm_team']"
-                position="attributes"
-            >
-                <attribute name="readonly">1</attribute>
-            </xpath>
+            <!-- Team is picked by the user directly (no longer auto-derived
+                 from Location - see the _compute_team_id override in
+                 fsm_order.py). Assigned To stays locked: it's still
+                 derived from whichever Team is picked, via that Team's
+                 Team Manager (_compute_person_id_from_team). -->
             <xpath
                 expr="//field[@name='team_id'][@groups='fieldservice.group_fsm_team']/following-sibling::field[@name='person_id'][1]"
                 position="attributes"
@@ -202,10 +197,36 @@
                 <attribute name="invisible">1</attribute>
             </xpath>
             <xpath expr="//group[@name='request_workers']" position="replace">
+                <group string="Team Info" name="team_info_grp">
+                    <field name="team_manager_id" />
+                    <field name="team_worker_line_ids" nolabel="1" colspan="2">
+                        <tree editable="bottom" delete="false">
+                            <field
+                                name="person_id"
+                                options="{'no_create': True}"
+                                readonly="source == 'team'"
+                            />
+                            <field
+                                name="source"
+                                readonly="1"
+                                widget="badge"
+                                decoration-info="source == 'team'"
+                            />
+                            <field
+                                name="category_ids"
+                                widget="many2many_tags"
+                                options="{'color_field': 'color'}"
+                                groups="fieldservice.group_fsm_category"
+                            />
+                        </tree>
+                    </field>
+                </group>
                 <group string="Request Workers" name="request_workers">
                     <field name="worker_line_ids" nolabel="1" colspan="2">
-                        <tree editable="bottom" delete="false">
+                        <tree create="false" delete="false" edit="false" no_open="1">
                             <field name="person_id" string="Name" />
+                            <field name="team_id" />
+                            <field name="joined_on" />
                             <field
                                 name="category_ids"
                                 widget="many2many_tags"
@@ -220,6 +241,7 @@
                                 decoration-danger="status == 'conflict'"
                                 readonly="1"
                             />
+                            <field name="released" readonly="1" />
                         </tree>
                     </field>
                     <field

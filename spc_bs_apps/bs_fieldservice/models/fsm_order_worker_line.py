@@ -11,6 +11,16 @@ class FSMOrderWorkerLine(models.Model):
     )
     sequence = fields.Integer(default=10)
     person_id = fields.Many2one("fsm.person", string="Name", required=True)
+    # Snapshot of which Team this worker was under and when they were added
+    # to this order - set once at creation (see
+    # fsm.order._compute_worker_line_ids) and never changed afterward, so
+    # the append-only Request Workers list itself doubles as the Job
+    # Handover history (who worked on this order, under which Team, since
+    # when) without a separate log table.
+    team_id = fields.Many2one("fsm.team", string="Team", readonly=True)
+    joined_on = fields.Datetime(
+        string="Joined On", default=fields.Datetime.now, readonly=True
+    )
     category_ids = fields.Many2many(
         related="person_id.category_ids", string="Category", readonly=True
     )
@@ -23,6 +33,16 @@ class FSMOrderWorkerLine(models.Model):
         default="available",
         help="Placeholder for now - manually set. Automatic cross-order "
         "conflict detection is a follow-up phase.",
+    )
+    released = fields.Boolean(
+        string="Released",
+        default=False,
+        help="This worker's Team was reassigned away from this order (Job "
+        "Handover) - the line is kept so the order still shows everyone "
+        "who ever worked on it, but its status is force-set to Available "
+        "and excluded from the normal conflict recompute, since they're "
+        "free to be booked on other jobs immediately (see "
+        "fsm.order._release_workers_not_in_current_team).",
     )
 
     @api.depends("order_id.scheduled_date_start", "order_id.scheduled_date_end")

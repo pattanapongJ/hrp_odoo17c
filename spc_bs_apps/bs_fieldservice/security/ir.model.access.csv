@@ -19,3 +19,5 @@ access_bs_fsm_order_check_sheet_summary_line_user,bs.fsm.order.check_sheet_summa
 access_bs_fsm_order_check_sheet_summary_line_manager,bs.fsm.order.check_sheet_summary.line.manager,model_bs_fsm_order_check_sheet_summary_line,fieldservice.group_fsm_manager,1,1,1,1
 access_bs_equipment_brand_user,bs.equipment.brand.user,model_bs_equipment_brand,fieldservice.group_fsm_user_own,1,1,1,0
 access_bs_equipment_brand_manager,bs.equipment.brand.manager,model_bs_equipment_brand,fieldservice.group_fsm_manager,1,1,1,1
+access_bs_fsm_order_team_worker_line_user,bs.fsm.order.team.worker.line.user,model_bs_fsm_order_team_worker_line,fieldservice.group_fsm_user_own,1,1,1,1
+access_bs_fsm_order_team_worker_line_manager,bs.fsm.order.team.worker.line.manager,model_bs_fsm_order_team_worker_line,fieldservice.group_fsm_manager,1,1,1,1

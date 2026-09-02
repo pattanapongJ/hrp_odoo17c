@@ -8,6 +8,7 @@ from . import fsm_order_equipment_line
 from . import fsm_order_phe_line
 from . import fsm_order_pump_line
 from . import fsm_order_schedule_slot
+from . import fsm_order_team_worker_line
 from . import fsm_order_worker_line
 from . import fsm_order_worker_status_log
 from . import fsm_team

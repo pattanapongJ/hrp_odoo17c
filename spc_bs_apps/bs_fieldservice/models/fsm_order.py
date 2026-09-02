@@ -13,18 +13,42 @@ class FSMOrder(models.Model):
         required=True,
         default="phe",
     )
-    # No longer picked directly (locked readonly="1" in the view, alongside
-    # team_id) - derived from the order's own team_id (itself already
-    # computed from location_id by base fieldservice's _compute_team_id),
-    # mirroring that team's Team Manager. store+precompute+readonly=False
-    # matches team_id's own pattern, so this keeps working on create()/API
-    # calls too, not just interactively in the browser (a plain @api.onchange
-    # would only ever fire during UI form editing).
+    # No longer picked directly (locked readonly="1" in the view) - derived
+    # from the order's own team_id, mirroring that team's Team Manager.
+    # store+precompute+readonly=False matches team_id's own soft-compute
+    # pattern, so this keeps working on create()/API calls too, not just
+    # interactively in the browser (a plain @api.onchange would only ever
+    # fire during UI form editing).
     person_id = fields.Many2one(
         compute="_compute_person_id_from_team",
         store=True,
         readonly=False,
         precompute=True,
+    )
+    # Team is picked directly by the user (see _compute_team_id override
+    # below, which detaches it from location_id) - feeds the Planning tab's
+    # "Team Info" panel so the user can see (and extend) who's on the team
+    # before it auto-populates Request Workers (see _compute_worker_line_ids).
+    team_manager_id = fields.Many2one(
+        related="team_id.team_manager_id", string="Team Manager", readonly=True
+    )
+    # Plain One2many (NOT a stored compute) - deliberately matches
+    # _sync_check_sheet_lines' established pattern (see below) rather than
+    # worker_line_ids' compute+store+readonly=False approach: a stored
+    # compute one2many's value has to survive a full onchange-then-web_save
+    # round trip, and that round trip was found to silently drop field
+    # values (a NOT NULL crash on person_id) for freshly auto-added rows
+    # here specifically. Kept in sync instead via _sync_team_worker_lines,
+    # called from both an onchange (live browser preview) and
+    # create()/write() (the actual guarantee) - the currently-picked Team's
+    # own roster (team_id.member_ids) always ends up in here with
+    # source="team", but the user can also add ANY other fsm.person on top
+    # straight from Team Info - those fall through to source="manual" and
+    # are never touched by a later Team switch.
+    team_worker_line_ids = fields.One2many(
+        "bs.fsm.order.team.worker.line",
+        "order_id",
+        string="Team Workers",
     )
 
     # Service Request SR - header
@@ -285,7 +309,16 @@ class FSMOrder(models.Model):
                 line.work_finish = self.request_late or False
 
     def write(self, vals):
+        # Capture each order's CURRENT team before it's overwritten - only
+        # needed when team_id is actually part of this write, and only to
+        # detect a genuine change (Job Handover) afterward.
+        old_team_by_order = {}
+        if "team_id" in vals:
+            for order in self:
+                old_team_by_order[order.id] = order.team_id
+
         res = super().write(vals)
+
         if vals.get("sale_id"):
             for order in self:
                 if not order.job_no:
@@ -295,15 +328,78 @@ class FSMOrder(models.Model):
         if "request_early" in vals or "request_late" in vals:
             for order in self:
                 order._sync_check_sheet_work_dates()
+        if {"team_worker_line_ids", "team_id"} & vals.keys():
+            self._purge_blank_team_worker_lines()
+        if "team_id" in vals:
+            for order in self:
+                order._sync_team_worker_lines()
+                old_team = old_team_by_order.get(order.id)
+                if old_team != order.team_id:
+                    order._release_workers_not_in_current_team()
+        if {"worker_line_ids", "team_worker_line_ids", "team_id"} & vals.keys():
+            self._dedupe_worker_lines()
+            self._backfill_worker_line_team_id()
         if {
             "schedule_slot_ids",
             "worker_line_ids",
-            "location_id",
+            "team_id",
             "scheduled_date_start",
             "scheduled_date_end",
         } & vals.keys():
             self._refresh_worker_line_status()
         return res
+
+    def _dedupe_worker_lines(self):
+        """worker_line_ids is a stored, readonly=False compute field - the
+        web client's save payload can end up re-sending (0,0,{...}) create
+        commands for Request Workers that already exist (their identity
+        gets lost across the onchange-recompute-then-save round trip),
+        producing duplicate rows for the same person on the same order.
+        This runs straight after super().create()/write() to clean that up:
+        for each person with more than one line, keep the OLDEST (by
+        joined_on, falling back to id) and drop the rest, first merging
+        onto the kept line whichever duplicate has the more "correct"
+        state (not released, if any of them is still active)."""
+        for order in self:
+            by_person = {}
+            for line in order.worker_line_ids.sorted(
+                lambda l: (l.joined_on or l.create_date or l.id, l.id)
+            ):
+                by_person.setdefault(line.person_id, self.env["bs.fsm.order.worker.line"])
+                by_person[line.person_id] |= line
+            to_remove = self.env["bs.fsm.order.worker.line"]
+            for lines in by_person.values():
+                if len(lines) <= 1:
+                    continue
+                kept, dupes = lines[0], lines[1:]
+                if any(not d.released for d in dupes) and kept.released:
+                    active = dupes.filtered(lambda d: not d.released)[0]
+                    kept.write({"released": False, "status": active.status})
+                to_remove |= dupes
+            if to_remove:
+                to_remove.unlink()
+
+    def _release_workers_not_in_current_team(self):
+        """Job Handover: any EXISTING Request Worker who isn't part of the
+        order's CURRENT Team anymore (i.e. their Team was just reassigned
+        away from this order) is marked Released and forced Available
+        immediately - they're free to be booked on other jobs without
+        waiting for this order's own schedule to run out. The line itself
+        is kept (not removed), so the order still shows everyone who ever
+        worked on it. A worker who happens to be on BOTH the old and new
+        Team is untouched - they're still genuinely active on this order."""
+        self.ensure_one()
+        current_members = self.team_id.member_ids
+        to_release = self.worker_line_ids.filtered(
+            lambda line: not line.released and line.person_id not in current_members
+        )
+        for line in to_release:
+            if line.status != "available":
+                self._log_worker_status_change(
+                    line.person_id, line.status, "available"
+                )
+        if to_release:
+            to_release.write({"released": True, "status": "available"})
 
     def _refresh_worker_line_status(self):
         """Force-recompute each Request Worker's Conflict/Available status
@@ -316,15 +412,41 @@ class FSMOrder(models.Model):
         that explicit client value, leaving it stuck on a stale status
         (e.g. still "available" even though a sub-slot for today was just
         added). Calling this straight after super().create()/write() with
-        the fully persisted data guarantees the correct, final status."""
+        the fully persisted data guarantees the correct, final status.
+
+        Released lines are skipped entirely - their Available status is a
+        deliberate override (see _release_workers_not_in_current_team), not
+        something this order's own schedule should ever recompute again."""
         for order in self:
             for line in order.worker_line_ids:
+                if line.released:
+                    continue
                 new_status = order._get_worker_conflict_status(line.person_id)
                 if line.status != new_status:
                     order._log_worker_status_change(
                         line.person_id, line.status, new_status
                     )
                     line.status = new_status
+
+    def _backfill_worker_line_team_id(self):
+        """team_id is set explicitly in _compute_worker_line_ids' own
+        add_commands, but - like team_worker_line_ids.person_id before it -
+        that explicit value can get silently dropped by the same web_save
+        round-trip quirk affecting stored, readonly=False compute
+        one2manys (the row itself still gets created correctly - only this
+        one field goes missing). Runs after create()/write() to force it
+        onto any row that's missing it, using the order's CURRENT team -
+        the best available attribution. A released line is left alone,
+        since backdating it to whichever team is active NOW would
+        misrepresent Job Handover history."""
+        for order in self:
+            if not order.team_id:
+                continue
+            missing = order.worker_line_ids.filtered(
+                lambda line: not line.team_id and not line.released
+            )
+            if missing:
+                missing.write({"team_id": order.team_id.id})
 
     def _sync_check_sheet_lines(self):
         """Keep check_sheet_line_ids 1:1 with the Assigned Worker equipment
@@ -458,6 +580,67 @@ class FSMOrder(models.Model):
         for order in self:
             order.person_id = order.team_id.team_manager_id
 
+    def _compute_team_id(self):
+        # Overrides base fieldservice's own _compute_team_id (which derives
+        # team_id from location_id.team_id, falling back to a company
+        # default) - Team is now picked by the user directly, so this is a
+        # no-op that just re-confirms whatever's already there. No
+        # @api.depends here on purpose: without it this compute only ever
+        # runs once, at create() (store=True still needs SOME value for a
+        # new record), and never fires again when location_id changes
+        # afterward - a manually-picked Team is never silently overwritten.
+        for order in self:
+            order.team_id = order.team_id
+
+    @api.onchange("team_id")
+    def _onchange_team_id_sync_team_workers(self):
+        self._sync_team_worker_lines()
+
+    def _purge_blank_team_worker_lines(self):
+        """Delete any team_worker_line_ids row with no person_id at all -
+        see the comment on bs.fsm.order.team.worker.line.person_id for why
+        the DB allows this instead of raising: the web client's onchange ->
+        save round trip for this auto-populated one2many can submit blank
+        (0,0,{}) rows (referencing team_id.member_ids rather than sibling
+        records from the same editing session confuses the serialization).
+        Must run BEFORE _sync_team_worker_lines on every create()/write(),
+        or the sync's own "who's missing" diff would see a blank row as
+        "this person already has a line" for nobody in particular and
+        under-populate the real roster."""
+        for order in self:
+            blank = order.team_worker_line_ids.filtered(lambda line: not line.person_id)
+            if blank:
+                blank.unlink()
+
+    def _sync_team_worker_lines(self):
+        """Delete-then-set for the "team" rows only - a Team switch must
+        drop the OLD team's auto-derived rows and add the NEW team's, while
+        any "manual" row (added by the user, not by this method) is never
+        touched. A person already present under ANY source (team or
+        manual) is never re-added, so a manually-added worker who also
+        happens to be on the new Team doesn't get a duplicate row - their
+        existing source is left exactly as it was.
+
+        Called from both the onchange above (live preview while editing in
+        the browser) and create()/write() (the actual guarantee) - see the
+        note on team_worker_line_ids for why this is a plain method against
+        a plain One2many rather than a stored compute."""
+        for order in self:
+            lines = order.team_worker_line_ids
+            team_sourced = lines.filtered(lambda line: line.source == "team")
+            wanted_members = order.team_id.member_ids
+            stale = team_sourced.filtered(
+                lambda line: line.person_id not in wanted_members
+            )
+            missing = wanted_members - lines.person_id
+            commands = [(2, line.id, 0) for line in stale]
+            commands += [
+                (0, 0, {"person_id": person.id, "source": "team"})
+                for person in missing
+            ]
+            if commands:
+                order.team_worker_line_ids = commands
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -470,6 +653,10 @@ class FSMOrder(models.Model):
                     "bs.fsm.order.job_no"
                 )
         orders = super().create(vals_list)
+        orders._purge_blank_team_worker_lines()
+        orders._sync_team_worker_lines()
+        orders._dedupe_worker_lines()
+        orders._backfill_worker_line_team_id()
         orders._refresh_worker_line_status()
         return orders
 
@@ -510,8 +697,9 @@ class FSMOrder(models.Model):
                 )
 
     @api.depends(
-        "location_id",
-        "location_id.person_ids.person_id",
+        "team_id",
+        "team_worker_line_ids",
+        "team_worker_line_ids.person_id",
         "scheduled_date_start",
         "scheduled_date_end",
         "schedule_slot_ids.date_from",
@@ -520,20 +708,28 @@ class FSMOrder(models.Model):
     )
     def _compute_worker_line_ids(self):
         # Purely additive - never removes a line, whether it was added here
-        # from a previous Location or typed in manually (worker_line_ids is
+        # from Team Info (the Team's own roster, or anyone the user added
+        # there on top) or typed in manually (worker_line_ids is
         # readonly=False specifically so users can still add extra workers
-        # beyond the Location's own list). Only two things happen: (1) any
-        # worker on location_id.person_ids not already on the list gets
-        # added, and (2) every EXISTING line's Conflict/Available status is
-        # refreshed in place, since that can change independently (e.g. a
-        # schedule sub-slot edit) regardless of who's on the list.
+        # beyond that too). Only two things happen: (1) any worker on
+        # team_worker_line_ids not already on the list gets added, and (2)
+        # every EXISTING line's Conflict/Available status is refreshed in
+        # place, since that can change independently (e.g. a schedule
+        # sub-slot edit) regardless of who's on the list. Team Info itself
+        # (team_worker_line_ids) DOES drop its "team"-sourced rows on a Team
+        # switch, but that never removes anyone from here - Request Workers
+        # is the permanent Job Handover history (see
+        # _release_workers_not_in_current_team for how a released worker's
+        # status is handled instead).
         for order in self:
             existing = order.worker_line_ids
-            wanted_persons = order.location_id.person_ids.person_id
+            wanted_persons = order.team_worker_line_ids.person_id
             existing_person_ids = existing.mapped("person_id")
 
             update_commands = []
             for line in existing:
+                if line.released:
+                    continue
                 new_status = order._get_worker_conflict_status(line.person_id)
                 if line.status != new_status:
                     order._log_worker_status_change(
@@ -546,7 +742,15 @@ class FSMOrder(models.Model):
                 new_status = order._get_worker_conflict_status(person)
                 order._log_worker_status_change(person, False, new_status)
                 add_commands.append(
-                    (0, 0, {"person_id": person.id, "status": new_status})
+                    (
+                        0,
+                        0,
+                        {
+                            "person_id": person.id,
+                            "status": new_status,
+                            "team_id": order.team_id.id,
+                        },
+                    )
                 )
 
             order.worker_line_ids = update_commands + add_commands
@@ -647,9 +851,9 @@ class FSMOrder(models.Model):
         This forces a fresh recompute for all open orders with a worker.
 
         Filters on worker_line_ids (not person_id/Assigned To) - Request
-        Workers now comes from location_id.person_ids, independent of
-        whether this order's Team has a resolved Team Manager, so an order
-        can have workers to refresh here even with person_id empty."""
+        Workers now comes from team_id.member_ids, independent of whether
+        that Team has a resolved Team Manager, so an order can have workers
+        to refresh here even with person_id empty."""
         orders = self.search(
             [("stage_id.is_closed", "=", False), ("worker_line_ids", "!=", False)]
         )
