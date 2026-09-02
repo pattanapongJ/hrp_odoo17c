@@ -176,7 +176,15 @@ class FSMOrderScheduleSlot(models.Model):
                     return other, True, other_start, other_end
 
             current_id = self._origin.id if self._origin else self.id
-            cross_order_others = self.env["bs.fsm.order.schedule.slot"].search(
+            # sudo(): workers are a pool shared across all 7 companies, so a
+            # double-booking on an order belonging to a company the current
+            # user doesn't have active in the company switcher must still be
+            # caught. fsm.order carries a global multi-company ir.rule, so
+            # without sudo this search would silently miss those orders
+            # (false negative), and even when found via search alone,
+            # reading `other.order_id.name` below would raise AccessError
+            # instead of surfacing the intended ValidationError message.
+            cross_order_others = self.env["bs.fsm.order.schedule.slot"].sudo().search(
                 [
                     ("person_id", "=", self.person_id.id),
                     ("order_id", "!=", self.order_id.id),

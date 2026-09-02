@@ -615,6 +615,10 @@
                                                 <field name="angle_low" nolabel="1"  readonly="state == 'confirmed'" />
                                                 <span>Low</span>
                                             </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="angle_mixed" nolabel="1"  readonly="state == 'confirmed'" />
+                                                <span>Mixed</span>
+                                            </div>
                                         </div>
                                     </group>
                                     <group>
@@ -856,7 +860,7 @@
                         invisible="technician_profile != 'phe'"
                     >
                         <field name="check_sheet_summary_line_ids" nolabel="1" colspan="2">
-                            <tree create="false" delete="false" edit="false" no_open="1">
+                            <tree create="false" delete="false">
                                 <field name="sequence" widget="handle" />
                                 <!-- <field name="maker" string="Maker" /> -->
                                 <field name="model_id" string="Model" />
@@ -869,6 +873,113 @@
                                     decoration-warning="result == 'pending'"
                                 />
                             </tree>
+                            <form>
+                                <sheet>
+                                    <group>
+                                        <field name="model_id" readonly="1" />
+                                        <field name="check_sheet_count" string="Check Sheet Plate Count" readonly="1" />
+                                        <field
+                                            name="result"
+                                            widget="badge"
+                                            decoration-success="result == 'pass'"
+                                            decoration-warning="result == 'pending'"
+                                            readonly="1"
+                                        />
+                                    </group>
+                                    <group string="Cleaning">
+                                        <label for="sr_clean_mech_naoh" string="Mechanical" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="sr_clean_mech_naoh" nolabel="1" />
+                                                <span>NaOH</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="sr_clean_mech_acid" nolabel="1" />
+                                                <span>Acid</span>
+                                            </div>
+                                        </div>
+                                        <label for="sr_clean_cip_naoh" string="CIP" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="sr_clean_cip_naoh" nolabel="1" />
+                                                <span>NaOH</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="sr_clean_cip_acid" nolabel="1" />
+                                                <span>Acid</span>
+                                            </div>
+                                        </div>
+                                        <field name="sr_remark_fouling_hot" string="Remark Fouling — Hot side" />
+                                        <field name="sr_remark_fouling_cold" string="Remark Fouling — Cold side" />
+                                    </group>
+                                    <group string="PT Test Results">
+                                        <label for="sr_pt_tested_plates" string="Tested plates" />
+                                        <div class="d-flex align-items-center gap-1">
+                                            <field name="sr_pt_tested_plates" nolabel="1" style="width: 70px" />
+                                            <span>pcs.</span>
+                                        </div>
+                                        <label for="sr_pt_leakage_found" string="Leakage found" />
+                                        <div class="d-flex align-items-center gap-1">
+                                            <field name="sr_pt_leakage_found" nolabel="1" style="width: 70px" />
+                                            <span>pcs.</span>
+                                        </div>
+                                        <label for="sr_pt_replaced_from_customer" string="Replaced from" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="sr_pt_replaced_from_customer" nolabel="1" />
+                                                <span>Customer</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="sr_pt_replaced_from_warehouse" nolabel="1" />
+                                                <span>Warehouse</span>
+                                            </div>
+                                        </div>
+                                        <label for="sr_pt_old_plate_return" string="Old plate" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="sr_pt_old_plate_return" nolabel="1" />
+                                                <span>Return</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="sr_pt_old_plate_dispose" nolabel="1" />
+                                                <span>Dispose</span>
+                                            </div>
+                                        </div>
+                                    </group>
+                                    <group string="Re-gasket">
+                                        <field name="sr_gasket_material_type" string="Material / Type" />
+                                        <label for="sr_gasket_channel_qty" string="Channel gasket" />
+                                        <div class="d-flex align-items-center gap-1">
+                                            <field name="sr_gasket_channel_qty" nolabel="1" style="width: 70px" />
+                                            <span>pcs.</span>
+                                        </div>
+                                        <label for="sr_gasket_oring_qty" string="O-ring" />
+                                        <div class="d-flex align-items-center gap-1">
+                                            <field name="sr_gasket_oring_qty" nolabel="1" style="width: 70px" />
+                                            <span>pcs.</span>
+                                        </div>
+                                        <label for="sr_gasket_new_from_customer" string="New gasket from" />
+                                        <div class="d-flex gap-4">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="sr_gasket_new_from_customer" nolabel="1" />
+                                                <span>Customer</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <field name="sr_gasket_new_from_warehouse" nolabel="1" />
+                                                <span>Warehouse</span>
+                                            </div>
+                                        </div>
+                                    </group>
+                                    <group string="Supervisor's Comment">
+                                        <field
+                                            name="sr_supervisor_comment"
+                                            nolabel="1"
+                                            colspan="2"
+                                            placeholder="Enter supervisor's comment..."
+                                        />
+                                    </group>
+                                </sheet>
+                            </form>
                         </field>
                     </group>
                     <group
@@ -882,101 +993,6 @@
                                 <field name="model_id" string="Model" />
                             </tree>
                         </field>
-                    </group>
-                    <group string="Cleaning">
-                        <label for="sr_clean_mech_naoh" string="Mechanical" />
-                        <div class="d-flex gap-4">
-                            <div class="d-flex align-items-center gap-1">
-                                <field name="sr_clean_mech_naoh" nolabel="1" />
-                                <span>NaOH</span>
-                            </div>
-                            <div class="d-flex align-items-center gap-1">
-                                <field name="sr_clean_mech_acid" nolabel="1" />
-                                <span>Acid</span>
-                            </div>
-                        </div>
-                        <label for="sr_clean_cip_naoh" string="CIP" />
-                        <div class="d-flex gap-4">
-                            <div class="d-flex align-items-center gap-1">
-                                <field name="sr_clean_cip_naoh" nolabel="1" />
-                                <span>NaOH</span>
-                            </div>
-                            <div class="d-flex align-items-center gap-1">
-                                <field name="sr_clean_cip_acid" nolabel="1" />
-                                <span>Acid</span>
-                            </div>
-                        </div>
-                        <field name="sr_remark_fouling_hot" string="Remark Fouling — Hot side" />
-                        <field name="sr_remark_fouling_cold" string="Remark Fouling — Cold side" />
-                    </group>
-                    <group string="PT Test Results">
-                        <label for="sr_pt_tested_plates" string="Tested plates" />
-                        <div class="d-flex align-items-center gap-1">
-                            <field name="sr_pt_tested_plates" nolabel="1" style="width: 70px" />
-                            <span>pcs.</span>
-                        </div>
-                        <label for="sr_pt_leakage_found" string="Leakage found" />
-                        <div class="d-flex align-items-center gap-1">
-                            <field name="sr_pt_leakage_found" nolabel="1" style="width: 70px" />
-                            <span>pcs.</span>
-                        </div>
-                        <label for="sr_pt_replaced_from_customer" string="Replaced from" />
-                        <div class="d-flex gap-4">
-                            <div class="d-flex align-items-center gap-1">
-                                <field name="sr_pt_replaced_from_customer" nolabel="1" />
-                                <span>Customer</span>
-                            </div>
-                            <div class="d-flex align-items-center gap-1">
-                                <field name="sr_pt_replaced_from_warehouse" nolabel="1" />
-                                <span>Warehouse</span>
-                            </div>
-                        </div>
-                        <label for="sr_pt_old_plate_return" string="Old plate" />
-                        <div class="d-flex gap-4">
-                            <div class="d-flex align-items-center gap-1">
-                                <field name="sr_pt_old_plate_return" nolabel="1" />
-                                <span>Return</span>
-                            </div>
-                            <div class="d-flex align-items-center gap-1">
-                                <field name="sr_pt_old_plate_dispose" nolabel="1" />
-                                <span>Dispose</span>
-                            </div>
-                        </div>
-                    </group>
-                    <group string="Re-gasket">
-                        <field name="sr_gasket_material_type" string="Material / Type" />
-                        <label for="sr_gasket_channel_qty" string="Channel gasket" />
-                        <div class="d-flex align-items-center gap-1">
-                            <field name="sr_gasket_channel_qty" nolabel="1" style="width: 70px" />
-                            <span>pcs.</span>
-                        </div>
-                        <label for="sr_gasket_oring_qty" string="O-ring" />
-                        <div class="d-flex align-items-center gap-1">
-                            <field name="sr_gasket_oring_qty" nolabel="1" style="width: 70px" />
-                            <span>pcs.</span>
-                        </div>
-                        <label for="sr_gasket_new_from_customer" string="New gasket from" />
-                        <div class="d-flex gap-4">
-                            <div class="d-flex align-items-center gap-1">
-                                <field name="sr_gasket_new_from_customer" nolabel="1" />
-                                <span>Customer</span>
-                            </div>
-                            <div class="d-flex align-items-center gap-1">
-                                <field name="sr_gasket_new_from_warehouse" nolabel="1" />
-                                <span>Warehouse</span>
-                            </div>
-                        </div>
-                    </group>
-                    <group
-                        string="Supervisor's Comment"
-                        invisible="technician_profile != 'phe'"
-                    >
-                        <field
-                            name="sr_supervisor_comment"
-                            nolabel="1"
-                            colspan="2"
-                            placeholder="Enter supervisor's comment..."
-                        />
                     </group>
                 </page>
             </xpath>

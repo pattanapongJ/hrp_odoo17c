@@ -18,7 +18,7 @@ class FSMOrderPheLine(models.Model):
     model_id = fields.Many2one("bs.equipment.model", string="Model")
     media = fields.Char(string="Media (H/C)")
     plate_mat = fields.Char(string="Plate Mat.")
-    no_plate = fields.Integer(string="No.Plate")
+    no_plate = fields.Integer(string="Plate Qty")
     gasket = fields.Char(string="Gasket")
     mech = fields.Boolean(string="Mech")
     chem = fields.Boolean(string="Chem")
