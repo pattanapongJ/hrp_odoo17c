@@ -20,6 +20,7 @@
                         <span style="font-size: 21.33px;" t-field="o.company_id.name_en"/>
                         <br/>
                         <span t-field="o.company_id.street_en"/>
+                        <br/>
                         <span t-field="o.company_id.street2_en"/>
                         <span t-field="o.company_id.city_en"/>
                         <span t-field="o.company_id.state_id_en"/>
