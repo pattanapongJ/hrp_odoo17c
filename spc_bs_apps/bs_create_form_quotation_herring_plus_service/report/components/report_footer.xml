@@ -39,7 +39,7 @@
                             </div>
                         </t>
                     </div>
-                    <div class="col-3" style="font-weight: bold; font-size: 13.33px; display: table-cell; vertical-align: bottom;">
+                    <div class="last-page col-3" style="font-weight: bold; font-size: 13.33px; display: table-cell; vertical-align: bottom;">
                         <span>Yours Sincerely</span>
                         <br/>
                         <span>Herring Plus Co., Ltd.</span>
@@ -52,6 +52,7 @@
                             object-fit: contain;
                             display: inline-block;
                         " alt="Logo"/>
+                            <div t-else="" style="height: 120px;"/>
                         </div>
                     </div>
                 </div>
@@ -65,7 +66,8 @@
                         <span style="font-weight: bold;" t-field="o.user_id.name" />
                         <br/>
                         <div style="text-align: right;">
-                            <span t-field="o.company_id.iso" />
+                            <!-- <span t-field="o.company_id.iso" /> -->
+                            <span>FM-SA-02 R.00 D.180520</span>
                         </div>
                     </div>
                 </div>
