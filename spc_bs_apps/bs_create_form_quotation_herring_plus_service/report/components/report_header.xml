@@ -8,7 +8,7 @@
                         <div style="vertical-align: middle; text-align: center; width: 90%;">
                             <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="
                             max-width: 100%;
-                            max-height: 80px;
+                            max-height: 90px;
                             width: auto;
                             height: auto;
                             object-fit: contain;
@@ -17,13 +17,13 @@
                         </div>
                     </div>
                     <div class="col-6 text-center" style="font-weight: bold;">
-                        <span style="font-size: 21.33px;" t-field="o.company_id.name"/>
+                        <span style="font-size: 21.33px;" t-field="o.company_id.name_en"/>
                         <br/>
-                        <span t-field="o.company_id.street"/>
-                        <span t-field="o.company_id.street2"/>
-                        <span t-field="o.company_id.city"/>
-                        <span t-field="o.company_id.state_id.name"/>
-                        <span t-field="o.company_id.country_id.name"/>
+                        <span t-field="o.company_id.street_en"/>
+                        <span t-field="o.company_id.street2_en"/>
+                        <span t-field="o.company_id.city_en"/>
+                        <span t-field="o.company_id.state_id_en"/>
+                        <span t-field="o.company_id.country_id_en"/>
                         <br/>
                         <span>Hot Line : </span>
                         <span t-field="o.company_id.mobile"/>
@@ -37,14 +37,24 @@
                     </div>
                     <div class="col-3 text-center">
                         <div style="vertical-align: middle; text-align: center; width: 90%;">
-                            <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="
+                            <div style="text-align: center; width: 90%;">
+                                <img t-if="o.brand_logo_id.logo" t-att-src="image_data_uri(o.brand_logo_id.logo)" style="
                             max-width: 100%;
-                            max-height: 80px;
+                            max-height: 90px;
                             width: auto;
                             height: auto;
                             object-fit: contain;
                             display: inline-block;
                         " alt="Logo"/>
+                                <img t-elif="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="
+                            max-width: 100%;
+                            max-height: 90px;
+                            width: auto;
+                            height: auto;
+                            object-fit: contain;
+                            display: inline-block;
+                        " alt="Logo"/>
+                            </div>
                         </div>
                     </div>
                 </div>

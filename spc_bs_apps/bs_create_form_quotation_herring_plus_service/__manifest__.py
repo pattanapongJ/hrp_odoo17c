@@ -1,6 +1,6 @@
 {
     "name": "BS Create Form Quotation Herring Plus Service",
-    "version": "17.0.0.1",
+    "version": "17.0.0.2",
     "author": "Basic-Solution Co., Ltd.",
     "maintainer": "varit",
     "website": "https://www.basic-solution.com/",
@@ -11,6 +11,7 @@
         "bs_sale_order_note_template_modify",
         "bs_companies_iso",
         "bs_report_pagination_helper",
+        "bs_sale_order_hrp",
     ],
     "data": [
         "report/components/report_footer.xml",
