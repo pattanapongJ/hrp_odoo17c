@@ -10,8 +10,9 @@
                 position="before"
             >
                 <field
-                    name="terms_template_id"
-                    placeholder="Terms and conditions template"
+                    name="terms_template_ids"
+                    widget="many2many_tags"
+                    placeholder="Terms and conditions templates"
                     nolabel="1"
                     colspan="2"
                     readonly="state != 'draft'"

@@ -8,12 +8,14 @@ class SaleOrder(models.Model):
 
     _inherit = "sale.order"
 
-    terms_template_id = fields.Many2one(
+    terms_template_ids = fields.Many2many(
         "sale.terms_template",
-        string="Terms and conditions template",
+        string="Terms and conditions templates",
     )
 
-    @api.onchange("terms_template_id")
-    def _onchange_terms_template_id(self):
-        if self.terms_template_id:
-            self.note = self.terms_template_id.get_value(self)
+    @api.onchange("terms_template_ids")
+    def _onchange_terms_template_ids(self):
+        if self.terms_template_ids:
+            self.note = "".join(
+                template.get_value(self) for template in self.terms_template_ids
+            )

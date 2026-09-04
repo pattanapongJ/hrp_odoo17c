@@ -6,7 +6,7 @@
     "summary": "Add sale orders terms and conditions template that can be "
     "used to quickly fullfill sale order terms and conditions",
     "category": "Sales/Sales",
-    "version": "17.0.1.1.0",
+    "version": "17.0.1.1.1",
     "author": "Pierre Verkest,Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/sale-workflow",
     "license": "AGPL-3",
