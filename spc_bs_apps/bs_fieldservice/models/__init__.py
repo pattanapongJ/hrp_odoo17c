@@ -13,3 +13,4 @@ from . import fsm_order_worker_line
 from . import fsm_order_worker_status_log
 from . import fsm_team
 from . import fsm_team_member_line
+from . import sale_order

@@ -43,8 +43,9 @@ class FSMOrder(models.Model):
     # create()/write() (the actual guarantee) - the currently-picked Team's
     # own roster (team_id.member_ids) always ends up in here with
     # source="team", but the user can also add ANY other fsm.person on top
-    # straight from Team Info - those fall through to source="manual" and
-    # are never touched by a later Team switch.
+    # straight from Team Info - those fall through to source="manual".
+    # Switching Team clears the whole panel down to the new Team's roster,
+    # manual rows included - see _sync_team_worker_lines.
     team_worker_line_ids = fields.One2many(
         "bs.fsm.order.team.worker.line",
         "order_id",
@@ -586,13 +587,16 @@ class FSMOrder(models.Model):
                 blank.unlink()
 
     def _sync_team_worker_lines(self):
-        """Delete-then-set for the "team" rows only - a Team switch must
-        drop the OLD team's auto-derived rows and add the NEW team's, while
-        any "manual" row (added by the user, not by this method) is never
-        touched. A person already present under ANY source (team or
-        manual) is never re-added, so a manually-added worker who also
-        happens to be on the new Team doesn't get a duplicate row - their
-        existing source is left exactly as it was.
+        """Delete-then-set against the NEW Team's roster - a Team switch
+        clears out EVERY line that isn't a member of the new Team, "manual"
+        rows included: a manually-added helper only ever made sense in the
+        context of the team that was active when they were added, so
+        switching teams resets Team Info to a clean slate rather than
+        carrying old manual additions into a different team's roster.
+        A person who's a member of the new Team is never re-added if
+        they're already present under any source - a manually-added worker
+        who also happens to be on the new Team just keeps their existing
+        row/source as-is, no duplicate.
 
         Called from both the onchange above (live preview while editing in
         the browser) and create()/write() (the actual guarantee) - see the
@@ -600,11 +604,8 @@ class FSMOrder(models.Model):
         a plain One2many rather than a stored compute."""
         for order in self:
             lines = order.team_worker_line_ids
-            team_sourced = lines.filtered(lambda line: line.source == "team")
             wanted_members = order.team_id.member_ids.person_id
-            stale = team_sourced.filtered(
-                lambda line: line.person_id not in wanted_members
-            )
+            stale = lines.filtered(lambda line: line.person_id not in wanted_members)
             missing = wanted_members - lines.person_id
             commands = [(2, line.id, 0) for line in stale]
             commands += [
