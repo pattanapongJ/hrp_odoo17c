@@ -61,7 +61,7 @@
                         <br/>
                         <span>Hot line: 081 832 7320  E-Mail: sales@herringplus.com</span>
                     </div>
-                    <div class="col-3 text-center" style="font-weight: bold; font-size: 13.33px;">
+                    <div class="last-page col-3 text-center" style="font-weight: bold; font-size: 13.33px;">
                         <span t-field="o.user_id.name" />
                         <br/>
                         <span t-field="o.user_id.job_title" />
