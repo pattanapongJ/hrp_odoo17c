@@ -64,7 +64,8 @@
                     <div class="last-page col-3 text-center" style="font-weight: bold; font-size: 13.33px;">
                         <span t-field="o.user_id.name" />
                         <br/>
-                        <span t-field="o.user_id.job_title" />
+                        <!-- <span t-field="o.user_id.job_title" /> -->
+                        <span>FM-SA-02 R.00 D.180520</span>
                     </div>
                 </div>
             </div>
