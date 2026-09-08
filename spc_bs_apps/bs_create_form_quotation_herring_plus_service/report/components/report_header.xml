@@ -25,6 +25,7 @@
                         <span t-field="o.company_id.city_en"/>
                         <span t-field="o.company_id.state_id_en"/>
                         <span t-field="o.company_id.country_id_en"/>
+                        <span t-field="o.company_id.zip_en"/>
                         <br/>
                         <span>Hot Line : </span>
                         <span t-field="o.company_id.mobile"/>
