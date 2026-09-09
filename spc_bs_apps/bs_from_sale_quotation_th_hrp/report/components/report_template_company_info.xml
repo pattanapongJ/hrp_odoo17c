@@ -8,7 +8,7 @@
                 -webkit-box-align: center;
                 display: flex; 
                 flex-direction: column;">
-                <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="
+                <img t-if="o.sudo().company_id.logo" t-att-src="image_data_uri(o.sudo().company_id.logo)" style="
                         max-width: 95%;     /* Limit the maximum width */
                         max-height: 86px;  /* Limit the maximum height */
                         width: auto;        /* Scale width while maintaining aspect ratio */
@@ -16,12 +16,12 @@
                         object-fit: contain; /* Ensures the image fits inside the boundary */
                     " alt="Logo"/>
             </div>
-            <div t-attf-class="col-#{5 if o.brand_logo_id.logo else 7} text-left set_center_header_details">
+            <div t-attf-class="col-#{5 if o.sudo().brand_logo_id.logo else 7} text-left set_center_header_details">
                 <div class="row pd-3" style="margin-bottom: -6px">
-                    <span style="font-size: 16.67px" t-field="o.company_id.name"/>
-                    <t t-if="o.company_id.branch">
+                    <span style="font-size: 16.67px" t-field="o.sudo().company_id.name"/>
+                    <t t-if="o.sudo().company_id.branch">
                         <span>(</span>
-                        <span t-field="o.company_id.branch" />
+                        <span t-field="o.sudo().company_id.branch" />
                         <span>)</span>
                     </t>
                 </div>
@@ -29,47 +29,47 @@
                 <t t-set="sum_street2" t-value="0"/>
                 <t t-set="sum_city" t-value="0"/>
 
-                <t t-if="o.company_id.street">
-                    <t t-set="sum_street" t-value="len(o.company_id.street)"/>
+                <t t-if="o.sudo().company_id.street">
+                    <t t-set="sum_street" t-value="len(o.sudo().company_id.street)"/>
                 </t>
-                <t t-if="o.company_id.street2">
-                    <t t-set="sum_street2" t-value="len(o.company_id.street2)"/>
+                <t t-if="o.sudo().company_id.street2">
+                    <t t-set="sum_street2" t-value="len(o.sudo().company_id.street2)"/>
                 </t>
-                <t t-if="o.company_id.city">
-                    <t t-set="sum_city" t-value="len(o.company_id.city)"/>
+                <t t-if="o.sudo().company_id.city">
+                    <t t-set="sum_city" t-value="len(o.sudo().company_id.city)"/>
                 </t>
                 <t t-set="address_total" t-value="sum_street + sum_street2+ sum_city"/>
                 <t t-if="address_total &gt; 65">
                     <div class="row" style="margin-bottom: -6px">
-                        <span style="font-size: 12.5px" t-field="o.company_id.street"/>
-                        <span style="font-size: 12.5px" t-field="o.company_id.street2"/>
-                        <span style="font-size: 12.5px" t-field="o.company_id.city"/>
+                        <span style="font-size: 12.5px" t-field="o.sudo().company_id.street"/>
+                        <span style="font-size: 12.5px" t-field="o.sudo().company_id.street2"/>
+                        <span style="font-size: 12.5px" t-field="o.sudo().company_id.city"/>
                     </div>
                     <div class="row">
-                        <span style="font-size: 12.5px" t-field="o.company_id.state_id"/>
-                        <span style="font-size: 12.5px" t-field="o.company_id.zip"/>
-                        <span style="font-size: 12.5px" t-field="o.company_id.country_id"/>
+                        <span style="font-size: 12.5px" t-field="o.sudo().company_id.state_id"/>
+                        <span style="font-size: 12.5px" t-field="o.sudo().company_id.zip"/>
+                        <span style="font-size: 12.5px" t-field="o.sudo().company_id.country_id"/>
                     </div>
                 </t>
                 <t t-if="address_total &lt; 65">
                     <div class="row">
-                        <span style="font-size: 12.5px" t-field="o.company_id.street"/>
-                        <span style="font-size: 12.5px" t-field="o.company_id.street2"/>
-                        <span style="font-size: 12.5px" t-field="o.company_id.city"/>
-                        <span style="font-size: 12.5px" t-field="o.company_id.state_id"/>
-                        <span style="font-size: 12.5px" t-field="o.company_id.zip"/>
-                        <span style="font-size: 12.5px" t-field="o.company_id.country_id"/>
+                        <span style="font-size: 12.5px" t-field="o.sudo().company_id.street"/>
+                        <span style="font-size: 12.5px" t-field="o.sudo().company_id.street2"/>
+                        <span style="font-size: 12.5px" t-field="o.sudo().company_id.city"/>
+                        <span style="font-size: 12.5px" t-field="o.sudo().company_id.state_id"/>
+                        <span style="font-size: 12.5px" t-field="o.sudo().company_id.zip"/>
+                        <span style="font-size: 12.5px" t-field="o.sudo().company_id.country_id"/>
                     </div>
                 </t>
                 <div class="row" style="font-size: 12.5px">
                     <span>Tel : </span>
                     <span>
-                        <t t-if="o.company_id.phone">
-                            <span t-esc="o.company_id.phone" />
+                        <t t-if="o.sudo().company_id.phone">
+                            <span t-esc="o.sudo().company_id.phone" />
                         </t>
                     </span>
                     <span class="pr-1">
-                        <t t-if="not o.company_id.phone">
+                        <t t-if="not o.sudo().company_id.phone">
                             <span> - </span>
                         </t>
                     </span>
@@ -77,23 +77,23 @@
                 <div class="row" style="font-size: 12.5px">
                     <span>WEBSITE : </span>
                     <span class="pr-1">
-                        <t t-if="o.company_id.website">
-                            <span t-esc="o.company_id.website" />
+                        <t t-if="o.sudo().company_id.website">
+                            <span t-esc="o.sudo().company_id.website" />
                         </t>
                     </span>
                     <span>
-                        <t t-if="not o.company_id.website">
+                        <t t-if="not o.sudo().company_id.website">
                             <span> - </span>
                         </t>
                     </span>
                     <span>/ E-MAIL : </span>
                     <span>
-                        <t t-if="o.company_id.email">
-                            <span t-esc="o.company_id.email" />
+                        <t t-if="o.sudo().company_id.email">
+                            <span t-esc="o.sudo().company_id.email" />
                         </t>
                     </span>
                     <span>
-                        <t t-if="not o.company_id.email">
+                        <t t-if="not o.sudo().company_id.email">
                             <span> - </span>
                         </t>
                     </span>
@@ -101,12 +101,12 @@
                 <div class="row" style="font-size: 12.5px">
                     <span>Tax ID: </span>
                     <span>
-                        <t t-if="o.company_id.vat">
-                            <span t-esc="o.company_id.vat" />
+                        <t t-if="o.sudo().company_id.vat">
+                            <span t-esc="o.sudo().company_id.vat" />
                         </t>
                     </span>
                     <span>
-                        <t t-if="not o.company_id.vat">
+                        <t t-if="not o.sudo().company_id.vat">
                             <span> - </span>
                         </t>
                     </span>

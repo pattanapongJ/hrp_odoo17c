@@ -40,7 +40,7 @@
                                     text-align: center;
                                     vertical-align: middle;  width: 95px;">
                                 <p class="p-0 m-0">
-                                    <span>จำนวนเงิน </span>(<span t-field="o.currency_id.name"/>)
+                                    <span>จำนวนเงิน </span>(<span t-field="o.sudo().currency_id.name"/>)
                                 </p>
                             </th>
                         </tr>
@@ -48,7 +48,7 @@
                     <tbody>
                         <t t-set="total_val" t-value="0" />
                         <t t-set="line_number" t-value="0" />
-                        <t t-foreach="o.order_line" t-as="line">
+                        <t t-foreach="o.sudo().order_line" t-as="line">
                             <t t-if="line.tax_id.amount &gt; 0.0000">
                                 <t t-set="total_val" t-value="total_val + line.price_subtotal"/>
                             </t>

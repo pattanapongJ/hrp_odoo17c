@@ -6,8 +6,8 @@
             <div class="col-8">
                 <div class="row">
                     <div class="col-9 mb-0 p-3 text-center" style="background-color: #d0d0d0;">
-                        <t t-set="currency" t-value="o.currency_id.with_context(lang='th_TH')" />
-                        <t t-esc="currency.amount_to_text(o.amount_total)" />
+                        <t t-set="currency" t-value="o.sudo().currency_id.with_context(lang='th_TH')" />
+                        <t t-esc="currency.amount_to_text(o.sudo().amount_total)" />
                     </div>
                     <div class="col-3 mb-0"></div>
                 </div>
@@ -18,7 +18,7 @@
                 </div>
                 <div class="row pl-3" style="line-height: 30px; height: 60px; overflown-hidden;">
                     <div class="col-12 mb-0 pt-1 text-left">
-                        <span t-field="o.note" />
+                        <span t-field="o.sudo().note" />
                     </div>
                 </div>
             </div>
@@ -29,16 +29,16 @@
                         <span>รวมเป็นเงิน</span>
                     </div>
                     <div class="col-5 pl-0 ml-0 mb-0 text-right">
-                        <span t-esc="o.amount_untaxed"
+                        <span t-esc="o.sudo().amount_untaxed"
                             t-options='{"widget": "float", "precision": 2}' />
                     </div>
                 </div>
 
                 <!-- Tax Calculation for Odoo 17 -->
                 <t t-set="taxes" t-value="[]" />
-                <t t-foreach="o.order_line" t-as="line">
+                <t t-foreach="o.sudo().order_line" t-as="line">
                     <t
-                        t-foreach="line.tax_id.compute_all(line.price_unit, o.currency_id, line.product_uom_qty, product=line.product_id, partner=o.partner_id)['taxes']"
+                        t-foreach="line.tax_id.compute_all(line.price_unit, o.sudo().currency_id, line.product_uom_qty, product=line.product_id, partner=o.sudo().partner_id)['taxes']"
                         t-as="tax">
                         <t t-set="tax_entry" t-value="(tax['name'], tax['amount'])" />
                         <t t-set="taxes" t-value="taxes + [tax_entry]" />
@@ -81,7 +81,7 @@
                         <span>มูลค่าสุทธิ</span>
                     </div>
                     <div class="col-5 pl-0 ml-0 mb-0 text-right">
-                        <span t-esc="o.amount_total" t-options='{"widget": "float", "precision": 2}' />
+                        <span t-esc="o.sudo().amount_total" t-options='{"widget": "float", "precision": 2}' />
                     </div>
                 </div>
             </div>
@@ -98,8 +98,8 @@
             <div class="col-4 text-center" style="padding: 0 36px 0 36px;">
                 <div class="border-bottom border-dark m-0 p-0" style="height: 80px;">
                     <t t-if="tier_validation">
-                        <t t-if="len(o.review_ids) > 0">
-                            <t t-set="last_review" t-value="o.review_ids[-1]" />
+                        <t t-if="len(o.sudo().review_ids) > 0">
+                            <t t-set="last_review" t-value="o.sudo().review_ids[-1]" />
                             <t t-set="reviewer_employee"
                                 t-value="env['hr.employee'].search([('user_id', '=', last_review.done_by.id)], limit=1)" />
                         </t>
@@ -126,12 +126,12 @@
                     <br />
                     <div style="padding-top:15px">
                         <t t-if="tier_validation">
-                            <t t-if="len(o.review_ids) &gt; 0">
-                                <t t-set="len_num" t-value="len(o.review_ids) - 1" />
-                                <t t-set="review_date" t-value="o.review_ids[len_num].reviewed_date" />
+                            <t t-if="len(o.sudo().review_ids) &gt; 0">
+                                <t t-set="len_num" t-value="len(o.sudo().review_ids) - 1" />
+                                <t t-set="review_date" t-value="o.sudo().review_ids[len_num].reviewed_date" />
                             </t>
-                            <t t-if="len(o.review_ids) == 0">
-                                <t t-set="review_date" t-value="o.review_ids.reviewed_date" />
+                            <t t-if="len(o.sudo().review_ids) == 0">
+                                <t t-set="review_date" t-value="o.sudo().review_ids.reviewed_date" />
                             </t>
                             <t t-if="review_date">
                                 <span>
@@ -143,9 +143,9 @@
                             </t>
                         </t>
                         <t t-elif="show_signature and not tier_validation">
-                            <t t-if="o.create_date">
+                            <t t-if="o.sudo().create_date">
                                 <span>
-                                    <t t-esc="o.create_date.strftime('%d/%m/%Y')" />
+                                    <t t-esc="o.sudo().create_date.strftime('%d/%m/%Y')" />
                                 </span>
                             </t>
                             <t t-else="">
@@ -162,7 +162,7 @@
             <div class="col-4 text-center" style="padding: 0 36px 0 36px;">
                 <div class="border-bottom border-dark m-0 p-0" style="height: 80px;">
                     <div class="pt-5">
-                        <span t-field="o.partner_invoice_id.name" />
+                        <span t-field="o.sudo().partner_invoice_id.name" />
                     </div>
                 </div>
                 <div style="padding-top:2px">
