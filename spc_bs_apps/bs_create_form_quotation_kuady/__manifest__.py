@@ -1,6 +1,6 @@
 {
     "name": "BS Create Form Quotation Kuady",
-    "version": "17.0.0.5",
+    "version": "17.0.0.7",
     "author": "Basic-Solution Co., Ltd.",
     "maintainer": "varit",
     "website": "https://www.basic-solution.com/",
