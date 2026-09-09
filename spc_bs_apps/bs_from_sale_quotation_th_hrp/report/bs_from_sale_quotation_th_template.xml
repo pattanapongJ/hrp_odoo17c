@@ -9,8 +9,8 @@
             <t t-if="company_id">
                 <t t-set="company" t-value="company_id" />
             </t>
-            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
-                <t t-set="company" t-value="o.company_id.sudo()" />
+            <t t-elif="o and 'company_id' in o and o.sudo().company_id">
+                <t t-set="company" t-value="o.sudo().company_id" />
             </t>
             <t t-else="else">
                 <t t-set="company" t-value="res_company" />
@@ -20,14 +20,14 @@
         <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
             <div class="row pt-2 pb-2" style="font-family: 'Kanit-Light';">
                 <t t-call="bs_from_sale_quotation_th_hrp.report_compay_info"/>
-                <div t-if="o.brand_logo_id.logo" class="col-2 p-0 m-0" style="
+                <div t-if="o.sudo().brand_logo_id.logo" class="col-2 p-0 m-0" style="
                         display: -webkit-box;
                         -webkit-box-pack: center;
                         -webkit-box-orient: vertical;
                         -webkit-box-align: center;
                         display: flex;
                         flex-direction: column;">
-                    <img t-att-src="image_data_uri(o.brand_logo_id.logo)" style="
+                    <img t-att-src="image_data_uri(o.sudo().brand_logo_id.logo)" style="
                             max-width: 95%;     /* Limit the maximum width */
                             max-height: 86px;  /* Limit the maximum height */
                             width: auto;        /* Scale width while maintaining aspect ratio */

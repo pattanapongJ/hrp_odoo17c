@@ -18,7 +18,7 @@
         </record>
 
         <record id="action_report_quotations_employment" model="ir.actions.report">
-            <field name="name">Quotation (TH)</field>
+            <field name="name">Quotation</field>
             <field name="model">sale.order</field>
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">bs_from_sale_quotation_th_hrp.report_page</field>

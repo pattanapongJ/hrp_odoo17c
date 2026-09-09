@@ -9,12 +9,12 @@
                     </div>
                     <div class="col-8 p-0 mb-0 text-left">
                         <span>
-                            <t t-if="o.partner_invoice_id.ref">
-                                <span t-esc="o.partner_invoice_id.ref" />
+                            <t t-if="o.sudo().partner_invoice_id.ref">
+                                <span t-esc="o.sudo().partner_invoice_id.ref" />
                             </t>
                         </span>
                         <span>
-                            <t t-if="not o.partner_invoice_id.ref">
+                            <t t-if="not o.sudo().partner_invoice_id.ref">
                                 <span> - </span>
                             </t>
                         </span>
@@ -26,15 +26,15 @@
                     </div>
                     <div class="col-8 p-0 mb-0 text-left">
                         <span>
-                            <t t-if="o.partner_invoice_id.name">
-                                <span t-field="o.partner_invoice_id.name" />
+                            <t t-if="o.sudo().partner_invoice_id.name">
+                                <span t-field="o.sudo().partner_invoice_id.name" />
                             </t>
-                            <t t-if="o.partner_invoice_id.branch">
+                            <t t-if="o.sudo().partner_invoice_id.branch">
                                 <span>(</span>
-                                <span t-field="o.partner_invoice_id.branch" />
+                                <span t-field="o.sudo().partner_invoice_id.branch" />
                                 <span>)</span>
                             </t>
-                            <t t-if="not o.partner_invoice_id.name and not o.partner_invoice_id.branch">
+                            <t t-if="not o.sudo().partner_invoice_id.name and not o.sudo().partner_invoice_id.branch">
                                     - 
                             </t>
                         </span>
@@ -46,12 +46,12 @@
                     </div>
                     <div class="col-8 p-0 mb-0 text-left">
                         <span>
-                            <t t-if="o.partner_invoice_id.vat">
-                                <span t-esc="o.partner_invoice_id.vat" />
+                            <t t-if="o.sudo().partner_invoice_id.vat">
+                                <span t-esc="o.sudo().partner_invoice_id.vat" />
                             </t>
                         </span>
                         <span>
-                            <t t-if="not o.partner_invoice_id.vat">
+                            <t t-if="not o.sudo().partner_invoice_id.vat">
                                 <span> - </span>
                             </t>
                         </span>
@@ -62,24 +62,24 @@
                         <span>ที่อยู่ : </span>
                     </div>
                     <div class="col-8 p-0 mb-0 text-left">
-                        <t t-if="o.partner_invoice_id.street">
-                            <span t-field="o.partner_invoice_id.street" style="margin-right: 5px;" />
+                        <t t-if="o.sudo().partner_invoice_id.street">
+                            <span t-field="o.sudo().partner_invoice_id.street" style="margin-right: 5px;" />
                         </t>
-                        <t t-if="o.partner_invoice_id.street2">
-                            <span t-field="o.partner_invoice_id.street2" style="margin-right: 5px;" />
+                        <t t-if="o.sudo().partner_invoice_id.street2">
+                            <span t-field="o.sudo().partner_invoice_id.street2" style="margin-right: 5px;" />
                         </t>
-                        <t t-if="o.partner_invoice_id.city">
-                            <span t-esc="o.partner_invoice_id.city" style="margin-right: 5px;" />
+                        <t t-if="o.sudo().partner_invoice_id.city">
+                            <span t-esc="o.sudo().partner_invoice_id.city" style="margin-right: 5px;" />
                         </t>
                         <br/>
-                        <t t-if="o.partner_invoice_id.state_id">
-                            <span t-esc="o.partner_invoice_id.state_id.name" style="margin-right: 5px;" />
+                        <t t-if="o.sudo().partner_invoice_id.state_id">
+                            <span t-esc="o.sudo().partner_invoice_id.state_id.name" style="margin-right: 5px;" />
                         </t>
-                        <t t-if="o.partner_invoice_id.zip">
-                            <span t-esc="o.partner_invoice_id.zip" style="margin-right: 5px;" />
+                        <t t-if="o.sudo().partner_invoice_id.zip">
+                            <span t-esc="o.sudo().partner_invoice_id.zip" style="margin-right: 5px;" />
                         </t>
-                        <t t-if="o.partner_invoice_id.country_id">
-                            <span t-field="o.partner_invoice_id.country_id.name" />
+                        <t t-if="o.sudo().partner_invoice_id.country_id">
+                            <span t-field="o.sudo().partner_invoice_id.country_id.name" />
                         </t>
                     </div>
                 </div>
@@ -89,15 +89,15 @@
                     </div>
                     <div class="col-8 p-0 mb-0 text-left">
                         <span>
-                            <t t-if="o.partner_shipping_id.name">
-                                <span t-field="o.partner_shipping_id.name" />
+                            <t t-if="o.sudo().partner_shipping_id.name">
+                                <span t-field="o.sudo().partner_shipping_id.name" />
                             </t>
-                            <t t-if="o.partner_shipping_id.branch">
+                            <t t-if="o.sudo().partner_shipping_id.branch">
                                 <span>(</span>
-                                <span t-field="o.partner_shipping_id.branch" />
+                                <span t-field="o.sudo().partner_shipping_id.branch" />
                                 <span>)</span>
                             </t>
-                            <t t-if="not o.partner_shipping_id.name and not o.partner_shipping_id.branch">
+                            <t t-if="not o.sudo().partner_shipping_id.name and not o.sudo().partner_shipping_id.branch">
                                     - 
                             </t>
                         </span>
@@ -111,7 +111,7 @@
                         <b>เลขที่เอกสาร :  </b>
                     </div>
                     <div class="col-6 p-0 mb-0text-left" style="margin-left:-20px">
-                        <span t-field="o.name" />
+                        <span t-field="o.sudo().name" />
                     </div>
                 </div>
                 <div class="row" style="background-color: #d0d0d0;">
@@ -119,7 +119,7 @@
                         <b>วันที่เอกสาร : </b>
                     </div>
                     <div class="col-6 p-0 mb-0 text-left" style="margin-left:-20px">
-                        <span t-field="o.date_order" t-options='{"widget": "date","format": "dd/MM/yyyy"}' />
+                        <span t-field="o.sudo().date_order" t-options='{"widget": "date","format": "dd/MM/yyyy"}' />
                     </div>
                 </div>
                 <div class="row" style="background-color: #d0d0d0;">
@@ -128,12 +128,12 @@
                     </div>
                     <div class="col-6 p-0 mb-0 text-left" style="margin-left:-20px">
                         <span>
-                            <t t-if="o.validity_date">
-                                <span t-field="o.validity_date" t-options='{"widget": "date","format": "dd/MM/yyyy"}'/>
+                            <t t-if="o.sudo().validity_date">
+                                <span t-field="o.sudo().validity_date" t-options='{"widget": "date","format": "dd/MM/yyyy"}'/>
                             </t>
                         </span>
                         <span>
-                            <t t-if="not o.validity_date">
+                            <t t-if="not o.sudo().validity_date">
                                 <span> - </span>
                             </t>
                         </span>
@@ -145,12 +145,12 @@
                     </div>
                     <div class="col-6 p-0 mb-0 text-left" style="margin-left:-20px">
                         <span>
-                            <t t-if="o.payment_term_id">
-                                <span t-field="o.payment_term_id.name"/>
+                            <t t-if="o.sudo().payment_term_id">
+                                <span t-field="o.sudo().payment_term_id.name"/>
                             </t>
                         </span>
                         <span>
-                            <t t-if="not o.payment_term_id">
+                            <t t-if="not o.sudo().payment_term_id">
                                 <span> - </span>
                             </t>
                         </span>
@@ -162,12 +162,12 @@
                     </div>
                     <div class="col-6 p-0 mb-0 text-left" style="margin-left:-20px">
                         <span>
-                            <t t-if="o.user_id">
-                                <span t-field="o.user_id.name"/>
+                            <t t-if="o.sudo().user_id">
+                                <span t-field="o.sudo().user_id.name"/>
                             </t>
                         </span>
                         <span>
-                            <t t-if="not o.user_id">
+                            <t t-if="not o.sudo().user_id">
                                 <span> - </span>
                             </t>
                         </span>
