@@ -67,45 +67,131 @@
         <div style="font-family: 'Kanit-Light'; font-size: 13.64px; page-break-inside: avoid;">
             <div class="row border-top border-dark pt-4 pb-2">
                 <!-- Left Side: Cash & Check Details -->
-                <div class="col-6">
+                <div class="col-12">
                     <div class="row">
-                        <div class="col-2 d-flex flex-column justify-content-end">
-                            <input type="checkbox"/>
-                            <br/>
-                            <input type="checkbox"/>
-                            <br/>
-                        </div>
-                        <div class="col-1"/>
                         <div class="col-3">
-                            <span>เงินสด : </span>
-                            <br/>
-                            <span>เช็คธนาคาร : </span>
-                            <br/>
-                            <span>เช็คเลขที่ : </span>
-                            <br/>
+                            <div class="row">
+                                <div class="col-4">
+                                    <span>เงินสด</span>
+                                </div>
+                                <div class="col-7">
+                                    <div style="border-bottom: 1px solid black; height: 16px;"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <span>โอนเงิน</span>
+                                </div>
+                                <div class="col-7">
+                                    <div style="border-bottom: 1px solid black; height: 16px;"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <span>เช็คธนาคาร</span>
+                                </div>
+                                <div class="col-7">
+                                    <div style="border-bottom: 1px solid black; height: 16px;"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-6 pl-3">
-                            <div style="border-bottom: 1px solid black; height: 15px;"></div>
-                            <div style="border-bottom: 1px solid black; height: 23px;"></div>
-                            <div style="border-bottom: 1px solid black; height: 23px;"></div>
+                        <div class="col-3">
+                            <div class="row">
+                                <div class="col-4">
+                                    <span>ลงวันที่</span>
+                                </div>
+                                <div class="col-7">
+                                    <div style="height: 16px; line-height: 16px; white-space: nowrap;">
+                                        <span style="display: inline-block; width: 27%; height: 16px; border-bottom: 1px solid black; vertical-align: bottom;"></span>
+                                        <span style="vertical-align: bottom;">/</span>
+                                        <span style="display: inline-block; width: 27%; height: 16px; border-bottom: 1px solid black; vertical-align: bottom;"></span>
+                                        <span style="vertical-align: bottom;">/</span>
+                                        <span style="display: inline-block; width: 27%; height: 16px; border-bottom: 1px solid black; vertical-align: bottom;"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <span>ลงวันที่</span>
+                                </div>
+                                <div class="col-7">
+                                    <div style="height: 16px; line-height: 16px; white-space: nowrap;">
+                                        <span style="display: inline-block; width: 27%; height: 16px; border-bottom: 1px solid black; vertical-align: bottom;"></span>
+                                        <span style="vertical-align: bottom;">/</span>
+                                        <span style="display: inline-block; width: 27%; height: 16px; border-bottom: 1px solid black; vertical-align: bottom;"></span>
+                                        <span style="vertical-align: bottom;">/</span>
+                                        <span style="display: inline-block; width: 27%; height: 16px; border-bottom: 1px solid black; vertical-align: bottom;"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <span>เช็คธนาคาร</span>
+                                </div>
+                                <div class="col-7">
+                                    <div style="border-bottom: 1px solid black; height: 16px;"></div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <!-- Right Side: Branch & Date -->
-                <div class="col-6">
-                    <div class="row">
-                        <div class="col-1"></div>
-                        <div class="col-2">
-                            <span>สาขา: </span>
-                            <br/>
-                            <span>ลงวันที่: </span>
-                            <br/>
+                        <div class="col-3">
+                            <div class="row">
+                                <div class="col-4">
+                                    <span>จำนวนเงิน</span>
+                                </div>
+                                <div class="col-7">
+                                    <div style="border-bottom: 1px solid black; height: 16px;"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <span>จำนวนเงิน</span>
+                                </div>
+                                <div class="col-7">
+                                    <div style="border-bottom: 1px solid black; height: 16px;"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <span>ลงวันที่</span>
+                                </div>
+                                <div class="col-7">
+                                    <div style="height: 16px; line-height: 16px; white-space: nowrap;">
+                                        <span style="display: inline-block; width: 27%; height: 16px; border-bottom: 1px solid black; vertical-align: bottom;"></span>
+                                        <span style="vertical-align: bottom;">/</span>
+                                        <span style="display: inline-block; width: 27%; height: 16px; border-bottom: 1px solid black; vertical-align: bottom;"></span>
+                                        <span style="vertical-align: bottom;">/</span>
+                                        <span style="display: inline-block; width: 27%; height: 16px; border-bottom: 1px solid black; vertical-align: bottom;"></span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-6">
-                            <div style="border-bottom: 1px solid black; height: 16px;"></div>
-                            <div style="border-bottom: 1px solid black; height: 22px;"></div>
+                        <div class="col-3">
+                            <!-- Spacer row: mirrors a normal row so heights match exactly -->
+                            <div class="row">
+                                <div class="col-4">
+                                    <span>&#160;</span>
+                                </div>
+                                <div class="col-7">
+                                    <div style="height: 16px;"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <span>&#160;</span>
+                                </div>
+                                <div class="col-7">
+                                    <div style="height: 16px;"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <span>จำนวนเงิน</span>
+                                </div>
+                                <div class="col-7">
+                                    <div style="border-bottom: 1px solid black; height: 16px;"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-3"></div>
                     </div>
                 </div>
             </div>
@@ -113,7 +199,8 @@
             <!-- Bottom Notice Section -->
             <div class="row border-bottom border-dark pb-2 text-left set_center_header_details">
                 <div class="col-8">
-                    <span>เมื่อชำระด้วยเช็ค ดร๊าฟ โปรดสั่งจ่ายในนาม </span> <span t-field="o.company_id.name"/> 
+                    <span>เมื่อชำระด้วยเช็ค ดร๊าฟ โปรดสั่งจ่ายในนาม </span>
+                    <span t-field="o.company_id.name"/>
                     <br/>
                     <span>ขีดฆ่าคำว่า "หรือผู้ถือหุ้น" ออก และขีดคร่อมเช็คด้วย</span>
                     <br/>

@@ -1,6 +1,6 @@
 {
     'name': 'BS Create Form Receipt TH HRP',
-    'version': '17.0.0.2',
+    'version': '17.0.0.3',
     'author': 'Basic-Solution Co., Ltd.',
     'website': 'https://www.basic-solution.com/',
     "license": "AGPL-3",
