@@ -120,6 +120,7 @@
                             </div>
                             <div class="col-9">
                                 <span t-field="o.user_id"/>
+                                (<span t-field="o.user_id.phone"/>)
                             </div>
                         </div>
                     </div>
