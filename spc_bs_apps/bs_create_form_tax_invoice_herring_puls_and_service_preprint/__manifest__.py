@@ -10,6 +10,7 @@
         "l10n_th_account_tax",
         "l10n_th_partner",
         "bs_contact_add_field",
+        "l10n_th_amount_to_text",
     ],
     "data": [
         "report/components/report_footer.xml",
