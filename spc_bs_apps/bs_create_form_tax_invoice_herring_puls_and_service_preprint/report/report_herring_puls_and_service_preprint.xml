@@ -9,11 +9,11 @@
             <field name="page_height">0</field>
             <field name="page_width">0</field>
             <field name="orientation">Portrait</field>
-            <field name="margin_top">100</field>
-            <field name="margin_bottom">93</field>
+            <field name="margin_top">112</field>
+            <field name="margin_bottom">80</field>
             <field name="margin_left">5</field>
             <field name="margin_right">5</field>
-            <field name="header_spacing">90</field>
+            <field name="header_spacing">107</field>
             <field name="dpi">90</field>
         </record>
 
