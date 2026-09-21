@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <template id="report_main_content">
-        <div style="font-family: 'THSarabunNew'; font-size: 18px;" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id">
+        <div style="font-family: 'THSarabunNew'; font-size: 22px;" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id">
             <table class="table table-borderless">
                 <thead>
                     <tr>

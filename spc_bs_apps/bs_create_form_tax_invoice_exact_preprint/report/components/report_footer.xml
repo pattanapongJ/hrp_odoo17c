@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <template id="report_footer">
-        <div class="row" style="font-family: 'THSarabunNew'; font-size: 18px;">
+        <div class="row" style="font-family: 'THSarabunNew'; font-size: 22px;">
             <div class="row">
                 <div class="col-7">
                 </div>
