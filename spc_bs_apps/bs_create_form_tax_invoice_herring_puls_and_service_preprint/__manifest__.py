@@ -1,6 +1,6 @@
 {
     "name": "BS Create Tax Invoice Herring Puls And Service Preprint",
-    "version": "17.0.0.1",
+    "version": "17.0.0.3",
     "author": "Basic-Solution Co., Ltd.",
     "maintainer": "varit",
     "website": "https://www.basic-solution.com/",
