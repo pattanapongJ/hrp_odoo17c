@@ -1,23 +1,29 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <template id="report_footer_gee_plus">
-        <div style="font-family: 'THSarabunNew'; font-size: 18px;">
+        <div style="font-family: 'Kanit-Light'; font-size: 15px;">
             <div class="row">
                 <div class="col-7">
+                    <div class="row" style="padding-top: 160px;">
+                        <div class="col-12 text-center">
+                            (                            <span t-esc="o.currency_id.with_context(lang='th_TH').amount_to_text(o.amount_total)"/>
+)   
+                        </div>
+                    </div>
                 </div>
                 <div class="col-3"/>
-                <div class="col-2 text-end" style="padding-top: 130px;">
+                <div class="col-2 text-end" style="padding-top: 40px;">
                     <div class="row">
                         <div class="col-12">
                             <span t-esc="('{:,.2f}').format(o.amount_untaxed)"/>
                         </div>
                     </div>
-                    <div class="row" style="margin-top: 20px;">
+                    <div class="row" style="margin-top: 30px;">
                         <div class="col-12">
                             <span t-esc="('{:,.2f}').format(o.amount_tax)"/>
                         </div>
                     </div>
-                    <div class="row" style="margin-top: 20px;">
+                    <div class="row" style="margin-top: 30px;">
                         <div class="col-12">
                             <span t-esc="('{:,.2f}').format(o.amount_total)"/>
                         </div>
