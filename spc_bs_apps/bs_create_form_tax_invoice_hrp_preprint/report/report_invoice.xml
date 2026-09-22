@@ -33,6 +33,8 @@
 
     <template id="bs_form_preprint_report_template">
         <t t-call="web.html_container">
+            <!-- sudo(): print regardless of the viewer's company access restrictions on account.move -->
+            <t t-set="docs" t-value="docs.sudo()" />
             <t t-foreach="docs" t-as="o">
                 <t t-call="bs_create_form_tax_invoice_hrp_preprint.request_layout">
                     <t t-call="bs_create_form_tax_invoice_hrp_preprint.report_main_content" />

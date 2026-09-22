@@ -77,17 +77,15 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-2">
-                            <span>
-                                สาขา : 
-                            </span>
-                        </div>
-                        <div class="col-10" style="margin-left: -20px;">
-                            <span t-field="o.partner_id.branch"/>
+                        <div class="col-12">
                             <span>
                             เลขที่ผู้เสียภาษี
                             </span>
                             <span t-field="o.partner_id.vat"/>
+                            <span>
+                                สาขา 
+                            </span>
+                            <span t-field="o.partner_id.branch"/>
                         </div>
                     </div>
                 </div>
