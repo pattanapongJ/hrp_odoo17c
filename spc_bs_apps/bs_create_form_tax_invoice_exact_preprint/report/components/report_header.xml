@@ -38,10 +38,10 @@
                 </div>
                 <div class="row">
                     <div class="col-6" style="margin-top: 15px;">
-                        <span>สาขา</span>
-                        <span t-field="o.partner_id.branch"/>
                         <span>เลขประจำตัวผู้เสียภาษี</span>
                         <span t-field="o.partner_id.vat"/>
+                        <span>สาขา</span>
+                        <span t-field="o.partner_id.branch"/>
                     </div>
                     <div class="col-3 text-end" style="margin-top: 50px; padding-right: 30px;">
                         <span t-field="o.name"/>
