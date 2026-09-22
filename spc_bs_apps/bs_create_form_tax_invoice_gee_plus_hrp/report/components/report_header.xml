@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <template id="report_header_info_gee_plus">
-         <div style="font-family: 'Kanit-Light'; font-size: 15px;">
+        <div style="font-family: 'Kanit-Light'; font-size: 15px;">
             <div class="row">
                 <div class="col-10">
                 </div>
@@ -14,7 +14,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row" style="margin-top: 20px;">
                 <div class="col-12">
                     <span style="padding-left: 120px; margin-top: 10px;" t-field="o.partner_id.partner_code"/>
@@ -39,15 +39,15 @@
                     </div>
                     <div class="row" style="padding-top: 20px;">
                         <div class="col-12" style="">
-                             <span>สาขา</span>
-                             <span t-field="o.partner_id.branch"/>
-                             <span>เลขประจำตัวผู้เสียภาษี</span>
-                             <span t-field="o.partner_id.vat"/>
+                            <span>เลขประจำตัวผู้เสียภาษี</span>
+                            <span t-field="o.partner_id.vat"/>
+                            <span>สาขา</span>
+                            <span t-field="o.partner_id.branch"/>
                         </div>
                     </div>
                 </div>
                 <div class="col-3" style="padding-top: 5px;">
-                    <div class="row" style="margin-top: 20px; padding-left: 60px; ">                      
+                    <div class="row" style="margin-top: 20px; padding-left: 60px; ">
                         <span t-esc="o.invoice_origin or '-'"/>
                     </div>
                     <div class="row" style="margin-top: 80px; padding-left: 100px; ">
@@ -64,6 +64,6 @@
                 </div>
             </div>
         </div>
-    
+
     </template>
 </odoo>
