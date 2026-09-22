@@ -15,7 +15,7 @@
                 </thead>
                 <tbody>
                     <t t-set="line_number" t-value="0"/>
-                    <tr t-foreach="o.invoice_line_ids" t-as="line">
+                    <tr t-foreach="o.sudo().invoice_line_ids" t-as="line">
                         <t t-if="line.display_type == 'product'">
 
                             <td style="text-align: left;">
